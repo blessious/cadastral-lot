@@ -1,0 +1,677 @@
+Conversion Report — 2026-05-07 15:28:25
+============================================================
+
+Total shapefiles found : 133
+Successfully converted : 132
+Failed                 : 1
+
+────────────────────────────────────────────────────────────
+SUCCESSFUL CONVERSIONS
+────────────────────────────────────────────────────────────
+
+[Agot Shape Files]
+  Lots      : 302
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, Brgy_Code, Barangay, Section, ALN, CLN, PIN, PSGC, Land_Class, Area, Remarks
+
+[Agumaymayan Shape Files]
+  Lots      : 294
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, ALN, Section, Brgy_Code, Remarks
+
+[Amoingon Shape File]
+  Lots      : 642
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, ALN, Section, Brgy_Code, Remarks
+
+[Apitong Shape Files]
+  Lots      : 239
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, ALN, Section, Brgy_Code, Remarks
+
+[Balagasan Shape Files]
+  Lots      : 386
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, ALN, Section, Brgy_Code, Remarks
+
+[Balaring Shape Fles]
+  Lots      : 277
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, ALN, Section, Brgy_Code
+
+[Balimbing Shape Files]
+  Lots      : 958
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, ALN, Section, Brgy_Code
+
+[Balogo Shape Files]
+  Lots      : 679
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, ALN, Section, Brgy_Code
+
+[Bamban Shape File]
+  Lots      : 203
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, ALN, Section, Brgy_Code
+
+[Bamban Shape File]
+  Lots      : 0
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id
+
+[Bangbangalon Shape Files]
+  Lots      : 490
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, ALN, Section, Brgy_Code
+
+[Bantad Shape Files]
+  Lots      : 564
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, ALN, Section, Brgy_Code
+
+[Bantay Shape Files]
+  Lots      : 789
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, ALN, Section, Brgy_Code
+
+[Bayuti Shape Files]
+  Lots      : 85
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, ALN, Section, Brgy_Code
+
+[Binunga Shape Files]
+  Lots      : 276
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, ALN, Section, Brgy_Code
+
+[Boi Shape Files]
+  Lots      : 247
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, ALN, Section, Brgy_Code
+
+[Boton Shape Files]
+  Lots      : 209
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, ALN, Section, Brgy_Code
+
+[Buliasnin]
+  Lots      : 1097
+  CRS orig  : EPSG:4683 (assumed PRS92 — no CRS in file)
+  Columns   : id, CLN, PSGC, Barangay, Land_Class, PIN, ALN, Section, Brgy_Code
+
+[Buliasnin Shape Files]
+  Lots      : 1097
+  CRS orig  : EPSG:4683 (assumed PRS92 — no CRS in file)
+  Columns   : id, CLN, PSGC, Barangay, Land_Class, PIN, ALN, Section, Brgy_Code
+
+[Old files before corruption]
+  Lots      : 1076
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, ALN, Section, Brgy_Code
+
+[Old files before corruption]
+  Lots      : 1091
+  CRS orig  : EPSG:4683 (assumed PRS92 — no CRS in file)
+  Columns   : 
+
+[Backup]
+  Lots      : 619
+  CRS orig  : EPSG:4683 (assumed PRS92 — no CRS in file)
+  Columns   : 
+
+[Bunganay Shape Files]
+  Lots      : 637
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, ALN, Section, Brgy_Code
+
+[Caganhao Shape file]
+  Lots      : 343
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, ALN, Section, Brgy_Code
+
+[old files buck up]
+  Lots      : 195
+  CRS orig  : EPSG:4683 (assumed PRS92 — no CRS in file)
+  Columns   : 
+
+[Catubugan Shape Files]
+  Lots      : 477
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, ALN, Section, Brgy_Code
+
+[Cawit Shape Files]
+  Lots      : 800
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, area, ALN, Section, Brgy_Code
+
+[Daig Shape Files]
+  Lots      : 227
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, ALN, Section, Brgy_Code
+
+[Daypay Shape Files]
+  Lots      : 199
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, ALN, Section, Brgy_Code
+
+[Duyay Shape Files]
+  Lots      : 607
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, ALN, Section, Brgy_Code
+
+[Hinapulan Shape Files]
+  Lots      : 476
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, ALN, Section, Brgy_Code
+
+[Ihatub Shape Files]
+  Lots      : 586
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, ALN, Section, Brgy_Code
+
+[Isok II Shape Files]
+  Lots      : 262
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, ALN, Section, Brgy_Code
+
+[Laylay Shape Files]
+  Lots      : 880
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, ALN, Section, Brgy_Code
+
+[Lupac Shape Files]
+  Lots      : 854
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, ALN, Section, Brgy_Code
+
+[Mahinhin Shape Files]
+  Lots      : 303
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, ALN, Section, Brgy_Code
+
+[Mainit Shape Files]
+  Lots      : 373
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, ALN, Section, Brgy_Code
+
+[Malbog Shape Files]
+  Lots      : 225
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, ALN, Section, Brgy_Code
+
+[Maligaya Shape Files]
+  Lots      : 169
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, Area, PIN, ALN, Section, Brgy_Code
+
+[Mansiwat Shape Files]
+  Lots      : 282
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, ALN, Section, Brgy_Code
+
+[Maybo Shape Files]
+  Lots      : 645
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, ALN, Section, Brgy_Code
+
+[Ogbac Shape FIles]
+  Lots      : 162
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, ALN, Section, Brgy_Code
+
+[Agot Shape Files]
+  Lots      : 291
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, Area, PIN
+
+[Agumaymayan Shape Files]
+  Lots      : 290
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, pin_1
+
+[Amoingon Shape File]
+  Lots      : 607
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN
+
+[Apitong Shape Files]
+  Lots      : 219
+  CRS orig  : EPSG:4683 (assumed PRS92 — no CRS in file)
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN
+
+[Balagasan Shape Files]
+  Lots      : 398
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN
+
+[Balaring Shape Fles]
+  Lots      : 281
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN
+
+[Balimbing Shape Files]
+  Lots      : 926
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN
+
+[Balogo Shape Files]
+  Lots      : 643
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN
+
+[Bamban Shape File]
+  Lots      : 200
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN
+
+[Bamban Shape File]
+  Lots      : 0
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id
+
+[Banbangalon Shape Files]
+  Lots      : 449
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN
+
+[Bantad Shape Files]
+  Lots      : 463
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN
+
+[Bantay Shape Files]
+  Lots      : 770
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN
+
+[Bayote Shape Files]
+  Lots      : 85
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN
+
+[Binunga Shape Files]
+  Lots      : 261
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, Land_area, PIN
+
+[Boi Shape Files]
+  Lots      : 243
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN
+
+[Boton Shape Files]
+  Lots      : 216
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN
+
+[Buliasnin Shape Files]
+  Lots      : 1058
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN
+
+[Bunganay Shape Files]
+  Lots      : 592
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN
+
+[Caganhao Shape file]
+  Lots      : 332
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN
+
+[Canat Shape Files]
+  Lots      : 188
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN
+
+[Catubugan Shape Files]
+  Lots      : 464
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN
+
+[Cawit Shape Files]
+  Lots      : 757
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, area
+
+[Daig Shape Files]
+  Lots      : 219
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN
+
+[Daypay Shape Files]
+  Lots      : 198
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN
+
+[Duyay Shape Files]
+  Lots      : 629
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN
+
+[Hinapulan Shape Files]
+  Lots      : 467
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN
+
+[Ihatub Shape Files]
+  Lots      : 574
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN
+
+[Isok II Shape Files]
+  Lots      : 247
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN
+
+[Laylay Shape Files]
+  Lots      : 769
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN
+
+[Lupac Shape Files]
+  Lots      : 767
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN
+
+[Mahinhin Shape Files]
+  Lots      : 288
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN
+
+[Mainit Shape Files]
+  Lots      : 373
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN
+
+[Malbog Shape Files]
+  Lots      : 237
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN
+
+[Maligaya Shape Files]
+  Lots      : 156
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, Area, PIN
+
+[Mansiwat Shape Files]
+  Lots      : 273
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN
+
+[Maybo Shape Files]
+  Lots      : 622
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN
+
+[Ogbac Shape FIles]
+  Lots      : 163
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN
+
+[Pawa Shape Files]
+  Lots      : 500
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN
+
+[Pili Shape Files]
+  Lots      : 111
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN
+
+[Isok I]
+  Lots      : 377
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN
+
+[Malusak]
+  Lots      : 155
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN
+
+[Mataas Na Bayan]
+  Lots      : 365
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, LotArea, PIN
+
+[Mercado]
+  Lots      : 227
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN
+
+[Murallon]
+  Lots      : 222
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN
+
+[Poblacion Shape Files]
+  Lots      : 1571
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : ID, CLN, PSGC, BARANGAY, LAND_CLA_1, PIN
+
+[San Miguel]
+  Lots      : 158
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN
+
+[Tampus]
+  Lots      : 477
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, Area
+
+[Poctoy Shape Files]
+  Lots      : 275
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN
+
+[Poras Shape Files]
+  Lots      : 678
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN
+
+[Puting Buhangin]
+  Lots      : 179
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN
+
+[Puyog Shape Files]
+  Lots      : 571
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN
+
+[Sabong Shape files]
+  Lots      : 158
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, Area, Area_1
+
+[Santol Shape Files]
+  Lots      : 679
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN
+
+[Sawi Shape Files]
+  Lots      : 465
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN
+
+[Tabi Shape Files]
+  Lots      : 403
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN
+
+[Tabigue Shape Files]
+  Lots      : 4
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, Lat, Lon
+
+[Tabigue Shape Files]
+  Lots      : 274
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN
+
+[Tagwak Shape Files]
+  Lots      : 228
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN
+
+[Tambunan Shape Files]
+  Lots      : 206
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, Area
+
+[Tanza Shape Files]
+  Lots      : 693
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, LAND_CLASS, PIN
+
+[Tugos Shape Files]
+  Lots      : 1249
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN
+
+[Tumagabok Shape Files]
+  Lots      : 29
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN
+
+[Tumapon Shape Files]
+  Lots      : 82
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN
+
+[Pawa Shape Files]
+  Lots      : 505
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, ALN, Section, Brgy_Code
+
+[Pili Shape Files]
+  Lots      : 107
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, ALN, Section, Brgy_Code
+
+[Isok I]
+  Lots      : 403
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, ALN, Section, Brgy_Code
+
+[Malusak]
+  Lots      : 150
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, ALN, Section, Brgy_Code
+
+[Mataas Na Bayan]
+  Lots      : 353
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, LotArea, PIN, ALN, Section, Brgy_Code
+
+[Mercado]
+  Lots      : 237
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, ALN, Section, Brgy_Code
+
+[Murallon]
+  Lots      : 220
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, ALN, Section, Brgy_Code
+
+[Poblacion Shape Files]
+  Lots      : 1571
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : ID, CLN, PSGC, BARANGAY, LAND_CLA_1, PIN
+
+[San Miguel]
+  Lots      : 142
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, ALN, Section, Brgy_Code
+
+[Tampus]
+  Lots      : 479
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, Area, ALN, Brgy_Code, Section
+
+[Poctoy Shape Files]
+  Lots      : 285
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, ALN, Section, Brgy_Code
+
+[Poras Shape Files]
+  Lots      : 710
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, ALN, Section, Brgy_Code
+
+[Puting Buhangin Shape Files]
+  Lots      : 180
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, ALN, Section, Brgy_Code
+
+[Puyog Shape Files]
+  Lots      : 579
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, ALN, Section, Brgy_Code
+
+[Sabong Shape files]
+  Lots      : 158
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, Area, Area_1, ALN, Section, Brgy_Code
+
+[Santol Shape Files]
+  Lots      : 723
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, ALN, Section, Brgy_Code
+
+[Sawi Shape Files]
+  Lots      : 465
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, ALN, Section, Brgy_Code
+
+[Tabi Shape Files]
+  Lots      : 430
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, ALN, Section, Brgy_Code
+
+[Tabigue Shape Files]
+  Lots      : 4
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, Lat, Lon
+
+[Tabigue Shape Files]
+  Lots      : 282
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, ALN, Section, Brgy_Code
+
+[Tagwak Shape Files]
+  Lots      : 216
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, ALN, Section, Brgy_Code
+
+[Tambunan Shape Files]
+  Lots      : 204
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, Area, ALN, Section, Brgy_Code
+
+[Tanza Shape Files]
+  Lots      : 731
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, LAND_CLASS, PIN, ALN, Section, Brgy_Code
+
+[Tugos Shape Files]
+  Lots      : 1265
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, ALN, Section, Brgy_Code
+
+[Tumagabok Shape Files]
+  Lots      : 29
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, ALN, Section, Brgy_Code
+
+[Tumapon Shape Files]
+  Lots      : 77
+  CRS orig  : PROJCS["Luzon_1911_Transverse_Mercator",GEOGCS["Luzon 1911",DATUM["Luzon_1911",SPHEROID["Clarke 1866",6378206.4,294.9786982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6253"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",123],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
+  Columns   : Id, CLN, PSGC, Barangay, Land_Class, PIN, ALN, Section, Brgy_Code
+
+────────────────────────────────────────────────────────────
+FAILED
+────────────────────────────────────────────────────────────
+
+[Canat Shape Files] Canat.shp
+  Error: IllegalArgumentException: Points of LinearRing do not form a closed linestring
