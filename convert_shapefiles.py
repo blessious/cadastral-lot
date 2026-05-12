@@ -78,7 +78,11 @@ def convert_shapefile(shp_path: Path, output_dir: Path) -> dict:
         gdf = gdf.to_crs(TARGET_CRS)
 
         # Use barangay folder name as output filename (cleaner than shp filename)
-        barangay_name = shp_path.parent.name.replace(" Shape Files", "").replace(" Shape File", "").strip()
+        barangay_name = shp_path.parent.name.replace(" Shape Files", "").replace(" Shape File", "").replace(" Shape Fles", "").replace(" Shape file", "").strip()
+        
+        # Tag each feature with its barangay name before saving
+        gdf["Barangay"] = barangay_name
+
         out_path = output_dir / f"{barangay_name}.geojson"
 
         gdf.to_file(out_path, driver="GeoJSON")
@@ -126,9 +130,6 @@ def main():
         if result["status"] == "OK":
             print(f"OK  ({result['feature_count']} lots)")
             if gdf is not None and MERGE_ALL:
-                # Tag each feature with its barangay name for the merged file
-                barangay_name = shp.parent.name.replace(" Shape Files", "").replace(" Shape File", "").strip()
-                gdf["barangay"] = barangay_name
                 merged_gdfs.append(gdf)
         else:
             print(f"FAILED")

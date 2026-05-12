@@ -32,7 +32,7 @@ GEOJSON_DIR = Path(r"C:\Users\admin\Videos\CADASTRAL LOT MAP\output\geojson")
 OUTPUT_FILE = GEOJSON_DIR / "search_index.json"
 
 # Fields to include in the search index (no geometry)
-SEARCH_FIELDS = ["CLN", "ALN", "PIN", "Barangay", "barangay", "Section", "Land_Class", "LAND_CLASS", "Area", "Area_1", "Brgy_Code", "PSGC"]
+SEARCH_FIELDS = ["CLN", "ALN", "PIN", "Barangay", "barangay", "Section", "Land_Class", "LAND_CLASS", "Area", "Area_1", "Brgy_Code", "PSGC", "Owner", "OWNER", "Claimant", "CLAIMANT"]
 # ────────────────────────────────────────────────────────────
 
 
@@ -52,6 +52,8 @@ def normalize_props(props: dict, file_name: str) -> dict:
                 key = "Land_Class"
             if field == "Area_1":
                 key = "Area"  # merge Area_1 into Area if Area is missing
+            if field in ["OWNER", "Claimant", "CLAIMANT"]:
+                key = "Owner"
             # Don't overwrite if already set
             if key not in entry or entry[key] in (None, ""):
                 entry[key] = str(val).strip()
