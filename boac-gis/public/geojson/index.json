@@ -1,0 +1,684 @@
+[
+  {
+    "name": "Agot",
+    "file": "/geojson/Agot.geojson",
+    "bbox": [
+      121.856814,
+      13.443605,
+      121.870823,
+      13.454762
+    ],
+    "lot_count": 291
+  },
+  {
+    "name": "Agumaymayan",
+    "file": "/geojson/Agumaymayan.geojson",
+    "bbox": [
+      121.884532,
+      13.4299,
+      121.900415,
+      13.453142
+    ],
+    "lot_count": 290
+  },
+  {
+    "name": "Amoingon",
+    "file": "/geojson/Amoingon.geojson",
+    "bbox": [
+      121.824601,
+      13.39306,
+      121.854845,
+      13.416833
+    ],
+    "lot_count": 607
+  },
+  {
+    "name": "Balagasan",
+    "file": "/geojson/Balagasan.geojson",
+    "bbox": [
+      121.878327,
+      13.392373,
+      121.898379,
+      13.426938
+    ],
+    "lot_count": 398
+  },
+  {
+    "name": "Balaring Shape Fles",
+    "file": "/geojson/Balaring Shape Fles.geojson",
+    "bbox": [
+      121.821163,
+      13.411882,
+      121.84077,
+      13.422483
+    ],
+    "lot_count": 281
+  },
+  {
+    "name": "Balimbing",
+    "file": "/geojson/Balimbing.geojson",
+    "bbox": [
+      121.868716,
+      13.428804,
+      121.889474,
+      13.443972
+    ],
+    "lot_count": 926
+  },
+  {
+    "name": "Balogo",
+    "file": "/geojson/Balogo.geojson",
+    "bbox": [
+      121.821323,
+      13.459572,
+      121.834562,
+      13.472414
+    ],
+    "lot_count": 643
+  },
+  {
+    "name": "Banbangalon",
+    "file": "/geojson/Banbangalon.geojson",
+    "bbox": [
+      121.821016,
+      13.433367,
+      121.841333,
+      13.448027
+    ],
+    "lot_count": 449
+  },
+  {
+    "name": "Bangbangalon",
+    "file": "/geojson/Bangbangalon.geojson",
+    "bbox": [
+      121.821016,
+      13.433367,
+      121.841333,
+      13.448027
+    ],
+    "lot_count": 490
+  },
+  {
+    "name": "Bantad",
+    "file": "/geojson/Bantad.geojson",
+    "bbox": [
+      121.844458,
+      13.450172,
+      121.858449,
+      13.46858
+    ],
+    "lot_count": 463
+  },
+  {
+    "name": "Bantay",
+    "file": "/geojson/Bantay.geojson",
+    "bbox": [
+      121.889001,
+      13.412887,
+      121.941515,
+      13.438003
+    ],
+    "lot_count": 770
+  },
+  {
+    "name": "Bayote",
+    "file": "/geojson/Bayote.geojson",
+    "bbox": [
+      121.92137,
+      13.311755,
+      121.967708,
+      13.353711
+    ],
+    "lot_count": 85
+  },
+  {
+    "name": "Bayuti",
+    "file": "/geojson/Bayuti.geojson",
+    "bbox": [
+      121.92137,
+      13.311755,
+      121.967708,
+      13.353711
+    ],
+    "lot_count": 85
+  },
+  {
+    "name": "Binunga",
+    "file": "/geojson/Binunga.geojson",
+    "bbox": [
+      121.901726,
+      13.379533,
+      121.93476,
+      13.408595
+    ],
+    "lot_count": 261
+  },
+  {
+    "name": "Boi",
+    "file": "/geojson/Boi.geojson",
+    "bbox": [
+      121.929864,
+      13.347324,
+      121.967576,
+      13.376401
+    ],
+    "lot_count": 243
+  },
+  {
+    "name": "Boton",
+    "file": "/geojson/Boton.geojson",
+    "bbox": [
+      121.860015,
+      13.434197,
+      121.870296,
+      13.444336
+    ],
+    "lot_count": 216
+  },
+  {
+    "name": "Buliasnin",
+    "file": "/geojson/Buliasnin.geojson",
+    "bbox": [
+      121.82773,
+      13.456836,
+      121.845636,
+      13.479049
+    ],
+    "lot_count": 1058
+  },
+  {
+    "name": "Bunganay",
+    "file": "/geojson/Bunganay.geojson",
+    "bbox": [
+      121.823521,
+      13.384774,
+      121.856443,
+      13.403295
+    ],
+    "lot_count": 592
+  },
+  {
+    "name": "Caganhao Shape file",
+    "file": "/geojson/Caganhao Shape file.geojson",
+    "bbox": [
+      121.822258,
+      13.405721,
+      121.846956,
+      13.415256
+    ],
+    "lot_count": 332
+  },
+  {
+    "name": "Canat",
+    "file": "/geojson/Canat.geojson",
+    "bbox": [
+      121.892176,
+      13.352819,
+      121.95288,
+      13.393785
+    ],
+    "lot_count": 188
+  },
+  {
+    "name": "Catubugan",
+    "file": "/geojson/Catubugan.geojson",
+    "bbox": [
+      121.866577,
+      13.390209,
+      121.891855,
+      13.430744
+    ],
+    "lot_count": 464
+  },
+  {
+    "name": "Cawit",
+    "file": "/geojson/Cawit.geojson",
+    "bbox": [
+      121.822088,
+      13.374091,
+      121.858702,
+      13.395641
+    ],
+    "lot_count": 757
+  },
+  {
+    "name": "Daig",
+    "file": "/geojson/Daig.geojson",
+    "bbox": [
+      121.844409,
+      13.428276,
+      121.851068,
+      13.443314
+    ],
+    "lot_count": 219
+  },
+  {
+    "name": "Daypay",
+    "file": "/geojson/Daypay.geojson",
+    "bbox": [
+      121.847979,
+      13.444967,
+      121.859798,
+      13.454931
+    ],
+    "lot_count": 198
+  },
+  {
+    "name": "Duyay",
+    "file": "/geojson/Duyay.geojson",
+    "bbox": [
+      121.862156,
+      13.361413,
+      121.900115,
+      13.381678
+    ],
+    "lot_count": 629
+  },
+  {
+    "name": "Hinapulan",
+    "file": "/geojson/Hinapulan.geojson",
+    "bbox": [
+      121.924932,
+      13.356343,
+      122.001252,
+      13.434663
+    ],
+    "lot_count": 467
+  },
+  {
+    "name": "Ihatub",
+    "file": "/geojson/Ihatub.geojson",
+    "bbox": [
+      121.819102,
+      13.413617,
+      121.851756,
+      13.433174
+    ],
+    "lot_count": 574
+  },
+  {
+    "name": "Isok I",
+    "file": "/geojson/Isok I.geojson",
+    "bbox": [
+      121.837416,
+      13.443333,
+      121.843286,
+      13.447307
+    ],
+    "lot_count": 403
+  },
+  {
+    "name": "Isok II",
+    "file": "/geojson/Isok II.geojson",
+    "bbox": [
+      121.836132,
+      13.434007,
+      121.845306,
+      13.445958
+    ],
+    "lot_count": 247
+  },
+  {
+    "name": "Laylay",
+    "file": "/geojson/Laylay.geojson",
+    "bbox": [
+      121.812017,
+      13.429249,
+      121.838324,
+      13.446714
+    ],
+    "lot_count": 769
+  },
+  {
+    "name": "Lupac",
+    "file": "/geojson/Lupac.geojson",
+    "bbox": [
+      121.812012,
+      13.451176,
+      121.833412,
+      13.46517
+    ],
+    "lot_count": 767
+  },
+  {
+    "name": "Mahinhin",
+    "file": "/geojson/Mahinhin.geojson",
+    "bbox": [
+      121.925487,
+      13.423405,
+      121.959179,
+      13.453595
+    ],
+    "lot_count": 288
+  },
+  {
+    "name": "Mainit",
+    "file": "/geojson/Mainit.geojson",
+    "bbox": [
+      121.887483,
+      13.391981,
+      121.909751,
+      13.425057
+    ],
+    "lot_count": 373
+  },
+  {
+    "name": "Malbog",
+    "file": "/geojson/Malbog.geojson",
+    "bbox": [
+      121.84963,
+      13.416452,
+      121.865576,
+      13.431121
+    ],
+    "lot_count": 237
+  },
+  {
+    "name": "Maligaya",
+    "file": "/geojson/Maligaya.geojson",
+    "bbox": [
+      121.835491,
+      13.474485,
+      121.842193,
+      13.484789
+    ],
+    "lot_count": 156
+  },
+  {
+    "name": "Malusak",
+    "file": "/geojson/Malusak.geojson",
+    "bbox": [
+      121.838849,
+      13.44503,
+      121.841443,
+      13.448164
+    ],
+    "lot_count": 150
+  },
+  {
+    "name": "Mansiwat",
+    "file": "/geojson/Mansiwat.geojson",
+    "bbox": [
+      121.837985,
+      13.421092,
+      121.852582,
+      13.43721
+    ],
+    "lot_count": 273
+  },
+  {
+    "name": "Mataas Na Bayan",
+    "file": "/geojson/Mataas Na Bayan.geojson",
+    "bbox": [
+      121.840791,
+      13.446689,
+      121.847108,
+      13.449431
+    ],
+    "lot_count": 353
+  },
+  {
+    "name": "Maybo",
+    "file": "/geojson/Maybo.geojson",
+    "bbox": [
+      121.850629,
+      13.398647,
+      121.872668,
+      13.423832
+    ],
+    "lot_count": 622
+  },
+  {
+    "name": "Mercado",
+    "file": "/geojson/Mercado.geojson",
+    "bbox": [
+      121.836043,
+      13.445566,
+      121.839038,
+      13.448542
+    ],
+    "lot_count": 237
+  },
+  {
+    "name": "Murallon",
+    "file": "/geojson/Murallon.geojson",
+    "bbox": [
+      121.834818,
+      13.446513,
+      121.839097,
+      13.449986
+    ],
+    "lot_count": 220
+  },
+  {
+    "name": "Ogbac Shape FIles",
+    "file": "/geojson/Ogbac Shape FIles.geojson",
+    "bbox": [
+      121.89998,
+      13.402678,
+      121.927352,
+      13.421485
+    ],
+    "lot_count": 163
+  },
+  {
+    "name": "Pawa",
+    "file": "/geojson/Pawa.geojson",
+    "bbox": [
+      121.868304,
+      13.442291,
+      121.890523,
+      13.460711
+    ],
+    "lot_count": 505
+  },
+  {
+    "name": "Pili",
+    "file": "/geojson/Pili.geojson",
+    "bbox": [
+      121.819227,
+      13.461909,
+      121.825231,
+      13.467407
+    ],
+    "lot_count": 107
+  },
+  {
+    "name": "Poblacion",
+    "file": "/geojson/Poblacion.geojson",
+    "bbox": [
+      121.834818,
+      13.442325,
+      121.851701,
+      13.450223
+    ],
+    "lot_count": 1571
+  },
+  {
+    "name": "Poctoy",
+    "file": "/geojson/Poctoy.geojson",
+    "bbox": [
+      121.855878,
+      13.415767,
+      121.868034,
+      13.435032
+    ],
+    "lot_count": 285
+  },
+  {
+    "name": "Poras",
+    "file": "/geojson/Poras.geojson",
+    "bbox": [
+      121.821879,
+      13.452454,
+      121.83487,
+      13.463268
+    ],
+    "lot_count": 710
+  },
+  {
+    "name": "Puting Buhangin",
+    "file": "/geojson/Puting Buhangin.geojson",
+    "bbox": [
+      121.94884,
+      13.434449,
+      121.968241,
+      13.453562
+    ],
+    "lot_count": 180
+  },
+  {
+    "name": "Puyog",
+    "file": "/geojson/Puyog.geojson",
+    "bbox": [
+      121.894303,
+      13.432275,
+      121.934272,
+      13.457641
+    ],
+    "lot_count": 579
+  },
+  {
+    "name": "Sabong Shape files",
+    "file": "/geojson/Sabong Shape files.geojson",
+    "bbox": [
+      121.955763,
+      13.319025,
+      122.004127,
+      13.348147
+    ],
+    "lot_count": 158
+  },
+  {
+    "name": "San Miguel",
+    "file": "/geojson/San Miguel.geojson",
+    "bbox": [
+      121.839094,
+      13.447882,
+      121.841024,
+      13.448972
+    ],
+    "lot_count": 142
+  },
+  {
+    "name": "Santol",
+    "file": "/geojson/Santol.geojson",
+    "bbox": [
+      121.824252,
+      13.436593,
+      121.84108,
+      13.451294
+    ],
+    "lot_count": 723
+  },
+  {
+    "name": "Sawi",
+    "file": "/geojson/Sawi.geojson",
+    "bbox": [
+      121.849569,
+      13.435042,
+      121.86291,
+      13.448894
+    ],
+    "lot_count": 465
+  },
+  {
+    "name": "Tabi",
+    "file": "/geojson/Tabi.geojson",
+    "bbox": [
+      121.832149,
+      13.450734,
+      121.839622,
+      13.46203
+    ],
+    "lot_count": 430
+  },
+  {
+    "name": "Tabigue",
+    "file": "/geojson/Tabigue.geojson",
+    "bbox": [
+      121.811667,
+      13.446119,
+      121.826076,
+      13.455654
+    ],
+    "lot_count": 282
+  },
+  {
+    "name": "Tagwak",
+    "file": "/geojson/Tagwak.geojson",
+    "bbox": [
+      121.869856,
+      13.440703,
+      121.880807,
+      13.448252
+    ],
+    "lot_count": 216
+  },
+  {
+    "name": "Tambunan",
+    "file": "/geojson/Tambunan.geojson",
+    "bbox": [
+      121.958039,
+      13.299201,
+      122.003239,
+      13.331145
+    ],
+    "lot_count": 204
+  },
+  {
+    "name": "Tampus",
+    "file": "/geojson/Tampus.geojson",
+    "bbox": [
+      121.840971,
+      13.442325,
+      121.851701,
+      13.450223
+    ],
+    "lot_count": 479
+  },
+  {
+    "name": "Tanza",
+    "file": "/geojson/Tanza.geojson",
+    "bbox": [
+      121.837585,
+      13.4497,
+      121.850308,
+      13.473583
+    ],
+    "lot_count": 731
+  },
+  {
+    "name": "Tugos",
+    "file": "/geojson/Tugos.geojson",
+    "bbox": [
+      121.852514,
+      13.373035,
+      121.902373,
+      13.40362
+    ],
+    "lot_count": 1265
+  },
+  {
+    "name": "Tumagabok",
+    "file": "/geojson/Tumagabok.geojson",
+    "bbox": [
+      121.959563,
+      13.332059,
+      122.001252,
+      13.365409
+    ],
+    "lot_count": 29
+  },
+  {
+    "name": "Tumapon",
+    "file": "/geojson/Tumapon.geojson",
+    "bbox": [
+      121.849133,
+      13.426036,
+      121.8575,
+      13.435692
+    ],
+    "lot_count": 77
+  }
+]
