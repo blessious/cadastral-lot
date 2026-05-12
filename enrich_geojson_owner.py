@@ -39,10 +39,11 @@ def load_owner_map() -> dict[str, dict]:
             tdno = (row.get("tdno") or "").strip()
             cln  = (row.get("cadastralL") or "").strip()
             owner = (row.get("ownerName") or "").strip()
+            land_class = (row.get("classTitle") or "").strip()
 
-            if not owner:
+            if not owner and not land_class:
                 continue
-            payload = {"ownerName": owner, "tdno": tdno}
+            payload = {"ownerName": owner, "tdno": tdno, "landClass": land_class}
             if pin:
                 pin_map[pin] = payload
             if cln:
@@ -80,8 +81,13 @@ def enrich_file(geojson_path: Path, pin_map: dict, cln_map: dict) -> tuple[int, 
         payload = pin_map.get(pin) or cln_map.get(cln)
 
         if payload:
-            props["Owner"]     = payload["ownerName"]
-            props["TaxDecNo"]  = payload["tdno"]
+            if payload["ownerName"]:
+                props["Owner"]     = payload["ownerName"]
+            if payload["tdno"]:
+                props["TaxDecNo"]  = payload["tdno"]
+            if payload["landClass"]:
+                props["Land_Class"] = payload["landClass"]
+                
             feature["properties"] = props
             matched += 1
 

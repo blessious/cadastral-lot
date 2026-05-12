@@ -91,7 +91,7 @@ def main():
             features = data.get("features", [])
             count = 0
 
-            for feature in features:
+            for idx, feature in enumerate(features):
                 props = feature.get("properties") or {}
 
                 # Skip features with no useful identifiers
@@ -100,6 +100,7 @@ def main():
                     continue
 
                 entry = normalize_props(props, geojson_file.name)
+                entry["__uid"] = f"/geojson/{geojson_file.name}-{idx}"
                 search_index.append(entry)
                 count += 1
 

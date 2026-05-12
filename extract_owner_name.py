@@ -73,10 +73,13 @@ def fetch_owner_map(conn):
                 NULLIF(LTRIM(RTRIM(ppl.declaredOwnerName)),                    ''),
                 NULLIF(LTRIM(RTRIM(CAST(td.taxpayerName AS nvarchar(max)))),   ''),
                 ''
-            ) AS ownerName
+            ) AS ownerName,
+            rpu.classTitle as landClass
         FROM TaxDeclaration td
         LEFT JOIN PropertyPayerLedger ppl
                ON ppl.tdno = td.tdno
+        LEFT JOIN RPU rpu
+               ON rpu.objid = td.rpuid
         WHERE td.tdno IS NOT NULL
           AND td.state NOT IN ('CANCELLED')
     """
@@ -88,12 +91,18 @@ def fetch_owner_map(conn):
     for row in cursor.fetchall():
         tdno = (row.tdno or "").strip()
         owner = (row.ownerName or "").strip()
+        land_class = (row.landClass or "").strip()
         if tdno:
             # If multiple ledger rows per tdno, last non-empty wins
-            if tdno not in owner_map or owner:
-                owner_map[tdno] = owner
+            if tdno not in owner_map:
+                owner_map[tdno] = {"ownerName": owner, "landClass": land_class}
+            else:
+                if owner:
+                    owner_map[tdno]["ownerName"] = owner
+                if land_class:
+                    owner_map[tdno]["landClass"] = land_class
 
-    print(f"[OK] Fetched {len(owner_map):,} unique tdno â†’ ownerName mappings.")
+    print(f"[OK] Fetched {len(owner_map):,} unique tdno -> ownerName/landClass mappings.")
     return owner_map
 
 
@@ -113,16 +122,27 @@ def process_csv(owner_map):
         else:
             print("[WARN] 'taxpayerNa' column not found in CSV header.")
 
+        # Ensure Land_Class exists
+        if "Land_Class" not in fieldnames and "LAND_CLASS" not in fieldnames:
+            fieldnames.append("Land_Class")
+
         for row in reader:
             tdno = (row.get("tdno") or "").strip()
             original_name = row.pop("taxpayerNa", None) or ""
 
-            if tdno in owner_map and owner_map[tdno]:
-                row["ownerName"] = owner_map[tdno]
+            if tdno in owner_map:
+                data = owner_map[tdno]
+                row["ownerName"] = data["ownerName"] if data["ownerName"] else original_name
+                if data["landClass"]:
+                    row["Land_Class"] = data["landClass"]
+                elif "Land_Class" not in row:
+                    row["Land_Class"] = ""
                 matched += 1
             else:
                 # Keep original as fallback so no data is lost
                 row["ownerName"] = original_name
+                if "Land_Class" not in row:
+                    row["Land_Class"] = ""
                 unmatched += 1
 
             rows_out.append(row)
