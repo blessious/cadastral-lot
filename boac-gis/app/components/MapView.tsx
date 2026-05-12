@@ -5,7 +5,7 @@ import "leaflet/dist/leaflet.css";
 import { booleanPointInPolygon, point } from "@turf/turf";
 import type { Feature, FeatureCollection, GeoJsonProperties, Geometry } from "geojson";
 import L from "leaflet";
-import { Plus, Minus, Satellite, Map as MapIcon } from "lucide-react";
+import { Satellite, Map as MapIcon } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { GeoJSON, MapContainer, Marker, TileLayer, useMapEvents } from "react-leaflet";
 
@@ -13,6 +13,7 @@ import GPSButton from "./GPSButton";
 import SearchBar from "./SearchBar";
 import SettingsPanel from "./SettingsPanel";
 import MapLegend from "./MapLegend";
+import MiniMap from "./MiniMap";
 import { useToast } from "@/hooks/use-toast";
 
 // Fix Leaflet default icon paths in Next.js.
@@ -110,6 +111,7 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
   const [showLotNumbers, setShowLotNumbers] = useState(true);
   const [autoLoadBarangay, setAutoLoadBarangay] = useState(false);
   const [currentZoom, setCurrentZoom] = useState(DEFAULT_ZOOM);
+  const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [basemap, setBasemap] = useState<"streets" | "satellite">("streets");
   const [activeLandClasses, setActiveLandClasses] = useState<Set<string>>(
     new Set([...Object.keys(LAND_CLASS_COLORS), "unknown"])
@@ -267,7 +269,7 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
           layer.bindTooltip(label, {
             permanent: true,
             direction: "center",
-            className: "bg-white/80 backdrop-blur-[2px] border border-white/50 px-2.5 py-1 rounded-full text-[10px] md:text-xs text-slate-800 font-bold shadow-sm text-center lot-label-tooltip leading-none dark:bg-slate-800/80 dark:border-slate-600/50 dark:text-slate-200"
+            className: "bg-white/80 backdrop-blur-[2px] border border-[#0051d5]/20 px-2.5 py-1 rounded-full text-[10px] md:text-xs text-[#0051d5] font-bold shadow-sm text-center lot-label-tooltip leading-none"
           });
         }
       } else {
@@ -309,8 +311,10 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
       setSelectedFeature(feature);
       if (flyToFeature && mapRef.current) {
         const bounds = L.geoJSON(feature).getBounds();
-        // Automatically calculate the perfect zoom level to frame the entire property, with a max limit
-        mapRef.current.flyToBounds(bounds, { duration: 2.5, padding: [50, 50], maxZoom: 21 });
+        if (bounds.isValid()) {
+          // Automatically calculate the perfect zoom level to frame the entire property, with a max limit
+          mapRef.current.flyToBounds(bounds, { duration: 2.5, padding: [50, 50], maxZoom: 21 });
+        }
       }
     },
     [setSelectedFeature]
@@ -457,7 +461,7 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
                 layer.bindTooltip(featureLabel, {
                   permanent: true,
                   direction: "center",
-                  className: "bg-white/80 backdrop-blur-[2px] border border-white/50 px-2.5 py-1 rounded-full text-[10px] md:text-xs text-slate-800 font-bold shadow-sm text-center lot-label-tooltip leading-none dark:bg-slate-800/80 dark:border-slate-600/50 dark:text-slate-200"
+                  className: "bg-white/80 backdrop-blur-[2px] border border-[#0051d5]/20 px-2.5 py-1 rounded-full text-[10px] md:text-xs text-[#0051d5] font-bold shadow-sm text-center lot-label-tooltip leading-none"
                 });
               }
             }
@@ -488,6 +492,9 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
     useMapEvents({
       zoomend: (e) => {
         setCurrentZoom(e.target.getZoom());
+      },
+      mousemove: (e) => {
+        setCoords({ lat: e.latlng.lat, lng: e.latlng.lng });
       },
       click: () => {
         if (suppressMapClickRef.current) {
@@ -530,39 +537,32 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
         {userLocation ? (
           <Marker position={[userLocation.lat, userLocation.lng]} />
         ) : null}
+        
+        {/* Dynamic Mini-Map Overview */}
+        <MiniMap basemap={basemap} />
       </MapContainer>
 
       <SearchBar onSelect={handleSearchSelect} />
       
-      {/* FAB Cluster */}
+      {/* FAB Cluster — bottom-right */}
       <div
-        className={`absolute z-[1000] flex flex-col items-center gap-2 rounded-full border border-white/20 bg-white/40 p-2 shadow-lg backdrop-blur-md transition-all duration-300 dark:bg-slate-900/40 ${
-          selectedFeature ? "bottom-[52vh] right-4 md:bottom-8 md:right-[340px]" : "bottom-8 right-4"
+        className={`absolute z-[1000] flex flex-col items-center gap-2 glass-panel rounded-2xl p-2 transition-all duration-300 ${
+          selectedFeature ? "bottom-[52vh] right-4 md:bottom-8 md:right-[336px]" : "bottom-8 right-4"
         }`}
       >
+        {/* Basemap toggle */}
         <button
           onClick={() => setBasemap(basemap === "streets" ? "satellite" : "streets")}
-          className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/70 p-0 text-slate-700 shadow-sm backdrop-blur-md transition-all hover:-translate-y-0.5 hover:bg-white/90 hover:shadow-md dark:bg-slate-900/70 dark:text-slate-200 dark:hover:bg-slate-800/90"
+          className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/70 text-[var(--on-surface-variant)] shadow-sm backdrop-blur-md transition-all hover:-translate-y-0.5 hover:bg-white/90 hover:shadow-md"
           title={basemap === "streets" ? "Switch to Satellite" : "Switch to Streets"}
         >
           {basemap === "streets" ? <Satellite className="h-4 w-4" /> : <MapIcon className="h-4 w-4" />}
         </button>
-        <div className="my-1 h-px w-6 bg-slate-300/50 dark:bg-slate-600/50" />
-        <button
-          onClick={() => mapRef.current?.zoomIn()}
-          className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/70 p-0 text-slate-700 shadow-sm backdrop-blur-md transition-all hover:-translate-y-0.5 hover:bg-white/90 hover:shadow-md dark:bg-slate-900/70 dark:text-slate-200 dark:hover:bg-slate-800/90"
-          title="Zoom In"
-        >
-          <Plus className="h-4 w-4" />
-        </button>
-        <button
-          onClick={() => mapRef.current?.zoomOut()}
-          className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/70 p-0 text-slate-700 shadow-sm backdrop-blur-md transition-all hover:-translate-y-0.5 hover:bg-white/90 hover:shadow-md dark:bg-slate-900/70 dark:text-slate-200 dark:hover:bg-slate-800/90"
-          title="Zoom Out"
-        >
-          <Minus className="h-4 w-4" />
-        </button>
-        <div className="my-1 h-px w-6 bg-slate-300/50 dark:bg-slate-600/50" />
+
+        {/* Divider */}
+        <div className="h-px w-6 bg-[var(--outline-variant)]/40" />
+
+        {/* Settings Panel trigger */}
         <SettingsPanel
           barangays={barangayIndex}
           activeFiles={activeFiles}
@@ -577,7 +577,27 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
           toggleLandClass={toggleLandClass}
           landClasses={[...Object.keys(LAND_CLASS_COLORS), "unknown"]}
         />
+
+        {/* GPS / My Location */}
         <GPSButton onLocate={handleLocate} isLocating={isLocating} />
+      </div>
+
+      {/* Coordinate Bar — bottom center */}
+      <div className="absolute bottom-3 md:bottom-4 left-1/2 -translate-x-1/2 z-[1000] glass-panel px-3 md:px-4 py-1.5 md:py-2 rounded-full w-auto max-w-[95%]">
+        <div className="coord-bar flex items-center justify-center gap-3 md:gap-4 text-[var(--on-surface)] text-[10px] md:text-[12px] whitespace-nowrap">
+          <span>
+            LAT:{" "}
+            <span className="text-[#0051d5] font-semibold">
+              {coords ? `${coords.lat.toFixed(4)}° N` : "—"}
+            </span>
+          </span>
+          <span>
+            LNG:{" "}
+            <span className="text-[#0051d5] font-semibold">
+              {coords ? `${coords.lng.toFixed(4)}° E` : "—"}
+            </span>
+          </span>
+        </div>
       </div>
 
       <MapLegend colors={LAND_CLASS_COLORS} />

@@ -6,7 +6,6 @@ import { useState } from "react";
 
 import LotInfoPanel from "./components/LotInfoPanel";
 import { Toaster } from "@/components/ui/toaster";
-import { LogoutButton } from "./components/LogoutButton";
 
 type LotFeature = Feature<Geometry, GeoJsonProperties>;
 
@@ -17,7 +16,6 @@ export default function Home() {
 
   return (
     <div className="relative h-screen w-screen overflow-hidden">
-      <LogoutButton />
       <MapView selectedFeature={selectedFeature} setSelectedFeature={setSelectedFeature} />
       <LotInfoPanel selectedFeature={selectedFeature} onClose={() => setSelectedFeature(null)} />
       <Toaster />

@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Layers, X } from "lucide-react";
+import { Layers, LogOut, X, ChevronDown, Map, Satellite } from "lucide-react";
+import { logout } from "@/app/login/actions";
 
 type BarangayIndexEntry = {
   name: string;
@@ -21,6 +22,32 @@ type SettingsPanelProps = {
   landClasses: string[];
 };
 
+function Toggle({
+  checked,
+  onChange,
+}: {
+  checked: boolean;
+  onChange: (v: boolean) => void;
+}) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      onClick={() => onChange(!checked)}
+      className={`relative inline-flex h-6 w-11 items-center rounded-full border-0 transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0051d5] ${
+        checked ? "bg-[#0051d5]" : "bg-[var(--surface-dim,#d8dadc)]"
+      }`}
+    >
+      <span
+        className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform duration-200 ${
+          checked ? "translate-x-5" : "translate-x-0.5"
+        }`}
+      />
+    </button>
+  );
+}
+
 export default function SettingsPanel({
   barangays,
   activeFiles,
@@ -36,88 +63,166 @@ export default function SettingsPanel({
   landClasses,
 }: SettingsPanelProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [barangaySearch, setBarangaySearch] = useState("");
+
+  const filteredBarangays = barangaySearch.trim()
+    ? barangays.filter((b) =>
+        b.name.toLowerCase().includes(barangaySearch.toLowerCase())
+      )
+    : barangays;
 
   return (
     <div className="relative">
+      {/* FAB Trigger */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/70 p-0 shadow-sm backdrop-blur-md transition-all hover:-translate-y-0.5 hover:bg-white/90 hover:shadow-md dark:bg-slate-900/70 dark:hover:bg-slate-800/90"
+        className={`flex h-10 w-10 items-center justify-center rounded-full border border-white/20 shadow-sm backdrop-blur-md transition-all hover:-translate-y-0.5 hover:shadow-md ${
+          isOpen
+            ? "bg-[#0051d5] text-white"
+            : "bg-white/70 text-[var(--on-surface-variant)] hover:bg-white/90"
+        }`}
         title="Map Settings"
       >
-        {isOpen ? <X className="h-4 w-4 text-slate-700 dark:text-slate-200" /> : <Layers className="h-4 w-4 text-slate-700 dark:text-slate-200" />}
+        {isOpen ? <X className="h-4 w-4" /> : <Layers className="h-4 w-4" />}
       </button>
+
+      {/* Panel */}
       {isOpen && (
-        <div className="absolute bottom-0 right-14 mb-0 flex max-h-[70vh] w-72 flex-col rounded-xl border border-white/20 bg-white/70 shadow-xl backdrop-blur-md dark:bg-slate-900/70">
-          <div className="flex items-center justify-between border-b border-slate-200/50 p-4 dark:border-slate-700/50">
-            <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Settings</h3>
+        <div
+          className="absolute bottom-0 right-14 glass-panel flex flex-col rounded-xl overflow-hidden"
+          style={{ width: "min(80vw, 300px)", maxHeight: "75vh" }}
+        >
+          {/* Header */}
+          <div className="flex items-center justify-between px-4 py-3.5 border-b border-white/20">
+            <h3 className="text-[15px] font-bold text-[var(--on-surface)]">
+              Map Settings
+            </h3>
             <button
               onClick={() => setIsOpen(false)}
-              className="rounded-full p-1 text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200"
+              className="h-7 w-7 flex items-center justify-center rounded-full hover:bg-slate-100/60 text-[var(--on-surface-variant)] transition-colors"
             >
-              <X className="h-5 w-5" />
+              <X className="h-4 w-4" />
             </button>
           </div>
-          <div className="flex-1 overflow-y-auto p-4 text-slate-800 dark:text-slate-200">
-            {/* General Settings */}
-            <div className="mb-4 border-b border-slate-200/50 pb-4 space-y-3 dark:border-slate-700/50">
-              <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300">General</h4>
-              <label className="flex items-center space-x-3 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={showLotNumbers}
-                  onChange={(e) => setShowLotNumbers(e.target.checked)}
-                  className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                />
-                <span className="text-sm font-medium text-gray-800 dark:text-slate-200">Show Cadastral Lot No.</span>
-              </label>
-              <label className="flex items-center space-x-3 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={autoLoadBarangay}
-                  onChange={(e) => setAutoLoadBarangay(e.target.checked)}
-                  className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                />
-                <span className="text-sm font-medium text-gray-800 dark:text-slate-200">Auto-load Current Barangay</span>
-              </label>
-            </div>
 
-            {/* Land Classes */}
-            <div className="mb-4 border-b border-slate-200/50 pb-4 dark:border-slate-700/50">
-              <h4 className="mb-3 text-sm font-semibold text-slate-700 dark:text-slate-300">Filter by Land Class</h4>
-              <div className="grid grid-cols-1 gap-2">
+          {/* Scrollable Content */}
+          <div className="flex-1 overflow-y-auto custom-scrollbar px-4 py-3 space-y-5">
+
+            {/* ── General ── */}
+            <section>
+              <h4 className="text-[10px] font-semibold uppercase tracking-widest text-[var(--on-surface-variant)] mb-3">
+                General
+              </h4>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-[13px] text-[var(--on-surface)]">
+                    Show Cadastral Lot No.
+                  </span>
+                  <Toggle checked={showLotNumbers} onChange={setShowLotNumbers} />
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-[13px] text-[var(--on-surface)]">
+                    Auto-load Barangays
+                  </span>
+                  <Toggle checked={autoLoadBarangay} onChange={setAutoLoadBarangay} />
+                </div>
+                {/* Basemap toggle */}
+                <div className="flex items-center justify-between">
+                  <span className="text-[13px] text-[var(--on-surface)]">Satellite View</span>
+                  <Toggle
+                    checked={basemap === "satellite"}
+                    onChange={(v) => setBasemap(v ? "satellite" : "streets")}
+                  />
+                </div>
+              </div>
+            </section>
+
+            {/* ── Land Classification ── */}
+            <section>
+              <h4 className="text-[10px] font-semibold uppercase tracking-widest text-[var(--on-surface-variant)] mb-3">
+                Land Classification
+              </h4>
+              <div className="grid grid-cols-2 gap-2">
                 {landClasses.map((lc) => (
-                  <label key={lc} className="flex items-center space-x-3 cursor-pointer">
+                  <label
+                    key={lc}
+                    className="flex items-center gap-2 p-2 rounded-lg bg-white/40 hover:bg-blue-50/60 cursor-pointer transition-colors"
+                  >
                     <input
                       type="checkbox"
                       checked={activeLandClasses.has(lc)}
                       onChange={() => toggleLandClass(lc)}
-                      className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      className="h-4 w-4 rounded border-gray-300 text-[#0051d5] focus:ring-[#0051d5]/30"
                     />
-                    <span className="text-sm font-medium capitalize text-gray-700 dark:text-slate-200">{lc}</span>
+                    <span className="text-[12px] font-medium text-[var(--on-surface)] capitalize leading-none">
+                      {lc}
+                    </span>
                   </label>
                 ))}
               </div>
-            </div>
+            </section>
 
-            {/* Barangays */}
-            <h4 className="mb-3 text-sm font-semibold text-slate-700 dark:text-slate-300">Barangays</h4>
-            <div className="space-y-2">
-              {barangays.map((b) => (
-                <label key={b.file} className="flex items-center space-x-3 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={activeFiles.has(b.file)}
-                    onChange={() => toggleFile(b.file)}
-                    className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                  />
-                  <span className="text-sm font-medium text-gray-700 dark:text-slate-200">{b.name}</span>
-                </label>
-              ))}
-            </div>
+            {/* ── Barangays ── */}
+            <section>
+              <h4 className="text-[10px] font-semibold uppercase tracking-widest text-[var(--on-surface-variant)] mb-3">
+                Barangays
+              </h4>
+              {/* Search */}
+              <div className="relative mb-2.5">
+                <svg
+                  className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-[var(--on-surface-variant)] pointer-events-none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <circle cx="11" cy="11" r="8" />
+                  <path d="m21 21-4.35-4.35" />
+                </svg>
+                <input
+                  className="w-full pl-8 pr-3 py-1.5 rounded-lg bg-white/50 border border-[var(--outline-variant)]/50 text-[12px] text-[var(--on-surface)] placeholder:text-[var(--on-surface-variant)] focus:outline-none focus:ring-2 focus:ring-[#0051d5]/20"
+                  placeholder="Find barangay…"
+                  value={barangaySearch}
+                  onChange={(e) => setBarangaySearch(e.target.value)}
+                />
+              </div>
+
+              <div className="space-y-0.5 max-h-44 overflow-y-auto custom-scrollbar pr-1">
+                {filteredBarangays.map((b) => (
+                  <div
+                    key={b.file}
+                    className="flex items-center justify-between p-2 rounded-lg hover:bg-slate-100/50 cursor-pointer transition-colors"
+                    onClick={() => toggleFile(b.file)}
+                  >
+                    <span className="text-[12px] text-[var(--on-surface)]">{b.name}</span>
+                    <span
+                      className={`text-[11px] font-semibold px-2 py-0.5 rounded-full transition-colors ${
+                        activeFiles.has(b.file)
+                          ? "bg-[#0051d5]/10 text-[#0051d5]"
+                          : "bg-slate-100/60 text-[var(--on-surface-variant)]"
+                      }`}
+                    >
+                      {activeFiles.has(b.file) ? "ON" : "OFF"}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </section>
+          </div>
+
+          {/* Footer — Sign Out */}
+          <div className="px-4 py-3 border-t border-white/20 bg-white/30">
+            <button
+              onClick={() => logout()}
+              className="flex w-full items-center justify-center gap-2 py-2.5 rounded-lg border border-red-200/60 text-red-600 text-[13px] font-semibold hover:bg-red-50/60 transition-colors"
+            >
+              <LogOut className="h-4 w-4" />
+              Sign Out
+            </button>
           </div>
         </div>
       )}
     </div>
   );
 }
-
