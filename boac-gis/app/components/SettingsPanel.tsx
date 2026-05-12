@@ -122,7 +122,7 @@ export default function SettingsPanel({
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-[13px] text-[var(--on-surface)]">
-                    Auto-load Barangays
+                    Auto-load Barangay Cadastral
                   </span>
                   <Toggle checked={autoLoadBarangay} onChange={setAutoLoadBarangay} />
                 </div>

@@ -33,6 +33,17 @@
     "lot_count": 607
   },
   {
+    "name": "Apitong",
+    "file": "/geojson/Apitong.geojson",
+    "bbox": [
+      121.85400994227587,
+      13.449115483393758,
+      121.87737906807956,
+      13.46447826420087
+    ],
+    "lot_count": 239
+  },
+  {
     "name": "Balagasan",
     "file": "/geojson/Balagasan.geojson",
     "bbox": [

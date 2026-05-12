@@ -109,10 +109,10 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [isLocating, setIsLocating] = useState(false);
   const [showLotNumbers, setShowLotNumbers] = useState(true);
-  const [autoLoadBarangay, setAutoLoadBarangay] = useState(false);
+  const [autoLoadBarangay, setAutoLoadBarangay] = useState(true);
   const [currentZoom, setCurrentZoom] = useState(DEFAULT_ZOOM);
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
-  const [basemap, setBasemap] = useState<"streets" | "satellite">("streets");
+  const [basemap, setBasemap] = useState<"streets" | "satellite">("satellite");
   const [activeLandClasses, setActiveLandClasses] = useState<Set<string>>(
     new Set([...Object.keys(LAND_CLASS_COLORS), "unknown"])
   );

@@ -25,7 +25,7 @@ export default function LoginPage({
 
         <div className="relative z-10 text-zinc-400">
           <h1 className="text-4xl font-light text-white mb-4 tracking-tight">
-            Cadastral Lot Management
+            GeoLGU Navigator
           </h1>
           <p className="text-lg max-w-md">
             Secure municipal infrastructure for spatial data analysis and land record administration.
@@ -95,7 +95,7 @@ export default function LoginPage({
               formAction={login}
               className="mt-2 inline-flex h-11 items-center justify-center rounded-md bg-zinc-900 px-8 text-sm font-medium text-white transition-colors hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:ring-offset-2 shadow-sm w-full"
             >
-              Sign in to Portal
+              Sign in
             </button>
           </form>
 

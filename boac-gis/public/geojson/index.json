@@ -36,12 +36,12 @@
     "name": "Apitong",
     "file": "/geojson/Apitong.geojson",
     "bbox": [
-      Infinity,
-      Infinity,
-      -Infinity,
-      -Infinity
+      121.85400994227587,
+      13.449115483393758,
+      121.87737906807956,
+      13.46447826420087
     ],
-    "lot_count": 219
+    "lot_count": 239
   },
   {
     "name": "Balagasan",
