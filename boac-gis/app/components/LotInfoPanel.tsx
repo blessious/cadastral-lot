@@ -1,7 +1,9 @@
 "use client";
 
+import { centroid } from "@turf/turf";
 import type { Feature, GeoJsonProperties, Geometry } from "geojson";
-import { X, MapPin } from "lucide-react";
+import { X, MapPin, Copy, Check } from "lucide-react";
+import { useState } from "react";
 
 type LotFeature = Feature<Geometry, GeoJsonProperties>;
 
@@ -28,6 +30,8 @@ function getPropertyValue(feature: LotFeature | null, key: string): string | nul
 }
 
 export default function LotInfoPanel({ selectedFeature, onClose }: LotInfoPanelProps) {
+  const [copied, setCopied] = useState(false);
+
   const barangay = getPropertyValue(selectedFeature, "Barangay") ?? "Lot Details";
   const landClass =
     getPropertyValue(selectedFeature, "Land_Class") ?? getPropertyValue(selectedFeature, "LAND_CLASS");
@@ -38,6 +42,27 @@ export default function LotInfoPanel({ selectedFeature, onClose }: LotInfoPanelP
     getPropertyValue(selectedFeature, "Claimant") ??
     getPropertyValue(selectedFeature, "CLAIMANT");
 
+  let centerCoords: [number, number] | null = null;
+  if (selectedFeature && selectedFeature.geometry) {
+    try {
+      const c = centroid(selectedFeature);
+      if (c?.geometry?.coordinates) {
+        // turf returns [longitude, latitude], standard is lat, lng
+        centerCoords = [c.geometry.coordinates[1], c.geometry.coordinates[0]];
+      }
+    } catch (e) {
+      // fallback if centroid fails
+    }
+  }
+
+  const handleCopyCoords = () => {
+    if (centerCoords) {
+      navigator.clipboard.writeText(`${centerCoords[0].toFixed(6)}, ${centerCoords[1].toFixed(6)}`);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
   const fields: Field[] = [
     { label: "Owner", value: owner },
     { label: "Cadastral Lot No.", value: getPropertyValue(selectedFeature, "CLN") },
@@ -47,6 +72,7 @@ export default function LotInfoPanel({ selectedFeature, onClose }: LotInfoPanelP
     { label: "Section", value: getPropertyValue(selectedFeature, "Section") },
     { label: "Land Classification", value: landClass },
     { label: "Area", value: getPropertyValue(selectedFeature, "Area") },
+    { label: "Coordinates (Center)", value: centerCoords ? `${centerCoords[0].toFixed(6)}, ${centerCoords[1].toFixed(6)}` : null },
     { label: "Remarks", value: getPropertyValue(selectedFeature, "Remarks") },
   ].filter((field) => field.value);
 
@@ -93,14 +119,25 @@ export default function LotInfoPanel({ selectedFeature, onClose }: LotInfoPanelP
             {fields.map((field) => (
               <div
                 key={field.label}
-                className="rounded-xl bg-white/50 border border-white/30 px-4 py-3"
+                className="rounded-xl bg-white/50 border border-white/30 px-4 py-3 group"
               >
                 <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--on-surface-variant)] mb-0.5">
                   {field.label}
                 </p>
-                <p className="text-[13px] font-semibold text-[var(--on-surface)] leading-snug">
-                  {field.value}
-                </p>
+                <div className="flex items-center justify-between gap-2">
+                  <p className="text-[13px] font-semibold text-[var(--on-surface)] leading-snug">
+                    {field.value}
+                  </p>
+                  {field.label === "Coordinates (Center)" && (
+                    <button
+                      onClick={handleCopyCoords}
+                      className="p-1.5 rounded-md hover:bg-white text-[var(--on-surface-variant)] transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100"
+                      title="Copy Coordinates"
+                    >
+                      {copied ? <Check className="h-3.5 w-3.5 text-green-600" /> : <Copy className="h-3.5 w-3.5" />}
+                    </button>
+                  )}
+                </div>
               </div>
             ))}
           </div>
