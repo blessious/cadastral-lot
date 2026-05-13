@@ -28,7 +28,7 @@ import json
 from pathlib import Path
 
 # ── CONFIG ──────────────────────────────────────────────────
-GEOJSON_DIR = Path(r"C:\Users\admin\Videos\CADASTRAL LOT MAP\output\geojson")
+GEOJSON_DIR = Path(r"C:\Users\admin\Videos\CADASTRAL LOT MAP\boac-gis\public\geojson")
 OUTPUT_FILE = GEOJSON_DIR / "search_index.json"
 
 # Fields to include in the search index (no geometry)
@@ -115,15 +115,15 @@ def main():
         json.dump(search_index, f, separators=(",", ":"))  # compact, no indent = smaller file
 
     file_size_kb = OUTPUT_FILE.stat().st_size / 1024
-    print(f"\n✓ search_index.json written → {OUTPUT_FILE}")
+    print(f"\n[DONE] search_index.json written -> {OUTPUT_FILE}")
     print(f"  Total lots indexed : {total_lots}")
     print(f"  Skipped (no ID)    : {skipped}")
     print(f"  File size          : {file_size_kb:.1f} KB")
 
     if file_size_kb > 5000:
-        print(f"\n  ⚠ File is large ({file_size_kb:.0f} KB). Consider serving it from an API instead.")
+        print(f"\n  [WARN] File is large ({file_size_kb:.0f} KB). Consider serving it from an API instead.")
     else:
-        print(f"\n  ✓ Safe to serve as static JSON from /public/geojson/")
+        print(f"\n  [OK] Safe to serve as static JSON from /public/geojson/")
 
 
 if __name__ == "__main__":

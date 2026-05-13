@@ -24,7 +24,7 @@ type SearchBarProps = {
   onSelect: (record: SearchRecord) => void;
 };
 
-const MAX_RESULTS = 8;
+const MAX_RESULTS = 50;
 
 export default function SearchBar({ onSelect }: SearchBarProps) {
   const [searchIndex, setSearchIndex] = useState<SearchRecord[]>([]);
@@ -36,11 +36,23 @@ export default function SearchBar({ onSelect }: SearchBarProps) {
   const userMenuRef = useRef<HTMLDivElement | null>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  const [searchError, setSearchError] = useState(false);
+
   useEffect(() => {
     fetch(`/geojson/search_index.json?v=${Date.now()}`)
-      .then((response) => response.json())
-      .then((data: SearchRecord[]) => setSearchIndex(data))
-      .catch(() => setSearchIndex([]));
+      .then((response) => {
+        if (!response.ok) throw new Error("Network response was not ok");
+        return response.json();
+      })
+      .then((data: SearchRecord[]) => {
+        setSearchIndex(data);
+        setSearchError(false);
+      })
+      .catch((error) => {
+        console.error("Failed to load search index:", error);
+        setSearchIndex([]);
+        setSearchError(true);
+      });
   }, []);
 
   useEffect(() => {
@@ -134,12 +146,35 @@ export default function SearchBar({ onSelect }: SearchBarProps) {
   const hasResults = results.length > 0;
 
   const renderResults = useMemo(() => {
-    if (!open || !hasResults) {
+    if (!open) {
       return null;
     }
+    
+    if (searchError) {
+      return (
+        <div className="absolute top-full left-0 right-0 z-30 mt-2 rounded-xl glass-panel overflow-hidden">
+          <div className="px-4 py-4 text-center text-sm text-red-500 font-medium bg-white/80">
+            Failed to load search database. Please refresh the page.
+          </div>
+        </div>
+      );
+    }
+    
+    if (query.trim() && !hasResults) {
+      return (
+        <div className="absolute top-full left-0 right-0 z-30 mt-2 rounded-xl glass-panel overflow-hidden">
+          <div className="px-4 py-4 text-center text-sm text-[var(--on-surface-variant)] bg-white/80">
+            No results found for &quot;{query}&quot;
+          </div>
+        </div>
+      );
+    }
+
+    if (!hasResults) return null;
+
     return (
-      <div className="absolute top-full left-0 right-0 z-30 mt-2 rounded-xl glass-panel overflow-hidden">
-        <ul className="max-h-80 overflow-y-auto custom-scrollbar py-1.5 text-sm">
+      <div className="absolute top-full left-0 right-0 z-30 mt-2 rounded-xl glass-panel overflow-hidden shadow-xl border border-white/40">
+        <ul className="max-h-80 overflow-y-auto custom-scrollbar py-1.5 text-sm bg-white/95 backdrop-blur-md">
           {results.map((item, index) => {
             const landClass = item.Land_Class ?? item.LAND_CLASS;
             return (

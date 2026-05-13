@@ -371,29 +371,52 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
 
       const matched = (data.features as LotFeature[]).find((feature) => {
         const uid = feature.properties?.__uid ?? "";
-        // 1. Perfect Match using __uid
+        const props = feature.properties as GeoJsonProperties;
+        
+        const cln = props?.CLN ? String(props.CLN).trim() : "";
+        const pin = props?.PIN ? String(props.PIN).trim() : "";
+        const aln = props?.ALN ? String(props.ALN).trim() : "";
+
+        const isExactIdentifierMatch = 
+          (matchId && cln === matchId) || 
+          (matchPin && pin === matchPin) || 
+          (matchAln && aln === matchAln);
+
+        // 1. Perfect Match using __uid AND verifying the identifier (safeguard against stale browser cache)
         if (matchUid && uid === matchUid) {
-          return true;
+          if (isExactIdentifierMatch) {
+            return true;
+          }
+          // If UID matches but identifiers DON'T, the browser has cached an old GeoJSON.
+          // We intentionally fall through to search the entire file by CLN/PIN instead.
         }
 
-        // 2. Fallback matching logic (in case of old cache)
-        const props = feature.properties as GeoJsonProperties;
-        const cln = props?.CLN ? String(props.CLN) : "";
-        const pin = props?.PIN ? String(props.PIN) : "";
-        const aln = props?.ALN ? String(props.ALN) : "";
-        const owner = props?.Owner ? String(props.Owner).trim().toLowerCase() : "";
+        // 2. Fallback matching logic: scan the whole file for the correct CLN/PIN
+        if (isExactIdentifierMatch) {
+          return true;
+        }
         
-        if (matchId && cln !== matchId) return false;
-        if (matchPin && pin !== matchPin) return false;
-        if (matchAln && aln !== matchAln) return false;
-        if (matchOwner && owner !== matchOwner) return false;
-        
-        return true;
+        return false;
       });
+
       if (matched) {
         selectFeature(matched, true);
+        
+        // Check if geometry is valid to provide user feedback
+        const bounds = L.geoJSON(matched).getBounds();
+        if (!bounds.isValid()) {
+          toast({ 
+            title: "Cannot focus shape", 
+            description: "The geometry for this lot is missing or invalid in the database.",
+            variant: "destructive" 
+          });
+        }
       } else {
-        toast({ title: "Lot not found in loaded data" });
+        toast({ 
+          title: "Lot not found on map", 
+          description: "The lot exists in the search index but couldn't be located in the map file. Try clearing your browser cache.",
+          variant: "destructive" 
+        });
       }
     },
     [ensureBarangayLoaded, selectFeature, toast]
