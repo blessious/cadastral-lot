@@ -15,7 +15,7 @@ export default function Home() {
   const [selectedFeature, setSelectedFeature] = useState<LotFeature | null>(null);
 
   return (
-    <div className="relative h-screen w-screen overflow-hidden">
+    <div className="relative h-[100dvh] w-screen overflow-hidden">
       <MapView selectedFeature={selectedFeature} setSelectedFeature={setSelectedFeature} />
       <LotInfoPanel selectedFeature={selectedFeature} onClose={() => setSelectedFeature(null)} />
       <Toaster />
