@@ -278,20 +278,56 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
     });
   }, [showLotNumbers, activeFiles]);
 
+  const focusBarangay = useCallback(
+    async (file: string, data?: FeatureCollection) => {
+      // If data is not provided, try to get it from state
+      let barangayData = data || geojsonByFile[file];
+      
+      // If still no data, load it
+      if (!barangayData) {
+        barangayData = await ensureBarangayLoaded(file);
+      }
+      
+      if (!barangayData || !mapRef.current) {
+        return;
+      }
+      
+      // Calculate bounds for all features in the barangay
+      const geoJSONLayer = L.geoJSON(barangayData);
+      const bounds = geoJSONLayer.getBounds();
+      
+      if (bounds.isValid()) {
+        // Fly to the bounds with padding
+        mapRef.current.flyToBounds(bounds, { duration: 2.5, padding: [100, 100], maxZoom: 18 });
+      }
+    },
+    [geojsonByFile, ensureBarangayLoaded]
+  );
+
   const toggleFile = useCallback(
     async (file: string) => {
+      const isCurrentlyActive = activeFiles.has(file);
+      
       setActiveFiles((prev) => {
         const next = new Set(prev);
         if (next.has(file)) {
           next.delete(file);
         } else {
           next.add(file);
-          void ensureBarangayLoaded(file);
         }
         return next;
       });
+      
+      // If turning on, load and focus
+      if (!isCurrentlyActive) {
+        const loadedData = await ensureBarangayLoaded(file);
+        if (loadedData) {
+          // Pass the loaded data directly to avoid state lag
+          void focusBarangay(file, loadedData);
+        }
+      }
     },
-    [ensureBarangayLoaded]
+    [activeFiles, ensureBarangayLoaded, focusBarangay]
   );
 
   const toggleLandClass = useCallback((lc: string) => {
