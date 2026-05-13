@@ -1,8 +1,18 @@
-import { type NextRequest } from 'next/server'
-import { updateSession } from '@/utils/supabase/middleware'
+import { NextResponse, type NextRequest } from 'next/server'
+
+const AUTH_COOKIE = 'boac_gis_auth'
 
 export async function middleware(request: NextRequest) {
-  return await updateSession(request)
+  const isLoginRoute = request.nextUrl.pathname.startsWith('/login')
+  const hasAuth = request.cookies.get(AUTH_COOKIE)?.value === '1'
+
+  if (!hasAuth && !isLoginRoute) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/login'
+    return NextResponse.redirect(url)
+  }
+
+  return NextResponse.next()
 }
 
 export const config = {

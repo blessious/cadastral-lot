@@ -56,15 +56,15 @@ export default function LoginPage({
           <form className="flex flex-col gap-5">
             <div className="space-y-4">
               <div className="space-y-1.5">
-                <label className="text-sm font-medium leading-none text-zinc-700" htmlFor="email">
-                  Email address
+                <label className="text-sm font-medium leading-none text-zinc-700" htmlFor="username">
+                  Username
                 </label>
                 <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  placeholder="name@boac.gov.ph"
-                  autoComplete="email"
+                  id="username"
+                  name="username"
+                  type="text"
+                  placeholder="Enter your username"
+                  autoComplete="username"
                   required
                   className="flex h-11 w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm placeholder:text-zinc-400 focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 transition-colors shadow-sm"
                 />
