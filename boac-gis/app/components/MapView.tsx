@@ -371,32 +371,24 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
 
       const matched = (data.features as LotFeature[]).find((feature) => {
         const uid = feature.properties?.__uid ?? "";
-        const props = feature.properties as GeoJsonProperties;
-        
-        const cln = props?.CLN ? String(props.CLN).trim() : "";
-        const pin = props?.PIN ? String(props.PIN).trim() : "";
-        const aln = props?.ALN ? String(props.ALN).trim() : "";
-
-        const isExactIdentifierMatch = 
-          (matchId && cln === matchId) || 
-          (matchPin && pin === matchPin) || 
-          (matchAln && aln === matchAln);
-
-        // 1. Perfect Match using __uid AND verifying the identifier (safeguard against stale browser cache)
+        // 1. Perfect Match using __uid
         if (matchUid && uid === matchUid) {
-          if (isExactIdentifierMatch) {
-            return true;
-          }
-          // If UID matches but identifiers DON'T, the browser has cached an old GeoJSON.
-          // We intentionally fall through to search the entire file by CLN/PIN instead.
-        }
-
-        // 2. Fallback matching logic: scan the whole file for the correct CLN/PIN
-        if (isExactIdentifierMatch) {
           return true;
         }
+
+        // 2. Fallback matching logic (in case of old cache)
+        const props = feature.properties as GeoJsonProperties;
+        const cln = props?.CLN ? String(props.CLN) : "";
+        const pin = props?.PIN ? String(props.PIN) : "";
+        const aln = props?.ALN ? String(props.ALN) : "";
+        const owner = props?.Owner ? String(props.Owner).trim().toLowerCase() : "";
         
-        return false;
+        if (matchId && cln !== matchId) return false;
+        if (matchPin && pin !== matchPin) return false;
+        if (matchAln && aln !== matchAln) return false;
+        if (matchOwner && owner !== matchOwner) return false;
+        
+        return true;
       });
 
       if (matched) {
