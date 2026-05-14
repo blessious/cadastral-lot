@@ -33,6 +33,9 @@ DB_CONFIG = {
 
 GEOJSON_SRC_DIR = Path(r"C:\Users\admin\Videos\CADASTRAL LOT MAP\output\geojson")
 GEOJSON_OUT_DIR = Path(r"C:\Users\admin\Videos\CADASTRAL LOT MAP\boac-gis\public\geojson")
+# Geometry reference: the LIVE public/geojson files (which already have correct geometry).
+# When a source file has geometry:null, we recover geometry from here by PIN/CLN match.
+GEOJSON_GEO_REF = GEOJSON_OUT_DIR
 SEARCH_IDX      = Path(r"C:\Users\admin\Videos\CADASTRAL LOT MAP\generate_search_index.py")
 # ─────────────────────────────────────────────────────────────────────────────
 
@@ -115,15 +118,57 @@ def fetch_owner_map(conn) -> tuple[dict, dict]:
     return pin_map, cln_map
 
 
+def load_geometry_ref(ref_path: Path) -> tuple[dict, dict]:
+    """
+    Loads a GeoJSON file and returns (pin_geo, cln_geo) lookup dicts.
+    Used to recover geometry when the source file has geometry:null.
+    """
+    pin_geo: dict = {}
+    cln_geo: dict = {}
+    if not ref_path.exists():
+        return pin_geo, cln_geo
+    try:
+        with open(ref_path, "r", encoding="utf-8", errors="replace") as f:
+            ref = json.load(f)
+        for feat in ref.get("features", []):
+            geo = feat.get("geometry")
+            if not geo:
+                continue
+            props = feat.get("properties") or {}
+            pin = str(props.get("PIN") or "").strip()
+            cln = str(props.get("CLN") or "").strip().split()[0] if str(props.get("CLN") or "").strip() else ""
+            if pin:
+                pin_geo[pin] = geo
+            if cln:
+                cln_geo[cln] = geo
+    except Exception:
+        pass
+    return pin_geo, cln_geo
+
+
 def enrich_file(src_path: Path, out_path: Path, pin_map: dict, cln_map: dict) -> tuple[int, int]:
     """
-    Reads the base GeoJSON, enriches it with Owner/TaxDecNo, and writes directly to public/.
+    Reads the base GeoJSON, enriches it with Owner/TaxDecNo from ETRACS,
+    and recovers any missing geometry from the existing public/geojson file.
     """
     with open(src_path, "r", encoding="utf-8", errors="replace") as f:
         data = json.load(f)
 
     features = data.get("features", [])
+
+    # ── Geometry recovery ────────────────────────────────────────────────────
+    # If any features have null geometry, recover from the existing public file.
+    needs_geo = any(f.get("geometry") is None for f in features)
+    pin_geo, cln_geo = ({}, {})
+    if needs_geo:
+        ref_path = GEOJSON_GEO_REF / out_path.name
+        pin_geo, cln_geo = load_geometry_ref(ref_path)
+        if pin_geo or cln_geo:
+            print(f"    [GEO] Recovering geometry from existing public file for {src_path.name}")
+    # ─────────────────────────────────────────────────────────────────────────
+
     matched = 0
+    geo_recovered = 0
 
     for feature in features:
         props = feature.get("properties") or {}
@@ -132,18 +177,29 @@ def enrich_file(src_path: Path, out_path: Path, pin_map: dict, cln_map: dict) ->
         cln_parts = str(props.get("CLN") or "").strip().split()
         cln = cln_parts[0] if cln_parts else ""
 
-        payload = pin_map.get(pin) or cln_map.get(cln)
+        # ── Recover geometry if missing ──────────────────────────────────────
+        if feature.get("geometry") is None and (pin_geo or cln_geo):
+            geo = pin_geo.get(pin) or cln_geo.get(cln)
+            if geo:
+                feature["geometry"] = geo
+                geo_recovered += 1
+        # ────────────────────────────────────────────────────────────────────
 
+        # ── Enrich attributes from ETRACS ────────────────────────────────────
+        payload = pin_map.get(pin) or cln_map.get(cln)
         if payload:
             if payload["ownerName"]:
-                props["Owner"]     = payload["ownerName"]
+                props["Owner"]      = payload["ownerName"]
             if payload["tdno"]:
-                props["TaxDecNo"]  = payload["tdno"]
+                props["TaxDecNo"]   = payload["tdno"]
             if payload["landClass"]:
                 props["Land_Class"] = payload["landClass"]
-                
             feature["properties"] = props
             matched += 1
+        # ────────────────────────────────────────────────────────────────────
+
+    if geo_recovered:
+        print(f"    [GEO] Injected geometry into {geo_recovered}/{len(features)} features.")
 
     # Ensure output directory exists
     out_path.parent.mkdir(parents=True, exist_ok=True)

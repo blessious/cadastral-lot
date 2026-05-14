@@ -119,6 +119,7 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
 
   const mapRef = useRef<L.Map | null>(null);
   const loadedFilesRef = useRef<Set<string>>(new Set());
+  const geojsonCacheRef = useRef<Record<string, FeatureCollection>>({});
   const featuresRef = useRef<LotFeature[]>([]);
   const layerByIdRef = useRef<Map<string, L.Path>>(new Map());
   const selectedIdRef = useRef<string | null>(null);
@@ -175,8 +176,9 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
 
   const ensureBarangayLoaded = useCallback(
     async (file: string) => {
+      // Use ref for cache — never stale, no dependency on geojsonByFile state
       if (loadedFilesRef.current.has(file)) {
-        return geojsonByFile[file];
+        return geojsonCacheRef.current[file];
       }
       loadedFilesRef.current.add(file);
       try {
@@ -185,15 +187,14 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
           throw new Error("Failed to load GeoJSON");
         }
         const data = (await response.json()) as FeatureCollection;
-        // Inject a globally unique ID for tracking selections properly
         data.features.forEach((f, idx) => {
           if (!f.properties) f.properties = {};
           f.properties.__uid = `${file}-${idx}`;
         });
-        setGeojsonByFile((prev) => ({
-          ...prev,
-          [file]: data,
-        }));
+        // Write to ref immediately (synchronous) — always fresh for any follow-up reads
+        geojsonCacheRef.current[file] = data;
+        // Write to state so GeoLayers re-renders and shows shapes
+        setGeojsonByFile((prev) => ({ ...prev, [file]: data }));
         featuresRef.current = [...featuresRef.current, ...(data.features as LotFeature[])];
         return data;
       } catch {
@@ -202,7 +203,7 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
         return undefined;
       }
     },
-    [geojsonByFile, toast]
+    [toast] // stable — toast never changes, so this callback is created only once
   );
 
   useEffect(() => {
@@ -278,56 +279,29 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
     });
   }, [showLotNumbers, activeFiles]);
 
-  const focusBarangay = useCallback(
-    async (file: string, data?: FeatureCollection) => {
-      // If data is not provided, try to get it from state
-      let barangayData = data || geojsonByFile[file];
-      
-      // If still no data, load it
-      if (!barangayData) {
-        barangayData = await ensureBarangayLoaded(file);
-      }
-      
-      if (!barangayData || !mapRef.current) {
-        return;
-      }
-      
-      // Calculate bounds for all features in the barangay
-      const geoJSONLayer = L.geoJSON(barangayData);
-      const bounds = geoJSONLayer.getBounds();
-      
-      if (bounds.isValid()) {
-        // Fly to the bounds with padding
-        mapRef.current.flyToBounds(bounds, { duration: 2.5, padding: [100, 100], maxZoom: 18 });
-      }
-    },
-    [geojsonByFile, ensureBarangayLoaded]
-  );
-
   const toggleFile = useCallback(
     async (file: string) => {
-      const isCurrentlyActive = activeFiles.has(file);
-      
-      setActiveFiles((prev) => {
-        const next = new Set(prev);
-        if (next.has(file)) {
+      if (activeFiles.has(file)) {
+        // Turn OFF — just remove from active set
+        setActiveFiles((prev) => {
+          const next = new Set(prev);
           next.delete(file);
-        } else {
-          next.add(file);
-        }
-        return next;
-      });
-      
-      // If turning on, load and focus
-      if (!isCurrentlyActive) {
-        const loadedData = await ensureBarangayLoaded(file);
-        if (loadedData) {
-          // Pass the loaded data directly to avoid state lag
-          void focusBarangay(file, loadedData);
+          return next;
+        });
+        return;
+      }
+      // Turn ON — add to active set first so the layer slot appears,
+      // then load the GeoJSON data and fly to its bounds
+      setActiveFiles((prev) => new Set(prev).add(file));
+      const data = await ensureBarangayLoaded(file);
+      if (data && mapRef.current) {
+        const bounds = L.geoJSON(data).getBounds();
+        if (bounds.isValid()) {
+          mapRef.current.flyToBounds(bounds, { duration: 2.5, padding: [100, 100], maxZoom: 18 });
         }
       }
     },
-    [activeFiles, ensureBarangayLoaded, focusBarangay]
+    [activeFiles, ensureBarangayLoaded]
   );
 
   const toggleLandClass = useCallback((lc: string) => {
