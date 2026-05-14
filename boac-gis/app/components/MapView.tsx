@@ -651,7 +651,7 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
         </div>
       </div>
 
-      <MapLegend colors={LAND_CLASS_COLORS} />
+      {/* <MapLegend colors={LAND_CLASS_COLORS} /> */}
     </div>
   );
 }
