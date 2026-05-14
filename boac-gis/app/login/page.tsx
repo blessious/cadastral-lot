@@ -1,26 +1,68 @@
+'use client'
+
 import { login } from './actions'
 import { Map } from 'lucide-react'
 import Image from 'next/image'
+import { useState, useRef } from 'react'
 
 export default function LoginPage({
   searchParams,
 }: {
   searchParams: { error?: string }
 }) {
+  const [offset, setOffset] = useState({ x: 0, y: 0 })
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!containerRef.current) return
+    const { left, top, width, height } = containerRef.current.getBoundingClientRect()
+    
+    // Calculate relative position from center (-1 to 1)
+    const x = ((e.clientX - left) / width - 0.5) * 2
+    const y = ((e.clientY - top) / height - 0.5) * 2
+    
+    // Amount of movement in pixels (the "drag" amount)
+    const moveAmount = 25
+    setOffset({ 
+      x: x * moveAmount, 
+      y: y * moveAmount 
+    })
+  }
+
+  const handleMouseLeave = () => {
+    // Reset to center
+    setOffset({ x: 0, y: 0 })
+  }
+
   return (
     <div className="min-h-screen w-full flex bg-zinc-50">
       {/* Left side - Branding/Image (hidden on mobile) */}
-      <div className="hidden lg:flex lg:w-2/3 bg-zinc-950 border-r border-zinc-200 flex-col justify-between p-10 relative overflow-hidden">
-        <Image
-          src="/loginhero.jpg"
-          alt="Login Hero"
-          fill
-          className="object-cover pointer-events-none"
-          priority
-        />
+      <div 
+        ref={containerRef}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        className="hidden lg:flex lg:w-2/3 bg-zinc-950 border-r border-zinc-200 flex-col justify-between p-10 relative overflow-hidden group"
+      >
+        {/* Parallax Hero Image Container */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div 
+            className="relative w-full h-full origin-center transition-transform duration-1000 ease-out scale-[1.1]"
+            style={{ 
+              transform: `translate(${offset.x}px, ${offset.y}px)` 
+            }}
+          >
+            <Image
+              src="/loginhero2.png"
+              alt="Login Hero"
+              fill
+              className="object-cover opacity-80"
+              priority
+            />
+          </div>
+        </div>
 
         {/* Gradient overlay for text contrast */}
-        <div className="absolute inset-0 bg-gradient-to-br from-zinc-950/80 via-zinc-950/40 to-emerald-950/20 pointer-events-none z-0" />
+        <div className="absolute inset-0 bg-gradient-to-br from-zinc-950/90 via-zinc-950/40 to-emerald-950/20 pointer-events-none z-0" />
 
 
         <div className="relative z-10 flex items-center gap-2 text-white">
