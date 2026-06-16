@@ -3,11 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --hostname 0.0.0.0",
-    "dev:https": "node server.js",
+    "dev": "next dev",
     "build": "next build",
-    "start": "node server.js",
-    "start:mobile": "node server.js",
+    "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
