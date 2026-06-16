@@ -5,15 +5,12 @@ import "leaflet/dist/leaflet.css";
 import { booleanPointInPolygon, point } from "@turf/turf";
 import type { Feature, FeatureCollection, GeoJsonProperties, Geometry } from "geojson";
 import L from "leaflet";
-import { Satellite, Map as MapIcon } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { GeoJSON, MapContainer, Marker, TileLayer, useMapEvents } from "react-leaflet";
 
 import GPSButton from "./GPSButton";
 import SearchBar from "./SearchBar";
 import SettingsPanel from "./SettingsPanel";
-import MapLegend from "./MapLegend";
-import MiniMap from "./MiniMap";
 import { useToast } from "@/hooks/use-toast";
 
 // Fix Leaflet default icon paths in Next.js.
@@ -52,23 +49,20 @@ type SearchRecord = {
 
 const DEFAULT_CENTER: [number, number] = [13.4477, 121.8472];
 const DEFAULT_ZOOM = 13;
-const SELECT_ZOOM = 20;
+const SELECT_ZOOM = 17;
 
 const LAND_CLASS_COLORS: Record<string, string> = {
-  agricultural: "#a3e635",    // Vibrant Lime Green
-  residential: "#93c5fd",     // Soft Blue
-  commercial: "#fcd34d",      // Warm Amber
-  industrial: "#f9a8d4",      // Soft Pink
-  timberland: "#10b981",      // Deep Emerald Green
-  "gov't owned": "#94a3b8",   // Slate Gray
-  scientific: "#5eead4",      // Cyan/Teal
-  special: "#fca5a5",         // Soft Red
+  agricultural: "#86efac",
+  residential: "#93c5fd",
+  commercial: "#fcd34d",
+  industrial: "#f9a8d4",
+  timberland: "#6ee7b7",
 };
 
 const DEFAULT_STYLE: L.PathOptions = {
   color: "#555",
   weight: 0.8,
-  fillOpacity: 0.4,
+  fillOpacity: 0.05,
 };
 
 const HOVER_STYLE: L.PathOptions = {
@@ -92,13 +86,11 @@ function getLandClassColor(feature: LotFeature | undefined): string {
 }
 
 function getFeatureId(feature: LotFeature | undefined): string | null {
-  return feature?.properties?.__uid ?? null;
-}
-
-function getFeatureLabel(feature: LotFeature | undefined): string {
-  const props = feature?.properties;
-  if (!props) return "";
-  return String(props.CLN || props.PIN || "");
+  const id = feature?.properties?.CLN;
+  if (!id) {
+    return null;
+  }
+  return String(id);
 }
 
 export default function MapView({ selectedFeature, setSelectedFeature }: MapViewProps) {
@@ -109,17 +101,11 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [isLocating, setIsLocating] = useState(false);
   const [showLotNumbers, setShowLotNumbers] = useState(true);
-  const [autoLoadBarangay, setAutoLoadBarangay] = useState(true);
+  const [autoLoadBarangay, setAutoLoadBarangay] = useState(false);
   const [currentZoom, setCurrentZoom] = useState(DEFAULT_ZOOM);
-  const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
-  const [basemap, setBasemap] = useState<"streets" | "satellite">("satellite");
-  const [activeLandClasses, setActiveLandClasses] = useState<Set<string>>(
-    new Set([...Object.keys(LAND_CLASS_COLORS), "unknown"])
-  );
 
   const mapRef = useRef<L.Map | null>(null);
   const loadedFilesRef = useRef<Set<string>>(new Set());
-  const geojsonCacheRef = useRef<Record<string, FeatureCollection>>({});
   const featuresRef = useRef<LotFeature[]>([]);
   const layerByIdRef = useRef<Map<string, L.Path>>(new Map());
   const selectedIdRef = useRef<string | null>(null);
@@ -130,18 +116,11 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
   const selectedId = getFeatureId(selectedFeature ?? undefined);
 
   const getDefaultStyle = useCallback((feature?: LotFeature): L.PathOptions => {
-    const rawClass = feature?.properties?.Land_Class ?? feature?.properties?.LAND_CLASS;
-    const normalized = rawClass ? String(rawClass).trim().toLowerCase() : "unknown";
-    const isActive = activeLandClasses.has(normalized);
-
     return {
       ...DEFAULT_STYLE,
       fillColor: getLandClassColor(feature),
-      fillOpacity: isActive ? DEFAULT_STYLE.fillOpacity : 0.05,
-      weight: isActive ? DEFAULT_STYLE.weight : 0.2,
-      color: isActive ? DEFAULT_STYLE.color : "#aaa",
     };
-  }, [activeLandClasses]);
+  }, []);
 
   const syncSelectedStyles = useCallback(() => {
     const prevId = selectedIdRef.current;
@@ -160,11 +139,7 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
   useEffect(() => {
     fetch("/geojson/index.json")
       .then((response) => response.json())
-      .then((data: BarangayIndexEntry[]) => {
-        // Filter out Poblacion as requested by the user
-        const filteredData = data.filter(b => !b.name.toLowerCase().includes('poblacion'));
-        setBarangayIndex(filteredData);
-      })
+      .then((data: BarangayIndexEntry[]) => setBarangayIndex(data))
       .catch(() => {
         toast({ title: "Failed to load barangay index" });
       });
@@ -176,9 +151,8 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
 
   const ensureBarangayLoaded = useCallback(
     async (file: string) => {
-      // Use ref for cache — never stale, no dependency on geojsonByFile state
       if (loadedFilesRef.current.has(file)) {
-        return geojsonCacheRef.current[file];
+        return geojsonByFile[file];
       }
       loadedFilesRef.current.add(file);
       try {
@@ -187,14 +161,10 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
           throw new Error("Failed to load GeoJSON");
         }
         const data = (await response.json()) as FeatureCollection;
-        data.features.forEach((f, idx) => {
-          if (!f.properties) f.properties = {};
-          f.properties.__uid = `${file}-${idx}`;
-        });
-        // Write to ref immediately (synchronous) — always fresh for any follow-up reads
-        geojsonCacheRef.current[file] = data;
-        // Write to state so GeoLayers re-renders and shows shapes
-        setGeojsonByFile((prev) => ({ ...prev, [file]: data }));
+        setGeojsonByFile((prev) => ({
+          ...prev,
+          [file]: data,
+        }));
         featuresRef.current = [...featuresRef.current, ...(data.features as LotFeature[])];
         return data;
       } catch {
@@ -203,7 +173,7 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
         return undefined;
       }
     },
-    [toast] // stable — toast never changes, so this callback is created only once
+    [geojsonByFile, toast]
   );
 
   useEffect(() => {
@@ -218,32 +188,30 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
           if (!hasInitialLocateRef.current) {
             hasInitialLocateRef.current = true;
             if (mapRef.current) {
-              mapRef.current.flyTo([latitude, longitude], SELECT_ZOOM, { animate: true, duration: 2.5 });
+              mapRef.current.flyTo([latitude, longitude], SELECT_ZOOM, { animate: true, duration: 0.7 });
             }
             if (autoLoadBarangay) {
-              setTimeout(async () => {
-                const targetPoint = point([longitude, latitude]);
-                const matchingCandidates = barangayIndex.filter((b) => {
-                  const [minLon, minLat, maxLon, maxLat] = b.bbox;
-                  return longitude >= minLon && longitude <= maxLon && latitude >= minLat && latitude <= maxLat;
+              const targetPoint = point([longitude, latitude]);
+              const matchingCandidates = barangayIndex.filter((b) => {
+                const [minLon, minLat, maxLon, maxLat] = b.bbox;
+                return longitude >= minLon && longitude <= maxLon && latitude >= minLat && latitude <= maxLat;
+              });
+              let trueBarangay = null;
+              for (const candidate of matchingCandidates) {
+                const data = await ensureBarangayLoaded(candidate.file);
+                if (!data) continue;
+                const isInside = (data.features as LotFeature[]).some((feature) => {
+                  if (!feature?.geometry) return false;
+                  // @ts-expect-error valid
+                  return booleanPointInPolygon(targetPoint, feature);
                 });
-                let trueBarangay = null;
-                for (const candidate of matchingCandidates) {
-                  const data = await ensureBarangayLoaded(candidate.file);
-                  if (!data) continue;
-                  const isInside = (data.features as LotFeature[]).some((feature) => {
-                    if (!feature?.geometry) return false;
-                    // @ts-expect-error valid
-                    return booleanPointInPolygon(targetPoint, feature);
-                  });
-                  if (isInside) { trueBarangay = candidate; break; }
-                }
-                const barangayToLoad = trueBarangay || matchingCandidates[0];
-                if (barangayToLoad && !activeFiles.has(barangayToLoad.file)) {
-                  setActiveFiles((prev) => new Set(prev).add(barangayToLoad.file));
-                  toast({ title: `Auto-loaded ${barangayToLoad.name} based on initial location` });
-                }
-              }, 2600);
+                if (isInside) { trueBarangay = candidate; break; }
+              }
+              const barangayToLoad = trueBarangay || matchingCandidates[0];
+              if (barangayToLoad && !activeFiles.has(barangayToLoad.file)) {
+                setActiveFiles((prev) => new Set(prev).add(barangayToLoad.file));
+                toast({ title: `Auto-loaded ${barangayToLoad.name} based on initial location` });
+              }
             }
           }
         },
@@ -262,15 +230,13 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
   }, [autoLoadBarangay, barangayIndex, activeFiles, ensureBarangayLoaded, toast]);
 
   useEffect(() => {
-    layerByIdRef.current.forEach((layer) => {
-      const lotFeature = (layer as any).feature as LotFeature | undefined;
-      const label = getFeatureLabel(lotFeature);
-      if (showLotNumbers && label) {
+    layerByIdRef.current.forEach((layer, featureId) => {
+      if (showLotNumbers) {
         if (!layer.getTooltip()) {
-          layer.bindTooltip(label, {
+          layer.bindTooltip(String(featureId), {
             permanent: true,
             direction: "center",
-            className: "bg-white/80 backdrop-blur-[2px] border border-[#0051d5]/20 px-2.5 py-1 rounded-full text-[10px] md:text-xs text-[#0051d5] font-bold shadow-sm text-center lot-label-tooltip leading-none"
+            className: "bg-transparent border-none text-[10px] md:text-xs text-black font-bold shadow-none text-center lot-label-tooltip leading-none"
           });
         }
       } else {
@@ -281,50 +247,27 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
 
   const toggleFile = useCallback(
     async (file: string) => {
-      if (activeFiles.has(file)) {
-        // Turn OFF — just remove from active set
-        setActiveFiles((prev) => {
-          const next = new Set(prev);
+      setActiveFiles((prev) => {
+        const next = new Set(prev);
+        if (next.has(file)) {
           next.delete(file);
-          return next;
-        });
-        return;
-      }
-      // Turn ON — add to active set first so the layer slot appears,
-      // then load the GeoJSON data and fly to its bounds
-      setActiveFiles((prev) => new Set(prev).add(file));
-      const data = await ensureBarangayLoaded(file);
-      if (data && mapRef.current) {
-        const bounds = L.geoJSON(data).getBounds();
-        if (bounds.isValid()) {
-          mapRef.current.flyToBounds(bounds, { duration: 2.5, padding: [100, 100], maxZoom: 18 });
+        } else {
+          next.add(file);
+          void ensureBarangayLoaded(file);
         }
-      }
+        return next;
+      });
     },
-    [activeFiles, ensureBarangayLoaded]
+    [ensureBarangayLoaded]
   );
-
-  const toggleLandClass = useCallback((lc: string) => {
-    setActiveLandClasses((prev) => {
-      const next = new Set(prev);
-      if (next.has(lc)) {
-        next.delete(lc);
-      } else {
-        next.add(lc);
-      }
-      return next;
-    });
-  }, []);
 
   const selectFeature = useCallback(
     (feature: LotFeature, flyToFeature = true) => {
       setSelectedFeature(feature);
       if (flyToFeature && mapRef.current) {
         const bounds = L.geoJSON(feature).getBounds();
-        if (bounds.isValid()) {
-          // Automatically calculate the perfect zoom level to frame the entire property, with a max limit
-          mapRef.current.flyToBounds(bounds, { duration: 2.5, padding: [50, 50], maxZoom: 21 });
-        }
+        const center = bounds.getCenter();
+        mapRef.current.flyTo(center, SELECT_ZOOM, { duration: 0.7 });
       }
     },
     [setSelectedFeature]
@@ -336,53 +279,21 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
       if (!data) {
         return;
       }
-      setActiveFiles(new Set([record.file]));
+      setActiveFiles((prev) => new Set(prev).add(record.file));
       const matchId = record.CLN ?? "";
       const matchPin = record.PIN ?? "";
       const matchAln = record.ALN ?? "";
-      const matchOwner = record.Owner?.trim().toLowerCase() ?? "";
-      const matchUid = record.__uid ?? "";
-
       const matched = (data.features as LotFeature[]).find((feature) => {
-        const uid = feature.properties?.__uid ?? "";
-        // 1. Perfect Match using __uid
-        if (matchUid && uid === matchUid) {
-          return true;
-        }
-
-        // 2. Fallback matching logic (in case of old cache)
         const props = feature.properties as GeoJsonProperties;
         const cln = props?.CLN ? String(props.CLN) : "";
         const pin = props?.PIN ? String(props.PIN) : "";
         const aln = props?.ALN ? String(props.ALN) : "";
-        const owner = props?.Owner ? String(props.Owner).trim().toLowerCase() : "";
-        
-        if (matchId && cln !== matchId) return false;
-        if (matchPin && pin !== matchPin) return false;
-        if (matchAln && aln !== matchAln) return false;
-        if (matchOwner && owner !== matchOwner) return false;
-        
-        return true;
+        return (matchId && cln === matchId) || (matchPin && pin === matchPin) || (matchAln && aln === matchAln);
       });
-
       if (matched) {
         selectFeature(matched, true);
-        
-        // Check if geometry is valid to provide user feedback
-        const bounds = L.geoJSON(matched).getBounds();
-        if (!bounds.isValid()) {
-          toast({ 
-            title: "Cannot focus shape", 
-            description: "The geometry for this lot is missing or invalid in the database.",
-            variant: "destructive" 
-          });
-        }
       } else {
-        toast({ 
-          title: "Lot not found on map", 
-          description: "The lot exists in the search index but couldn't be located in the map file. Try clearing your browser cache.",
-          variant: "destructive" 
-        });
+        toast({ title: "Lot not found in loaded data" });
       }
     },
     [ensureBarangayLoaded, selectFeature, toast]
@@ -400,55 +311,53 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
         const { latitude, longitude } = position.coords;
         setUserLocation({ lat: latitude, lng: longitude });
         if (mapRef.current) {
-          mapRef.current.flyTo([latitude, longitude], SELECT_ZOOM, { animate: true, duration: 2.5 });
+            mapRef.current.flyTo([latitude, longitude], SELECT_ZOOM, { animate: true, duration: 0.7 });
         }
 
-        setTimeout(async () => {
-          const targetPoint = point([longitude, latitude]);
+        const targetPoint = point([longitude, latitude]);
 
-          if (autoLoadBarangay) {
-            const matchingCandidates = barangayIndex.filter((b) => {
-              const [minLon, minLat, maxLon, maxLat] = b.bbox;
-              return longitude >= minLon && longitude <= maxLon && latitude >= minLat && latitude <= maxLat;
+        if (autoLoadBarangay) {
+          const matchingCandidates = barangayIndex.filter((b) => {
+            const [minLon, minLat, maxLon, maxLat] = b.bbox;
+            return longitude >= minLon && longitude <= maxLon && latitude >= minLat && latitude <= maxLat;
+          });
+          
+          let trueBarangay = null;
+          for (const candidate of matchingCandidates) {
+            const data = await ensureBarangayLoaded(candidate.file);
+            if (!data) continue;
+            
+            const isInside = (data.features as LotFeature[]).some((feature) => {
+              if (!feature?.geometry) return false;
+              // @ts-expect-error valid format
+              return booleanPointInPolygon(targetPoint, feature);
             });
 
-            let trueBarangay = null;
-            for (const candidate of matchingCandidates) {
-              const data = await ensureBarangayLoaded(candidate.file);
-              if (!data) continue;
-
-              const isInside = (data.features as LotFeature[]).some((feature) => {
-                if (!feature?.geometry) return false;
-                // @ts-expect-error valid format
-                return booleanPointInPolygon(targetPoint, feature);
-              });
-
-              if (isInside) {
-                trueBarangay = candidate;
-                break;
-              }
-            }
-
-            const barangayToLoad = trueBarangay || matchingCandidates[0];
-            if (barangayToLoad && !activeFiles.has(barangayToLoad.file)) {
-              setActiveFiles((prev) => new Set(prev).add(barangayToLoad.file));
-              toast({ title: `Loaded ${barangayToLoad.name} based on location` });
+            if (isInside) {
+              trueBarangay = candidate;
+              break;
             }
           }
 
-          const matched = featuresRef.current.find((feature) => {
-            if (!feature?.geometry) {
-              return false;
-            }
-            // @ts-expect-error valid format for turf booleanPointInPolygon
-            return booleanPointInPolygon(targetPoint, feature);
-          });
-          if (matched) {
-            selectFeature(matched, false);
-          } else {
-            toast({ title: "No cadastral lot found exactly at your coordinate, but showing location map." });
+          const barangayToLoad = trueBarangay || matchingCandidates[0];
+          if (barangayToLoad && !activeFiles.has(barangayToLoad.file)) {
+            setActiveFiles((prev) => new Set(prev).add(barangayToLoad.file));
+            toast({ title: `Loaded ${barangayToLoad.name} based on location` });
           }
-        }, 2600);
+        }
+
+        const matched = featuresRef.current.find((feature) => {
+          if (!feature?.geometry) {
+            return false;
+          }
+          // @ts-expect-error valid format for turf booleanPointInPolygon
+          return booleanPointInPolygon(targetPoint, feature);
+        });
+        if (matched) {
+          selectFeature(matched, false);
+        } else {
+          toast({ title: "No cadastral lot found exactly at your coordinate, but showing location map." });
+        }
       },
       (error) => {
         setIsLocating(false);
@@ -456,59 +365,55 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
       },
       { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 }
     );
-  }, [selectFeature, toast, autoLoadBarangay, barangayIndex, activeFiles, ensureBarangayLoaded]);
+    }, [selectFeature, toast, autoLoadBarangay, barangayIndex, activeFiles, ensureBarangayLoaded]);
 
-  const GeoLayers = useMemo(() => {
-    return Array.from(activeFiles).map((file) => {
-      const data = geojsonByFile[file];
-      if (!data) return null;
-      return (
-        <GeoJSON
-          key={file}
-          data={data}
-          style={(feature) => {
-            const lotFeature = feature as LotFeature | undefined;
-            if (selectedId && getFeatureId(lotFeature) === selectedId) {
-              return SELECTED_STYLE;
+    const GeoLayers = useMemo(() => {
+      return Array.from(activeFiles).map((file) => {
+        const data = geojsonByFile[file];
+        if (!data) return null;
+        return (
+          <GeoJSON
+            key={file}
+        data={data}
+        style={(feature) => {
+          const lotFeature = feature as LotFeature | undefined;
+          if (selectedId && getFeatureId(lotFeature) === selectedId) {
+            return SELECTED_STYLE;
+          }
+          return getDefaultStyle(lotFeature);
+        }}
+        onEachFeature={(feature, layer) => {
+          const lotFeature = feature as LotFeature;
+          const featureId = getFeatureId(lotFeature);
+          if (featureId) {
+            layerByIdRef.current.set(featureId, layer as L.Path);
+            if (showLotNumbers) {
+              layer.bindTooltip(String(featureId), {
+                permanent: true,
+                direction: "center",
+                className: "bg-transparent border-none text-[10px] md:text-xs text-black font-bold shadow-none text-center lot-label-tooltip leading-none"
+              });
             }
-            return getDefaultStyle(lotFeature);
-          }}
-          onEachFeature={(feature, layer) => {
-            const lotFeature = feature as LotFeature;
-            const featureId = getFeatureId(lotFeature);
-            const featureLabel = getFeatureLabel(lotFeature);
-            // Ensure the feature object is attached so the useEffect can grab it later
-            (layer as any).feature = lotFeature;
-            
-            if (featureId) {
-              layerByIdRef.current.set(featureId, layer as L.Path);
-              if (showLotNumbers && featureLabel) {
-                layer.bindTooltip(featureLabel, {
-                  permanent: true,
-                  direction: "center",
-                  className: "bg-white/80 backdrop-blur-[2px] border border-[#0051d5]/20 px-2.5 py-1 rounded-full text-[10px] md:text-xs text-[#0051d5] font-bold shadow-sm text-center lot-label-tooltip leading-none"
-                });
+          }
+          layer.on({
+            mouseover: () => {
+              (layer as L.Path).setStyle(HOVER_STYLE);
+            },
+            mouseout: () => {
+              if (featureId && selectedIdRef.current === featureId) {
+                (layer as L.Path).setStyle(SELECTED_STYLE);
+              } else {
+                (layer as L.Path).setStyle(getDefaultStyle(lotFeature));
               }
-            }
-            layer.on({
-              mouseover: () => {
-                (layer as L.Path).setStyle(HOVER_STYLE);
-              },
-              mouseout: () => {
-                if (featureId && selectedIdRef.current === featureId) {
-                  (layer as L.Path).setStyle(SELECTED_STYLE);
-                } else {
-                  (layer as L.Path).setStyle(getDefaultStyle(lotFeature));
-                }
-              },
-              click: (event) => {
-                L.DomEvent.stopPropagation(event);
-                suppressMapClickRef.current = true;
-                selectFeature(lotFeature, false);
-              },
-            });
-          }}
-        />
+            },
+            click: (event) => {
+              L.DomEvent.stopPropagation(event);
+              suppressMapClickRef.current = true;
+              selectFeature(lotFeature, false);
+            },
+          });
+        }}
+      />
       );
     });
   }, [activeFiles, geojsonByFile, getDefaultStyle, selectFeature, selectedId, showLotNumbers]);
@@ -517,9 +422,6 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
     useMapEvents({
       zoomend: (e) => {
         setCurrentZoom(e.target.getZoom());
-      },
-      mousemove: (e) => {
-        setCoords({ lat: e.latlng.lat, lng: e.latlng.lng });
       },
       click: () => {
         if (suppressMapClickRef.current) {
@@ -537,57 +439,24 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
       <MapContainer
         center={DEFAULT_CENTER}
         zoom={DEFAULT_ZOOM}
-        maxZoom={30}
-        zoomControl={false}
+        maxZoom={24}
         className="h-full w-full"
         ref={mapRef}
       >
-        {basemap === "streets" ? (
-          <TileLayer
-            attribution="&copy; OpenStreetMap contributors"
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            maxZoom={30}
-            maxNativeZoom={19}
-          />
-        ) : (
-          <TileLayer
-            attribution="&copy; Google"
-            url="https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}"
-            maxZoom={30}
-            maxNativeZoom={20}
-          />
-        )}
+        <TileLayer
+          attribution="&copy; OpenStreetMap contributors"
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          maxZoom={24}
+          maxNativeZoom={19}
+        />
         <MapEvents />
         {GeoLayers}
         {userLocation ? (
           <Marker position={[userLocation.lat, userLocation.lng]} />
         ) : null}
-        
-        {/* Dynamic Mini-Map Overview */}
-        <MiniMap basemap={basemap} />
       </MapContainer>
 
       <SearchBar onSelect={handleSearchSelect} />
-      
-      {/* FAB Cluster — bottom-right */}
-      <div
-        className={`absolute z-[1000] flex flex-col items-center gap-2 glass-panel rounded-2xl p-2 transition-all duration-300 ${
-          selectedFeature ? "bottom-[52vh] right-4 md:bottom-8 md:right-[336px]" : "bottom-8 right-4"
-        }`}
-      >
-        {/* Basemap toggle */}
-        <button
-          onClick={() => setBasemap(basemap === "streets" ? "satellite" : "streets")}
-          className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/70 text-[var(--on-surface-variant)] shadow-sm backdrop-blur-md transition-all hover:-translate-y-0.5 hover:bg-white/90 hover:shadow-md"
-          title={basemap === "streets" ? "Switch to Satellite" : "Switch to Streets"}
-        >
-          {basemap === "streets" ? <Satellite className="h-4 w-4" /> : <MapIcon className="h-4 w-4" />}
-        </button>
-
-        {/* Divider */}
-        <div className="h-px w-6 bg-[var(--outline-variant)]/40" />
-
-        {/* Settings Panel trigger */}
         <SettingsPanel
           barangays={barangayIndex}
           activeFiles={activeFiles}
@@ -596,36 +465,8 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
           setShowLotNumbers={setShowLotNumbers}
           autoLoadBarangay={autoLoadBarangay}
           setAutoLoadBarangay={setAutoLoadBarangay}
-          basemap={basemap}
-          setBasemap={setBasemap}
-          activeLandClasses={activeLandClasses}
-          toggleLandClass={toggleLandClass}
-          landClasses={[...Object.keys(LAND_CLASS_COLORS), "unknown"]}
         />
-
-        {/* GPS / My Location */}
         <GPSButton onLocate={handleLocate} isLocating={isLocating} />
       </div>
-
-      {/* Coordinate Bar — bottom center */}
-      <div className="absolute bottom-3 md:bottom-4 left-1/2 -translate-x-1/2 z-[1000] glass-panel px-3 md:px-4 py-1.5 md:py-2 rounded-full w-auto max-w-[95%]">
-        <div className="coord-bar flex items-center justify-center gap-3 md:gap-4 text-[var(--on-surface)] text-[10px] md:text-[12px] whitespace-nowrap">
-          <span>
-            LAT:{" "}
-            <span className="text-[#0051d5] font-semibold">
-              {coords ? `${coords.lat.toFixed(4)}° N` : "—"}
-            </span>
-          </span>
-          <span>
-            LNG:{" "}
-            <span className="text-[#0051d5] font-semibold">
-              {coords ? `${coords.lng.toFixed(4)}° E` : "—"}
-            </span>
-          </span>
-        </div>
-      </div>
-
-      {/* <MapLegend colors={LAND_CLASS_COLORS} /> */}
-    </div>
   );
 }

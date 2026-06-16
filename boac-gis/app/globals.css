@@ -11,110 +11,105 @@
 }
 
 @layer base {
+  .theme {
+    --font-heading: var(--font-sans);
+    --font-sans: var(--font-sans);
+  }
   :root {
-    --background: oklch(0.97 0.005 240);
-    --foreground: oklch(0.14 0.01 240);
+    --background: oklch(1 0 0);
+    --foreground: oklch(0.145 0 0);
     --card: oklch(1 0 0);
-    --card-foreground: oklch(0.14 0.01 240);
+    --card-foreground: oklch(0.145 0 0);
     --popover: oklch(1 0 0);
-    --popover-foreground: oklch(0.14 0.01 240);
+    --popover-foreground: oklch(0.145 0 0);
     --primary: oklch(0.205 0 0);
     --primary-foreground: oklch(0.985 0 0);
-    --secondary: oklch(0.48 0.19 264);
-    --secondary-foreground: oklch(0.985 0 0);
-    --muted: oklch(0.96 0.003 240);
-    --muted-foreground: oklch(0.46 0.01 240);
-    --accent: oklch(0.96 0.003 240);
+    --secondary: oklch(0.97 0 0);
+    --secondary-foreground: oklch(0.205 0 0);
+    --muted: oklch(0.97 0 0);
+    --muted-foreground: oklch(0.556 0 0);
+    --accent: oklch(0.97 0 0);
     --accent-foreground: oklch(0.205 0 0);
     --destructive: oklch(0.577 0.245 27.325);
-    --border: oklch(0.91 0.005 240);
-    --input: oklch(0.91 0.005 240);
-    --ring: oklch(0.48 0.19 264);
+    --border: oklch(0.922 0 0);
+    --input: oklch(0.922 0 0);
+    --ring: oklch(0.708 0 0);
+    --chart-1: oklch(0.87 0 0);
+    --chart-2: oklch(0.556 0 0);
+    --chart-3: oklch(0.439 0 0);
+    --chart-4: oklch(0.371 0 0);
+    --chart-5: oklch(0.269 0 0);
     --radius: 0.625rem;
-
-    /* GeoLGU custom tokens */
-    --glass-bg: rgba(247, 249, 251, 0.80);
-    --glass-border: rgba(255, 255, 255, 0.40);
-    --glass-shadow: 0 4px 24px rgba(25, 28, 30, 0.10);
-    --accent-blue: #0051d5;
-    --surface-dim: #d8dadc;
-    --on-surface: #191c1e;
-    --on-surface-variant: #45464d;
-    --outline-variant: #c6c6cd;
+    --sidebar: oklch(0.985 0 0);
+    --sidebar-foreground: oklch(0.145 0 0);
+    --sidebar-primary: oklch(0.205 0 0);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-accent: oklch(0.97 0 0);
+    --sidebar-accent-foreground: oklch(0.205 0 0);
+    --sidebar-border: oklch(0.922 0 0);
+    --sidebar-ring: oklch(0.708 0 0);
   }
-
+  .dark {
+    --background: oklch(0.145 0 0);
+    --foreground: oklch(0.985 0 0);
+    --card: oklch(0.205 0 0);
+    --card-foreground: oklch(0.985 0 0);
+    --popover: oklch(0.205 0 0);
+    --popover-foreground: oklch(0.985 0 0);
+    --primary: oklch(0.922 0 0);
+    --primary-foreground: oklch(0.205 0 0);
+    --secondary: oklch(0.269 0 0);
+    --secondary-foreground: oklch(0.985 0 0);
+    --muted: oklch(0.269 0 0);
+    --muted-foreground: oklch(0.708 0 0);
+    --accent: oklch(0.269 0 0);
+    --accent-foreground: oklch(0.985 0 0);
+    --destructive: oklch(0.704 0.191 22.216);
+    --border: oklch(1 0 0 / 10%);
+    --input: oklch(1 0 0 / 15%);
+    --ring: oklch(0.556 0 0);
+    --chart-1: oklch(0.87 0 0);
+    --chart-2: oklch(0.556 0 0);
+    --chart-3: oklch(0.439 0 0);
+    --chart-4: oklch(0.371 0 0);
+    --chart-5: oklch(0.269 0 0);
+    --sidebar: oklch(0.205 0 0);
+    --sidebar-foreground: oklch(0.985 0 0);
+    --sidebar-primary: oklch(0.488 0.243 264.376);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-accent: oklch(0.269 0 0);
+    --sidebar-accent-foreground: oklch(0.985 0 0);
+    --sidebar-border: oklch(1 0 0 / 10%);
+    --sidebar-ring: oklch(0.556 0 0);
+  }
   * {
     @apply border-border;
   }
-
   body {
-    @apply bg-background text-foreground font-sans antialiased;
+    @apply bg-background text-foreground;
   }
-
   html {
     @apply font-sans;
   }
 }
 
-/* ── Glass Panel ───────────────────────────────────────────── */
-.glass-panel {
-  background: var(--glass-bg);
-  backdrop-filter: blur(14px) saturate(1.4);
-  -webkit-backdrop-filter: blur(14px) saturate(1.4);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-shadow);
-}
-
-/* ── Custom Scrollbar ─────────────────────────────────────── */
-.custom-scrollbar::-webkit-scrollbar {
-  width: 4px;
-}
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: var(--outline-variant);
-  border-radius: 10px;
-}
-
-/* ── Toggle Switch ────────────────────────────────────────── */
-.toggle-track {
-  width: 44px;
-  height: 24px;
-  border-radius: 9999px;
-  background: var(--surface-dim);
-  position: relative;
-  transition: background 0.2s;
-  cursor: pointer;
-  flex-shrink: 0;
-}
-.toggle-track.checked {
-  background: var(--accent-blue);
-}
-.toggle-thumb {
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 20px;
-  height: 20px;
-  border-radius: 9999px;
-  background: #fff;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-  transition: transform 0.2s;
-}
-.toggle-track.checked .toggle-thumb {
-  transform: translateX(20px);
-}
-
-/* ── Lot label tooltips ──────────────────────────────────── */
 .pulse-marker {
   animation: pulse 1.6s ease-out infinite;
 }
 
 @keyframes pulse {
-  0%   { transform: scale(0.9); opacity: 0.7; }
-  70%  { transform: scale(1.3); opacity: 0.2; }
-  100% { transform: scale(0.9); opacity: 0.7; }
+  0% {
+    transform: scale(0.9);
+    opacity: 0.7;
+  }
+  70% {
+    transform: scale(1.3);
+    opacity: 0.2;
+  }
+  100% {
+    transform: scale(0.9);
+    opacity: 0.7;
+  }
 }
 
 .leaflet-tooltip.bg-transparent {
@@ -122,6 +117,7 @@
   border: none !important;
   box-shadow: none !important;
 }
+
 .leaflet-tooltip.bg-transparent::before {
   display: none !important;
 }
@@ -129,21 +125,4 @@
 /* Hide lot numbers explicitly when zoomed out to prevent black clutter */
 .hide-lot-labels .lot-label-tooltip {
   display: none !important;
-}
-
-/* ── Nav / Sidebar active link indicator ─────────────────── */
-.nav-item-active {
-  background: var(--accent-blue);
-  color: #fff !important;
-  font-weight: 700;
-}
-.nav-item-active .nav-icon {
-  color: #fff !important;
-}
-
-/* ── Coordinate Bar ──────────────────────────────────────── */
-.coord-bar {
-  font-family: 'JetBrains Mono', 'Consolas', monospace;
-  font-weight: 500;
-  letter-spacing: 0.02em;
 }
