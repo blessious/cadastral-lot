@@ -13,16 +13,17 @@ import subprocess
 import sys
 from pathlib import Path
 
+PROJECT_ROOT = Path(__file__).resolve().parent
 GEO_SOURCE_COMMIT = "99bab9e"  # the commit that had the valid shapefile geometry
-ETRACS_FILE = Path(r"C:\Users\admin\Videos\CADASTRAL LOT MAP\output\geojson\Apitong.geojson")
-OUT_FILE    = Path(r"C:\Users\admin\Videos\CADASTRAL LOT MAP\boac-gis\public\geojson\Apitong.geojson")
+ETRACS_FILE = PROJECT_ROOT / "output" / "geojson" / "Apitong.geojson"
+OUT_FILE    = PROJECT_ROOT / "boac-gis" / "public" / "geojson" / "Apitong.geojson"
 
 def get_geometry_from_git(commit: str) -> tuple[dict, dict]:
     """Extract geometry lookup tables (by PIN and CLN) from a git commit."""
     result = subprocess.run(
         ["git", "show", f"{commit}:boac-gis/public/geojson/Apitong.geojson"],
         capture_output=True, text=True,
-        cwd=r"C:\Users\admin\Videos\CADASTRAL LOT MAP"
+        cwd=PROJECT_ROOT
     )
     if result.returncode != 0:
         print(f"[ERROR] Could not read from git: {result.stderr}")

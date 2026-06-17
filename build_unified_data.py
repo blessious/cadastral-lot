@@ -17,6 +17,10 @@ import subprocess
 import sys
 from pathlib import Path
 
+PROJECT_ROOT = Path(__file__).resolve().parent
+
+from project_config import db_config
+
 try:
     import pyodbc
 except ImportError:
@@ -24,19 +28,14 @@ except ImportError:
     sys.exit(1)
 
 # ── CONFIG ────────────────────────────────────────────────────────────────────
-DB_CONFIG = {
-    "server":   "192.168.1.93,1433",
-    "database": "etracs_boac",
-    "username": "etracs_user",
-    "password": "Etracs@2025!",
-}
+DB_CONFIG = db_config()
 
-GEOJSON_SRC_DIR = Path(r"C:\Users\admin\Videos\CADASTRAL LOT MAP\output\geojson")
-GEOJSON_OUT_DIR = Path(r"C:\Users\admin\Videos\CADASTRAL LOT MAP\boac-gis\public\geojson")
+GEOJSON_SRC_DIR = PROJECT_ROOT / "output" / "geojson"
+GEOJSON_OUT_DIR = PROJECT_ROOT / "boac-gis" / "public" / "geojson"
 # Geometry reference: the LIVE public/geojson files (which already have correct geometry).
 # When a source file has geometry:null, we recover geometry from here by PIN/CLN match.
 GEOJSON_GEO_REF = GEOJSON_OUT_DIR
-SEARCH_IDX      = Path(r"C:\Users\admin\Videos\CADASTRAL LOT MAP\generate_search_index.py")
+SEARCH_IDX      = PROJECT_ROOT / "generate_search_index.py"
 # ─────────────────────────────────────────────────────────────────────────────
 
 def connect():

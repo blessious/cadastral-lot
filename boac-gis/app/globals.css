@@ -130,6 +130,9 @@
 .hide-lot-labels .lot-label-tooltip {
   display: none !important;
 }
+.lot-label-hidden {
+  display: none !important;
+}
 
 /* ── Nav / Sidebar active link indicator ─────────────────── */
 .nav-item-active {

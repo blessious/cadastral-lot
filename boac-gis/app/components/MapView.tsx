@@ -12,7 +12,6 @@ import { GeoJSON, MapContainer, Marker, TileLayer, useMapEvents } from "react-le
 import GPSButton from "./GPSButton";
 import SearchBar from "./SearchBar";
 import SettingsPanel from "./SettingsPanel";
-import MapLegend from "./MapLegend";
 import MiniMap from "./MiniMap";
 import { useToast } from "@/hooks/use-toast";
 
@@ -47,12 +46,18 @@ type SearchRecord = {
   Land_Class?: string;
   LAND_CLASS?: string;
   Area?: string;
+  Owner?: string;
+  __uid?: string;
   file: string;
 };
 
 const DEFAULT_CENTER: [number, number] = [13.4477, 121.8472];
 const DEFAULT_ZOOM = 13;
 const SELECT_ZOOM = 20;
+const LOT_LABEL_MIN_ZOOM_DESKTOP = SELECT_ZOOM;
+const LOT_LABEL_MIN_ZOOM_MOBILE = 17;
+const LOT_LABEL_CLASS =
+  "bg-white/80 backdrop-blur-[2px] border border-[#0051d5]/20 px-2 py-0.5 rounded text-[9px] md:text-xs text-[#0051d5] font-bold shadow-sm text-center lot-label-tooltip lot-label-hidden leading-none pointer-events-none";
 
 const LAND_CLASS_COLORS: Record<string, string> = {
   agricultural: "#a3e635",    // Vibrant Lime Green
@@ -101,6 +106,10 @@ function getFeatureLabel(feature: LotFeature | undefined): string {
   return String(props.CLN || props.PIN || "");
 }
 
+function getLayerFeature(layer: L.Path): LotFeature | undefined {
+  return (layer as L.Path & { feature?: LotFeature }).feature;
+}
+
 export default function MapView({ selectedFeature, setSelectedFeature }: MapViewProps) {
   const { toast } = useToast();
   const [barangayIndex, setBarangayIndex] = useState<BarangayIndexEntry[]>([]);
@@ -111,6 +120,7 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
   const [showLotNumbers, setShowLotNumbers] = useState(true);
   const [autoLoadBarangay, setAutoLoadBarangay] = useState(true);
   const [currentZoom, setCurrentZoom] = useState(DEFAULT_ZOOM);
+  const [isMobileViewport, setIsMobileViewport] = useState(false);
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [basemap, setBasemap] = useState<"streets" | "satellite">("satellite");
   const [activeLandClasses, setActiveLandClasses] = useState<Set<string>>(
@@ -128,6 +138,63 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
   const hasInitialLocateRef = useRef(false);
 
   const selectedId = getFeatureId(selectedFeature ?? undefined);
+  const lotLabelMinZoom = isMobileViewport ? LOT_LABEL_MIN_ZOOM_MOBILE : LOT_LABEL_MIN_ZOOM_DESKTOP;
+
+  const updateLotLabelVisibility = useCallback(() => {
+    const map = mapRef.current;
+    if (!map) {
+      return;
+    }
+
+    const zoom = map.getZoom();
+    const canShowLabels = showLotNumbers && zoom >= lotLabelMinZoom;
+
+    layerByIdRef.current.forEach((layer, featureId) => {
+      const tooltip = layer.getTooltip();
+      const element = tooltip?.getElement();
+      if (!element) {
+        return;
+      }
+
+      const feature = getLayerFeature(layer);
+      const label = getFeatureLabel(feature);
+      const isSelected = selectedIdRef.current === featureId;
+      let shouldShow = canShowLabels && Boolean(label);
+
+      if (shouldShow && zoom < SELECT_ZOOM && !isSelected) {
+        const bounds = (layer as L.Path & { getBounds: () => L.LatLngBounds }).getBounds();
+        if (!bounds.isValid()) {
+          shouldShow = false;
+        } else {
+          const northWest = map.latLngToContainerPoint(bounds.getNorthWest());
+          const southEast = map.latLngToContainerPoint(bounds.getSouthEast());
+          const pixelWidth = Math.abs(southEast.x - northWest.x);
+          const pixelHeight = Math.abs(southEast.y - northWest.y);
+          const estimatedLabelWidth = Math.max(26, label.length * (isMobileViewport ? 5.8 : 7));
+          const estimatedLabelHeight = isMobileViewport ? 16 : 20;
+          const minArea = isMobileViewport ? 850 : 1200;
+
+          shouldShow =
+            pixelWidth >= estimatedLabelWidth + 10 &&
+            pixelHeight >= estimatedLabelHeight + 8 &&
+            pixelWidth * pixelHeight >= minArea;
+        }
+      }
+
+      element.classList.toggle("lot-label-hidden", !shouldShow);
+    });
+  }, [isMobileViewport, lotLabelMinZoom, showLotNumbers]);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 767px)");
+    const handleViewportChange = () => {
+      setIsMobileViewport(mediaQuery.matches);
+    };
+
+    handleViewportChange();
+    mediaQuery.addEventListener("change", handleViewportChange);
+    return () => mediaQuery.removeEventListener("change", handleViewportChange);
+  }, []);
 
   const getDefaultStyle = useCallback((feature?: LotFeature): L.PathOptions => {
     const rawClass = feature?.properties?.Land_Class ?? feature?.properties?.LAND_CLASS;
@@ -172,7 +239,8 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
 
   useEffect(() => {
     syncSelectedStyles();
-  }, [syncSelectedStyles]);
+    requestAnimationFrame(updateLotLabelVisibility);
+  }, [syncSelectedStyles, updateLotLabelVisibility]);
 
   const ensureBarangayLoaded = useCallback(
     async (file: string) => {
@@ -263,21 +331,22 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
 
   useEffect(() => {
     layerByIdRef.current.forEach((layer) => {
-      const lotFeature = (layer as any).feature as LotFeature | undefined;
+      const lotFeature = getLayerFeature(layer);
       const label = getFeatureLabel(lotFeature);
       if (showLotNumbers && label) {
         if (!layer.getTooltip()) {
           layer.bindTooltip(label, {
             permanent: true,
             direction: "center",
-            className: "bg-white/80 backdrop-blur-[2px] border border-[#0051d5]/20 px-2.5 py-1 rounded-full text-[10px] md:text-xs text-[#0051d5] font-bold shadow-sm text-center lot-label-tooltip leading-none"
+            className: LOT_LABEL_CLASS
           });
         }
       } else {
         layer.unbindTooltip();
       }
     });
-  }, [showLotNumbers, activeFiles]);
+    requestAnimationFrame(updateLotLabelVisibility);
+  }, [showLotNumbers, activeFiles, updateLotLabelVisibility]);
 
   const toggleFile = useCallback(
     async (file: string) => {
@@ -478,7 +547,7 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
             const featureId = getFeatureId(lotFeature);
             const featureLabel = getFeatureLabel(lotFeature);
             // Ensure the feature object is attached so the useEffect can grab it later
-            (layer as any).feature = lotFeature;
+            (layer as L.Path & { feature?: LotFeature }).feature = lotFeature;
             
             if (featureId) {
               layerByIdRef.current.set(featureId, layer as L.Path);
@@ -486,7 +555,7 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
                 layer.bindTooltip(featureLabel, {
                   permanent: true,
                   direction: "center",
-                  className: "bg-white/80 backdrop-blur-[2px] border border-[#0051d5]/20 px-2.5 py-1 rounded-full text-[10px] md:text-xs text-[#0051d5] font-bold shadow-sm text-center lot-label-tooltip leading-none"
+                  className: LOT_LABEL_CLASS
                 });
               }
             }
@@ -517,6 +586,10 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
     useMapEvents({
       zoomend: (e) => {
         setCurrentZoom(e.target.getZoom());
+        requestAnimationFrame(updateLotLabelVisibility);
+      },
+      moveend: () => {
+        requestAnimationFrame(updateLotLabelVisibility);
       },
       mousemove: (e) => {
         setCoords({ lat: e.latlng.lat, lng: e.latlng.lng });
@@ -533,7 +606,7 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
   }
 
   return (
-    <div className={`relative h-full w-full ${(currentZoom < SELECT_ZOOM || !showLotNumbers) ? "hide-lot-labels" : ""}`}>
+    <div className={`relative h-full w-full ${(currentZoom < lotLabelMinZoom || !showLotNumbers) ? "hide-lot-labels" : ""}`}>
       <MapContainer
         center={DEFAULT_CENTER}
         zoom={DEFAULT_ZOOM}

@@ -5,8 +5,8 @@ import { redirect } from 'next/navigation'
 import { cookies } from 'next/headers'
 
 const AUTH_COOKIE = 'boac_gis_auth'
-const ADMIN_USERNAME = 'admin'
-const ADMIN_PASSWORD = 'admin'
+const ADMIN_USERNAME = process.env.ADMIN_USERNAME ?? 'admin'
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? 'admin'
 
 export async function login(formData: FormData) {
   const username = (formData.get('username') as string) ?? ''

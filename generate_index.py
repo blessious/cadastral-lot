@@ -23,8 +23,10 @@ Edit GEOJSON_DIR to point to your /public/geojson/ folder.
 import json
 from pathlib import Path
 
+PROJECT_ROOT = Path(__file__).resolve().parent
+
 # ── CONFIG ──────────────────────────────────────────────────
-GEOJSON_DIR = Path(r"C:\Users\admin\Videos\CADASTRAL LOT MAP\output\geojson")
+GEOJSON_DIR = PROJECT_ROOT / "output" / "geojson"
 OUTPUT_FILE = GEOJSON_DIR / "index.json"
 # ────────────────────────────────────────────────────────────
 

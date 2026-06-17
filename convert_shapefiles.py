@@ -22,16 +22,18 @@ import sys
 import traceback
 from datetime import datetime
 
+PROJECT_ROOT = Path(__file__).resolve().parent
+
 # ─────────────────────────────────────────────
 # CONFIGURATION — edit this to match your setup
 # ─────────────────────────────────────────────
 
 # Root folder containing all barangay shape file folders
 # Example: r"\\192.168.1.245\GIS Files\Shape Files\Boundary\Cadastral - Barangay"
-INPUT_ROOT = Path(r"C:\Users\admin\Videos\CADASTRAL LOT MAP\Cadastral - Barangay")
+INPUT_ROOT = PROJECT_ROOT / "Cadastral - Barangay"
 
 # Where to save output GeoJSON files
-OUTPUT_DIR = Path("output/geojson")
+OUTPUT_DIR = PROJECT_ROOT / "output" / "geojson"
 
 # Target coordinate system for web maps (WGS84 / GPS standard)
 TARGET_CRS = "EPSG:4326"
@@ -148,7 +150,7 @@ def main():
             print(f"Merge failed: {e}")
 
     # ── Write report ──
-    report_path = Path("output/conversion_report.txt")
+    report_path = PROJECT_ROOT / "output" / "conversion_report.txt"
     report_path.parent.mkdir(parents=True, exist_ok=True)
 
     ok = [r for r in results if r["status"] == "OK"]

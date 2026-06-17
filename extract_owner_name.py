@@ -12,7 +12,11 @@ Priority order for owner name:
 
 import csv
 import sys
-import os
+from pathlib import Path
+
+PROJECT_ROOT = Path(__file__).resolve().parent
+
+from project_config import db_config
 
 try:
     import pyodbc
@@ -21,15 +25,10 @@ except ImportError:
     sys.exit(1)
 
 # â”€â”€ Config â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-DB_CONFIG = {
-    "server":   "192.168.1.93,1433",
-    "database": "etracs_boac",
-    "username": "etracs_user",
-    "password": "Etracs@2025!",
-}
+DB_CONFIG = db_config()
 
-INPUT_CSV  = r"c:\Users\admin\Videos\CADASTRAL LOT MAP\Cadastral - Barangay\Cadastral_Data.csv"
-OUTPUT_CSV = r"c:\Users\admin\Videos\CADASTRAL LOT MAP\Cadastral - Barangay\Cadastral_Data_WithOwner.csv"
+INPUT_CSV  = PROJECT_ROOT / "Cadastral - Barangay" / "Cadastral_Data.csv"
+OUTPUT_CSV = PROJECT_ROOT / "Cadastral - Barangay" / "Cadastral_Data_WithOwner.csv"
 # â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 

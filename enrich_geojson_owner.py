@@ -17,10 +17,12 @@ import subprocess
 import sys
 from pathlib import Path
 
+PROJECT_ROOT = Path(__file__).resolve().parent
+
 # ── CONFIG ────────────────────────────────────────────────────────────────────
-CSV_FILE    = Path(r"C:\Users\admin\Videos\CADASTRAL LOT MAP\Cadastral - Barangay\Cadastral_Data_WithOwner.csv")
-GEOJSON_DIR = Path(r"C:\Users\admin\Videos\CADASTRAL LOT MAP\output\geojson")
-SEARCH_IDX  = Path(r"C:\Users\admin\Videos\CADASTRAL LOT MAP\generate_search_index.py")
+CSV_FILE    = PROJECT_ROOT / "Cadastral - Barangay" / "Cadastral_Data_WithOwner.csv"
+GEOJSON_DIR = PROJECT_ROOT / "output" / "geojson"
+SEARCH_IDX  = PROJECT_ROOT / "generate_search_index.py"
 # ─────────────────────────────────────────────────────────────────────────────
 
 

@@ -27,8 +27,10 @@ Edit GEOJSON_DIR to point to your /public/geojson/ folder.
 import json
 from pathlib import Path
 
+PROJECT_ROOT = Path(__file__).resolve().parent
+
 # ── CONFIG ──────────────────────────────────────────────────
-GEOJSON_DIR = Path(r"C:\Users\admin\Videos\CADASTRAL LOT MAP\boac-gis\public\geojson")
+GEOJSON_DIR = PROJECT_ROOT / "boac-gis" / "public" / "geojson"
 OUTPUT_FILE = GEOJSON_DIR / "search_index.json"
 
 # Fields to include in the search index (no geometry)
