@@ -22,11 +22,12 @@ type SearchRecord = {
 
 type SearchBarProps = {
   onSelect: (record: SearchRecord) => void;
+  activeFiles: ReadonlySet<string>;
 };
 
 const MAX_RESULTS = 50;
 
-export default function SearchBar({ onSelect }: SearchBarProps) {
+export default function SearchBar({ onSelect, activeFiles }: SearchBarProps) {
   const [searchIndex, setSearchIndex] = useState<SearchRecord[]>([]);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchRecord[]>([]);
@@ -67,6 +68,9 @@ export default function SearchBar({ onSelect }: SearchBarProps) {
         return;
       }
       const filtered = searchIndex.filter((item) => {
+        if (!activeFiles.has(item.file)) {
+          return false;
+        }
         const cln = item.CLN?.toLowerCase() ?? "";
         const aln = item.ALN?.toLowerCase() ?? "";
         const pin = item.PIN?.toLowerCase() ?? "";
@@ -118,7 +122,7 @@ export default function SearchBar({ onSelect }: SearchBarProps) {
         clearTimeout(debounceRef.current);
       }
     };
-  }, [query, searchIndex]);
+  }, [activeFiles, query, searchIndex]);
 
   useEffect(() => {
     const handleClick = (event: MouseEvent) => {
@@ -164,7 +168,7 @@ export default function SearchBar({ onSelect }: SearchBarProps) {
       return (
         <div className="absolute top-full left-0 right-0 z-30 mt-2 rounded-xl glass-panel overflow-hidden">
           <div className="px-4 py-4 text-center text-sm text-[var(--on-surface-variant)] bg-white/80">
-            No results found for &quot;{query}&quot;
+            No results found in the turned-on barangays for &quot;{query}&quot;
           </div>
         </div>
       );
@@ -212,7 +216,7 @@ export default function SearchBar({ onSelect }: SearchBarProps) {
         </ul>
       </div>
     );
-  }, [hasResults, onSelect, open, results]);
+  }, [hasResults, onSelect, open, query, results, searchError]);
 
   return (
     /* Top Navigation Bar */
@@ -246,7 +250,7 @@ export default function SearchBar({ onSelect }: SearchBarProps) {
             "w-full pl-9 pr-8 py-2 rounded-lg bg-white/50 border border-[var(--outline-variant)]/60 text-[13px] text-[var(--on-surface)] placeholder:text-[var(--on-surface-variant)]",
             "focus:outline-none focus:ring-2 focus:ring-[#0051d5]/30 focus:border-[#0051d5]/50 focus:bg-white/80 transition-all"
           )}
-          placeholder="Search Lot Number, PIN, Owner, or Barangay…"
+          placeholder="Search within turned-on barangays…"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           onFocus={() => {

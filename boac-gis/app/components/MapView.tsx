@@ -71,20 +71,26 @@ const LAND_CLASS_COLORS: Record<string, string> = {
 };
 
 const DEFAULT_STYLE: L.PathOptions = {
-  color: "#555",
-  weight: 0.8,
+  color: "#1f2937",
+  weight: 1.5,
+  opacity: 0.95,
   fillOpacity: 0.4,
 };
 
 const HOVER_STYLE: L.PathOptions = {
+  color: "#f59e0b",
   fillColor: "#facc15",
-  fillOpacity: 0.4,
+  fillOpacity: 0.55,
+  weight: 3,
+  opacity: 1,
 };
 
 const SELECTED_STYLE: L.PathOptions = {
-  fillColor: "#3b82f6",
-  fillOpacity: 0.5,
-  weight: 2,
+  color: "#00e5ff",
+  fillColor: "#2563eb",
+  fillOpacity: 0.65,
+  weight: 4,
+  opacity: 1,
 };
 
 function getLandClassColor(feature: LotFeature | undefined): string {
@@ -401,11 +407,14 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
 
   const handleSearchSelect = useCallback(
     async (record: SearchRecord) => {
+      if (!activeFiles.has(record.file)) {
+        toast({ title: "That barangay is no longer turned on" });
+        return;
+      }
       const data = await ensureBarangayLoaded(record.file);
       if (!data) {
         return;
       }
-      setActiveFiles(new Set([record.file]));
       const matchId = record.CLN ?? "";
       const matchPin = record.PIN ?? "";
       const matchAln = record.ALN ?? "";
@@ -454,7 +463,7 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
         });
       }
     },
-    [ensureBarangayLoaded, selectFeature, toast]
+    [activeFiles, ensureBarangayLoaded, selectFeature, toast]
   );
 
   const handleLocate = useCallback(() => {
@@ -561,7 +570,9 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
             }
             layer.on({
               mouseover: () => {
-                (layer as L.Path).setStyle(HOVER_STYLE);
+                (layer as L.Path).setStyle(
+                  featureId && selectedIdRef.current === featureId ? SELECTED_STYLE : HOVER_STYLE
+                );
               },
               mouseout: () => {
                 if (featureId && selectedIdRef.current === featureId) {
@@ -640,7 +651,7 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
         <MiniMap basemap={basemap} />
       </MapContainer>
 
-      <SearchBar onSelect={handleSearchSelect} />
+      <SearchBar onSelect={handleSearchSelect} activeFiles={activeFiles} />
       
       {/* FAB Cluster — bottom-right */}
       <div

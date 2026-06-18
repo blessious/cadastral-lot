@@ -1,12 +1,13 @@
 'use client'
 
 import { login } from './actions'
-import { Map } from 'lucide-react'
+import { Eye, EyeOff, Map } from 'lucide-react'
 import Image from 'next/image'
 import { useState, useRef } from 'react'
 
 export default function LoginForm({ error }: { error?: string }) {
   const [offset, setOffset] = useState({ x: 0, y: 0 })
+  const [showPassword, setShowPassword] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
 
   const handleMouseMove = (e: React.MouseEvent) => {
@@ -106,15 +107,26 @@ export default function LoginForm({ error }: { error?: string }) {
                 <label className="text-sm font-medium leading-none text-zinc-700" htmlFor="password">
                   Password
                 </label>
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  placeholder="Enter your password"
-                  autoComplete="current-password"
-                  required
-                  className="flex h-11 w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 transition-colors shadow-sm"
-                />
+                <div className="relative">
+                  <input
+                    id="password"
+                    name="password"
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="Enter your password"
+                    autoComplete="current-password"
+                    required
+                    className="flex h-11 w-full rounded-md border border-zinc-200 bg-white px-3 py-2 pr-11 text-sm focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 transition-colors shadow-sm"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((visible) => !visible)}
+                    className="absolute inset-y-0 right-0 flex w-11 items-center justify-center text-zinc-500 transition-colors hover:text-emerald-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-emerald-600"
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    aria-pressed={showPassword}
+                  >
+                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
               </div>
             </div>
 

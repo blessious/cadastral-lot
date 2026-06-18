@@ -2,6 +2,16 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
+### Configure administrator login
+
+Authentication fails closed until the user table and session-signing secret are configured. Create or update a SQL-backed user:
+
+```bash
+npm run auth:setup
+```
+
+The command creates `dbo.gis_users` in the configured SQL Server database and stores only a scrypt password hash. If it prints an `AUTH_SECRET`, copy that value into `../server_config.env` and `../server_config.bat`. Sessions are signed, HTTP-only, SameSite cookies and expire after eight hours. Five failed login attempts from the same client and username are blocked for 15 minutes.
+
 First, run the development server:
 
 ```bash

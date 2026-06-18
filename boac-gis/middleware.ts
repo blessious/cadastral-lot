@@ -1,15 +1,21 @@
 import { NextResponse, type NextRequest } from 'next/server'
 
-const AUTH_COOKIE = 'boac_gis_auth'
+import { AUTH_COOKIE, verifySessionToken } from '@/lib/auth-session'
 
 export async function middleware(request: NextRequest) {
   const isLoginRoute = request.nextUrl.pathname.startsWith('/login')
-  const hasAuth = request.cookies.get(AUTH_COOKIE)?.value === '1'
+  const token = request.cookies.get(AUTH_COOKIE)?.value
+  const session = await verifySessionToken(token)
+  const authenticated = Boolean(session)
 
-  if (!hasAuth && !isLoginRoute) {
-    const url = request.nextUrl.clone()
-    url.pathname = '/login'
-    return NextResponse.redirect(url)
+  if (authenticated && isLoginRoute) {
+    return NextResponse.redirect(new URL('/', request.url))
+  }
+
+  if (!authenticated && !isLoginRoute) {
+    const response = NextResponse.redirect(new URL('/login', request.url))
+    if (token) response.cookies.delete(AUTH_COOKIE)
+    return response
   }
 
   return NextResponse.next()
@@ -17,13 +23,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * Feel free to modify this pattern to include more paths.
-     */
     '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 }

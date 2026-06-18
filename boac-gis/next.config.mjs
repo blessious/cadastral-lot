@@ -33,6 +33,10 @@ const allowedDevOrigins = (
 
 const nextConfig = {
   allowedDevOrigins,
+  experimental: {
+    // The SQL driver relies on runtime class methods that webpack cannot safely bundle.
+    serverComponentsExternalPackages: ["mssql"],
+  },
 };
 
 export default nextConfig;
