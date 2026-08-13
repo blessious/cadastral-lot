@@ -14,8 +14,8 @@ If `server_config.env` does not exist, the setup script creates it from `server_
 
 Required values:
 
-- `DB_SERVER`: SQL Server host and port, for example `127.0.0.1,1433`
-- `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`: SQL Server database login
+- `DB_SERVER`: login SQL Server host and port, for example `127.0.0.1,1433`
+- `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`: login SQL Server database login
 - `APP_HOST`, `APP_PORT`, `PUBLIC_URL`: local bind address, local port, and public URL
 - `NEXT_ALLOWED_DEV_ORIGINS`: comma-separated hosts allowed to access the dev server
 - `AUTH_SECRET`: random 32+ character session signing secret
@@ -25,6 +25,16 @@ Start the app with:
 ```bat
 boac-gis\run.bat
 ```
+
+### Update map taxpayer data
+
+Map and search data do not query ETRACS at runtime. To rebuild static GeoJSON owner data from `CLN with taxpayerName.csv`, run this from the repository root:
+
+```bat
+python build_unified_data.py
+```
+
+The script embeds `Owner`, `TaxDecNo`, and `Land_Class` into `boac-gis\public\geojson` and regenerates `search_index.json`.
 
 ### Configure administrator login
 

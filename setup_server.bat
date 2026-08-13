@@ -16,7 +16,7 @@ if not exist "%PROJECT_ROOT%server_config.env" (
         echo [ACTION REQUIRED] Edit this file before continuing:
         echo   %PROJECT_ROOT%server_config.env
         echo.
-        echo Set DB_SERVER, DB_USERNAME, DB_PASSWORD, PUBLIC_URL, and AUTH_SECRET.
+        echo Set login DB values, PUBLIC_URL, APP_HOST, APP_PORT, and AUTH_SECRET.
         pause
         exit /b 1
     )
@@ -103,9 +103,8 @@ echo.
 echo [OK] Server setup completed.
 echo.
 echo Manual checks:
-echo   1. Install Microsoft ODBC Driver for SQL Server if pyodbc cannot connect.
-echo   2. Confirm server_config.env has the server PC SQL Server and public URL values.
-echo   3. Create or update the login user with: cd boac-gis ^&^& npm run auth:setup
-echo   4. Start the app with boac-gis\run.bat
+echo   1. Confirm server_config.env has the server PC login SQL and public URL values.
+echo   2. Create or update the login user with: cd boac-gis ^&^& npm run auth:setup
+echo   3. Start the app with boac-gis\run.bat
 echo.
 pause
