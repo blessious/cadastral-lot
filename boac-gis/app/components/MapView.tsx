@@ -54,10 +54,10 @@ type SearchRecord = {
 const DEFAULT_CENTER: [number, number] = [13.4477, 121.8472];
 const DEFAULT_ZOOM = 13;
 const SELECT_ZOOM = 20;
-const LOT_LABEL_MIN_ZOOM_DESKTOP = SELECT_ZOOM;
-const LOT_LABEL_MIN_ZOOM_MOBILE = 17;
+const LOT_LABEL_MIN_ZOOM_DESKTOP = 18;
+const LOT_LABEL_MIN_ZOOM_MOBILE = 18;
 const LOT_LABEL_CLASS =
-  "bg-white/80 backdrop-blur-[2px] border border-[#0051d5]/20 px-2 py-0.5 rounded text-[9px] md:text-xs text-[#0051d5] font-bold shadow-sm text-center lot-label-tooltip lot-label-hidden leading-none pointer-events-none";
+  "bg-white/80 backdrop-blur-[2px] border border-[#0051d5]/20 px-2 py-0.5 rounded text-[9px] md:text-xs text-[#0051d5] font-bold shadow-sm text-center lot-label-tooltip leading-none pointer-events-none";
 
 const LAND_CLASS_COLORS: Record<string, string> = {
   agricultural: "#a3e635",    // Vibrant Lime Green
@@ -343,7 +343,7 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
 
   useEffect(() => {
     requestAnimationFrame(updateLotLabelVisibility);
-  }, [showLotNumbers, activeFiles, updateLotLabelVisibility]);
+  }, [showLotNumbers, activeFiles, geojsonByFile, updateLotLabelVisibility]);
 
   const toggleFile = useCallback(
     async (file: string) => {
