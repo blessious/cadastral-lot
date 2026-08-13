@@ -1,0 +1,16 @@
+.env
+.env.*
+server_config.env
+server_config.local.bat
+copy_to_server.log
+repair-sqlexpress-auth.status.txt
+
+.venv/
+__pycache__/
+*.pyc
+
+boac-gis/.env*.local
+boac-gis/.next/
+boac-gis/node_modules/
+boac-gis/jake.next.jake/
+boac-gis/next-dev*.log

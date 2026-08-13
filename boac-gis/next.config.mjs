@@ -3,8 +3,11 @@ import fs from "node:fs";
 import path from "node:path";
 
 function readRootEnv() {
-  const envPath = path.resolve(process.cwd(), "..", "server_config.env");
-  if (!fs.existsSync(envPath)) {
+  const envPath = ["server_config.env", ".env"]
+    .map((file) => path.resolve(process.cwd(), "..", file))
+    .find((file) => fs.existsSync(file));
+
+  if (!envPath) {
     return {};
   }
 
@@ -22,6 +25,10 @@ function readRootEnv() {
 }
 
 const rootEnv = readRootEnv();
+for (const [key, value] of Object.entries(rootEnv)) {
+  process.env[key] ||= value;
+}
+
 const allowedDevOrigins = (
   process.env.NEXT_ALLOWED_DEV_ORIGINS ||
   rootEnv.NEXT_ALLOWED_DEV_ORIGINS ||

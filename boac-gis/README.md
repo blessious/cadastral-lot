@@ -2,6 +2,30 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
+### Server PC setup
+
+From the repository root, run:
+
+```bat
+setup_server.bat
+```
+
+If `server_config.env` does not exist, the setup script creates it from `server_config.example.env` and stops so you can edit the server-only values. Keep `server_config.env` local to each PC; it is intentionally ignored by Git.
+
+Required values:
+
+- `DB_SERVER`: SQL Server host and port, for example `127.0.0.1,1433`
+- `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`: SQL Server database login
+- `APP_HOST`, `APP_PORT`, `PUBLIC_URL`: local bind address, local port, and public URL
+- `NEXT_ALLOWED_DEV_ORIGINS`: comma-separated hosts allowed to access the dev server
+- `AUTH_SECRET`: random 32+ character session signing secret
+
+Start the app with:
+
+```bat
+boac-gis\run.bat
+```
+
 ### Configure administrator login
 
 Authentication fails closed until the user table and session-signing secret are configured. Create or update a SQL-backed user:
@@ -10,7 +34,7 @@ Authentication fails closed until the user table and session-signing secret are 
 npm run auth:setup
 ```
 
-The command creates `dbo.gis_users` in the configured SQL Server database and stores only a scrypt password hash. If it prints an `AUTH_SECRET`, copy that value into `../server_config.env` and `../server_config.bat`. Sessions are signed, HTTP-only, SameSite cookies and expire after eight hours. Five failed login attempts from the same client and username are blocked for 15 minutes.
+The command creates `dbo.gis_users` in the configured SQL Server database and stores only a scrypt password hash. If it prints an `AUTH_SECRET`, copy that value into `../server_config.env`. Sessions are signed, HTTP-only, SameSite cookies and expire after eight hours. Five failed login attempts from the same client and username are blocked for 15 minutes.
 
 First, run the development server:
 

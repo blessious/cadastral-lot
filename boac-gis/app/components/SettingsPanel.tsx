@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { Layers, LogOut, X, ChevronDown, Map, Satellite } from "lucide-react";
+import { Layers, LogOut, X, ChevronDown } from "lucide-react";
 import { logout } from "@/app/login/actions";
 
 type BarangayIndexEntry = {

@@ -53,17 +53,19 @@ async function readHidden(question) {
 
 async function readConfig() {
   const values = { ...process.env };
-  try {
-    const text = await readFile(resolve("..", "server_config.env"), "utf8");
-    for (const rawLine of text.split(/\r?\n/)) {
-      const line = rawLine.trim();
-      if (!line || line.startsWith("#") || !line.includes("=")) continue;
-      const separator = line.indexOf("=");
-      const key = line.slice(0, separator).trim();
-      if (!values[key]) values[key] = line.slice(separator + 1).trim();
+  for (const fileName of ["server_config.env", ".env"]) {
+    try {
+      const text = await readFile(resolve("..", fileName), "utf8");
+      for (const rawLine of text.split(/\r?\n/)) {
+        const line = rawLine.trim();
+        if (!line || line.startsWith("#") || !line.includes("=")) continue;
+        const separator = line.indexOf("=");
+        const key = line.slice(0, separator).trim();
+        if (!values[key]) values[key] = line.slice(separator + 1).trim();
+      }
+    } catch {
+      // Environment variables alone are also supported.
     }
-  } catch {
-    // Environment variables alone are also supported.
   }
   return values;
 }
@@ -71,7 +73,7 @@ async function readConfig() {
 const config = await readConfig();
 const [server, portText] = (config.DB_SERVER ?? "").split(",", 2);
 if (!server || !config.DB_DATABASE || !config.DB_USERNAME || !config.DB_PASSWORD) {
-  console.error("Database settings are missing from ../server_config.env.");
+  console.error("Database settings are missing from ../server_config.env, ../.env, or the process environment.");
   process.exit(1);
 }
 
@@ -151,7 +153,7 @@ try {
 
   console.log(`\nUser '${username}' was saved to dbo.gis_users.`);
   if (!config.AUTH_SECRET || config.AUTH_SECRET.length < 32) {
-    console.log("Add this server-only value to server_config.env and server_config.bat:");
+    console.log("Add this server-only value to server_config.env:");
     console.log(`AUTH_SECRET=${randomBytes(48).toString("base64url")}`);
   }
 } finally {

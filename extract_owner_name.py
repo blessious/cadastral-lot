@@ -81,6 +81,10 @@ def fetch_owner_map(conn):
                ON rpu.objid = td.rpuid
         WHERE td.tdno IS NOT NULL
           AND td.state NOT IN ('CANCELLED')
+          AND (rpu.objid IS NULL OR (
+              rpu.state NOT IN ('CANCELLED')
+              AND rpu.type = 'LAND'
+          ))
     """
     cursor = conn.cursor()
     print("[...] Fetching owner names from ETRACS (this may take a moment)...")

@@ -4,6 +4,24 @@ setlocal
 set "PROJECT_ROOT=%~dp0"
 set "WEB_DIR=%PROJECT_ROOT%boac-gis"
 set "VENV_DIR=%PROJECT_ROOT%.venv"
+
+if not exist "%PROJECT_ROOT%server_config.env" (
+    if exist "%PROJECT_ROOT%.env" (
+        echo Creating server_config.env from existing .env...
+        copy /Y "%PROJECT_ROOT%.env" "%PROJECT_ROOT%server_config.env" >nul
+    ) else (
+        echo Creating server_config.env from server_config.example.env...
+        copy /Y "%PROJECT_ROOT%server_config.example.env" "%PROJECT_ROOT%server_config.env" >nul
+        echo.
+        echo [ACTION REQUIRED] Edit this file before continuing:
+        echo   %PROJECT_ROOT%server_config.env
+        echo.
+        echo Set DB_SERVER, DB_USERNAME, DB_PASSWORD, PUBLIC_URL, and AUTH_SECRET.
+        pause
+        exit /b 1
+    )
+)
+
 call "%PROJECT_ROOT%server_config.bat"
 
 echo.
@@ -73,7 +91,6 @@ if errorlevel 1 (
 
 echo.
 echo [4/4] Building web app...
-copy /Y "%PROJECT_ROOT%server_config.env" "%WEB_DIR%\.env.local" >nul
 npm run build
 if errorlevel 1 (
     popd
@@ -87,7 +104,8 @@ echo [OK] Server setup completed.
 echo.
 echo Manual checks:
 echo   1. Install Microsoft ODBC Driver for SQL Server if pyodbc cannot connect.
-echo   2. Edit the DB IP in build_unified_data.py and extract_owner_name.py if needed.
-echo   3. Start the app with boac-gis\run.bat
+echo   2. Confirm server_config.env has the server PC SQL Server and public URL values.
+echo   3. Create or update the login user with: cd boac-gis ^&^& npm run auth:setup
+echo   4. Start the app with boac-gis\run.bat
 echo.
 pause

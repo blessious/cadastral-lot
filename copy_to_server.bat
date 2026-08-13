@@ -33,11 +33,12 @@ if %RC% LEQ 7 (
     echo.
     echo [OK] Copy completed. Robocopy exit code: %RC%
     echo.
-    echo On the server PC:
-    echo   1. Edit the DB IP in build_unified_data.py and extract_owner_name.py if needed.
-    echo   2. In boac-gis, run npm install once before running the app.
-    echo.
-    pause
+echo On the server PC:
+    echo   1. Run setup_server.bat.
+    echo   2. Edit server_config.env if the SQL Server, public URL, or port changed.
+    echo   3. Start the app with boac-gis\run.bat.
+echo.
+pause
     exit /b 0
 )
 

@@ -65,7 +65,7 @@ python build_unified_data.py
 
 ### Script Tasks
 The script automatically:
-1.  Connects to the database (192.168.1.93).
+1.  Connects to the database configured in `server_config.env`.
 2.  Builds a lookup map for all 30,000+ records.
 3.  Processes all 70+ barangay GeoJSON files.
 4.  Saves the updated files to the `boac-gis` web folder.

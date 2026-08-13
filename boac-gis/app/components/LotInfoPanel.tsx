@@ -116,7 +116,7 @@ export default function LotInfoPanel({ selectedFeature, onClose }: LotInfoPanelP
         // turf returns [longitude, latitude], standard is lat, lng
         centerCoords = [c.geometry.coordinates[1], c.geometry.coordinates[0]];
       }
-    } catch (e) {
+    } catch {
       // fallback if centroid fails
     }
   }
