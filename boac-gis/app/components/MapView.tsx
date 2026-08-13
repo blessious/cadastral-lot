@@ -123,7 +123,7 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
   const [activeFiles, setActiveFiles] = useState<Set<string>>(new Set());
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [isLocating, setIsLocating] = useState(false);
-  const [showLotNumbers, setShowLotNumbers] = useState(false);
+  const [showLotNumbers, setShowLotNumbers] = useState(true);
   const [autoLoadBarangay, setAutoLoadBarangay] = useState(true);
   const [currentZoom, setCurrentZoom] = useState(DEFAULT_ZOOM);
   const [isMobileViewport, setIsMobileViewport] = useState(false);
