@@ -1,9 +1,9 @@
-import { randomBytes, scryptSync } from "node:crypto";
+import { randomBytes, randomUUID, scryptSync } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { createInterface } from "node:readline/promises";
 import { stdin, stdout } from "node:process";
-import sql from "mssql";
+import mysql from "mysql2/promise";
 
 async function readHidden(question) {
   if (!stdin.isTTY || typeof stdin.setRawMode !== "function") {
@@ -70,13 +70,66 @@ async function readConfig() {
   return values;
 }
 
-const config = await readConfig();
-const [server, portText] = (config.DB_SERVER ?? "").split(",", 2);
-if (!server || !config.DB_DATABASE || !config.DB_USERNAME || !config.DB_PASSWORD) {
-  console.error("Database settings are missing from ../server_config.env, ../.env, or the process environment.");
-  process.exit(1);
+function getMySqlConfig(values) {
+  const legacyServer = values.DB_SERVER?.trim();
+  const [legacyHost, legacyPortText] = legacyServer ? legacyServer.split(",", 2) : ["", ""];
+  const host = values.DB_HOST?.trim() || legacyHost || "127.0.0.1";
+  const port = Number(values.DB_PORT?.trim() || legacyPortText || "3306");
+  const database = values.DB_DATABASE?.trim() || "cadastral_auth";
+  const user = values.DB_USERNAME?.trim() || values.DB_USER?.trim() || "root";
+  const password = values.DB_PASSWORD ?? "";
+
+  if (!host || !database || !user) {
+    console.error("MySQL settings are incomplete.");
+    process.exit(1);
+  }
+  if (!Number.isInteger(port) || port < 1 || port > 65535) {
+    console.error("DB_PORT must be a valid TCP port.");
+    process.exit(1);
+  }
+  if (!/^[A-Za-z0-9_$]+$/.test(database)) {
+    console.error("DB_DATABASE must contain only letters, numbers, underscore, or dollar sign.");
+    process.exit(1);
+  }
+
+  return { host, port, database, user, password };
 }
 
+async function initializeAuthDatabase(config) {
+  const connection = await mysql.createConnection({
+    host: config.host,
+    port: config.port,
+    user: config.user,
+    password: config.password,
+    multipleStatements: false,
+  });
+
+  try {
+    await connection.query(
+      `CREATE DATABASE IF NOT EXISTS \`${config.database}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci`,
+    );
+    await connection.changeUser({ database: config.database });
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS gis_users (
+        id CHAR(36) NOT NULL PRIMARY KEY,
+        username VARCHAR(100) NOT NULL,
+        password_hash VARCHAR(255) NOT NULL,
+        display_name VARCHAR(150) NULL,
+        role VARCHAR(30) NOT NULL DEFAULT 'viewer',
+        is_active TINYINT(1) NOT NULL DEFAULT 1,
+        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        last_login_at TIMESTAMP NULL,
+        UNIQUE KEY uq_gis_users_username (username),
+        CONSTRAINT ck_gis_users_role CHECK (role IN ('admin', 'viewer'))
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    `);
+  } finally {
+    await connection.end();
+  }
+}
+
+const config = getMySqlConfig(await readConfig());
 const prompt = createInterface({ input: stdin, output: stdout });
 const username = (await prompt.question("Username to create or update: ")).trim().toLowerCase();
 const displayName = (await prompt.question("Display name: ")).trim();
@@ -99,63 +152,35 @@ const hash = scryptSync(password, salt, 64, {
 });
 const passwordHash = `scrypt$16384$8$1$${salt.toString("base64url")}$${hash.toString("base64url")}`;
 
-const pool = await new sql.ConnectionPool({
-  server,
-  port: portText ? Number(portText) : 1433,
-  database: config.DB_DATABASE,
-  user: config.DB_USERNAME,
-  password: config.DB_PASSWORD,
-  options: {
-    encrypt: config.DB_ENCRYPT === "true",
-    trustServerCertificate: config.DB_TRUST_SERVER_CERTIFICATE !== "false",
-  },
-}).connect();
+await initializeAuthDatabase(config);
+const pool = mysql.createPool({
+  host: config.host,
+  port: config.port,
+  database: config.database,
+  user: config.user,
+  password: config.password,
+  connectionLimit: 2,
+});
 
 try {
-  await pool.request().query(`
-    IF OBJECT_ID(N'dbo.gis_users', N'U') IS NULL
-    BEGIN
-      CREATE TABLE dbo.gis_users (
-        id UNIQUEIDENTIFIER NOT NULL CONSTRAINT PK_gis_users PRIMARY KEY DEFAULT NEWID(),
-        username NVARCHAR(100) NOT NULL,
-        password_hash NVARCHAR(255) NOT NULL,
-        display_name NVARCHAR(150) NULL,
-        role NVARCHAR(30) NOT NULL CONSTRAINT DF_gis_users_role DEFAULT N'viewer',
-        is_active BIT NOT NULL CONSTRAINT DF_gis_users_active DEFAULT 1,
-        created_at DATETIME2(0) NOT NULL CONSTRAINT DF_gis_users_created DEFAULT SYSUTCDATETIME(),
-        updated_at DATETIME2(0) NOT NULL CONSTRAINT DF_gis_users_updated DEFAULT SYSUTCDATETIME(),
-        last_login_at DATETIME2(0) NULL,
-        CONSTRAINT CK_gis_users_role CHECK (role IN (N'admin', N'viewer')),
-        CONSTRAINT UQ_gis_users_username UNIQUE (username)
-      );
-    END
-  `);
+  await pool.execute(
+    `
+      INSERT INTO gis_users (id, username, password_hash, display_name, role, is_active)
+      VALUES (?, ?, ?, ?, ?, 1)
+      ON DUPLICATE KEY UPDATE
+        password_hash = VALUES(password_hash),
+        display_name = VALUES(display_name),
+        role = VALUES(role),
+        is_active = 1
+    `,
+    [randomUUID(), username, passwordHash, displayName || null, role],
+  );
 
-  await pool
-    .request()
-    .input("username", sql.NVarChar(100), username)
-    .input("passwordHash", sql.NVarChar(255), passwordHash)
-    .input("displayName", sql.NVarChar(150), displayName || null)
-    .input("role", sql.NVarChar(30), role)
-    .query(`
-      IF EXISTS (SELECT 1 FROM dbo.gis_users WHERE username = @username)
-        UPDATE dbo.gis_users
-        SET password_hash = @passwordHash,
-            display_name = @displayName,
-            role = @role,
-            is_active = 1,
-            updated_at = SYSUTCDATETIME()
-        WHERE username = @username;
-      ELSE
-        INSERT dbo.gis_users (username, password_hash, display_name, role)
-        VALUES (@username, @passwordHash, @displayName, @role);
-    `);
-
-  console.log(`\nUser '${username}' was saved to dbo.gis_users.`);
+  console.log(`\nUser '${username}' was saved to ${config.database}.gis_users.`);
   if (!config.AUTH_SECRET || config.AUTH_SECRET.length < 32) {
     console.log("Add this server-only value to server_config.env:");
     console.log(`AUTH_SECRET=${randomBytes(48).toString("base64url")}`);
   }
 } finally {
-  await pool.close();
+  await pool.end();
 }

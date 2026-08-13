@@ -14,8 +14,8 @@ If `server_config.env` does not exist, the setup script creates it from `server_
 
 Required values:
 
-- `DB_SERVER`: login SQL Server host and port, for example `127.0.0.1,1433`
-- `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`: login SQL Server database login
+- `DB_HOST`, `DB_PORT`: login MySQL host and port, usually `127.0.0.1` and `3306`
+- `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`: login MySQL database settings. The app creates the database and `gis_users` table if they do not exist.
 - `APP_HOST`, `APP_PORT`, `PUBLIC_URL`: local bind address, local port, and public URL
 - `NEXT_ALLOWED_DEV_ORIGINS`: comma-separated hosts allowed to access the dev server
 - `AUTH_SECRET`: random 32+ character session signing secret
@@ -38,13 +38,13 @@ The script embeds `Owner`, `TaxDecNo`, and `Land_Class` into `boac-gis\public\ge
 
 ### Configure administrator login
 
-Authentication fails closed until the user table and session-signing secret are configured. Create or update a SQL-backed user:
+Authentication fails closed until the user table and session-signing secret are configured. Create or update a MySQL-backed user:
 
 ```bash
 npm run auth:setup
 ```
 
-The command creates `dbo.gis_users` in the configured SQL Server database and stores only a scrypt password hash. If it prints an `AUTH_SECRET`, copy that value into `../server_config.env`. Sessions are signed, HTTP-only, SameSite cookies and expire after eight hours. Five failed login attempts from the same client and username are blocked for 15 minutes.
+The command creates the configured MySQL database and `gis_users` table if missing, then stores only a scrypt password hash. If it prints an `AUTH_SECRET`, copy that value into `../server_config.env`. Sessions are signed, HTTP-only, SameSite cookies and expire after eight hours. Five failed login attempts from the same client and username are blocked for 15 minutes.
 
 First, run the development server:
 

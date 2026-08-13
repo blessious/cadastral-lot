@@ -103,7 +103,7 @@ echo.
 echo [OK] Server setup completed.
 echo.
 echo Manual checks:
-echo   1. Confirm server_config.env has the server PC login SQL and public URL values.
+echo   1. Confirm server_config.env has the server PC MySQL auth and public URL values.
 echo   2. Create or update the login user with: cd boac-gis ^&^& npm run auth:setup
 echo   3. Start the app with boac-gis\run.bat
 echo.

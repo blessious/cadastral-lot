@@ -1,6 +1,6 @@
 # Cadastral Data Architecture Reference
 
-This project now uses static GeoJSON as the runtime source for map and search data. SQL Server is used only by the web app login system.
+This project now uses static GeoJSON as the runtime source for map and search data. MySQL is used only by the web app login system.
 
 ## Overview
 
@@ -46,11 +46,12 @@ Embedded properties:
 - `TaxDecNo` from CSV `tdno`
 - `Land_Class` from CSV `classTitle`
 
-## Runtime SQL
+## Runtime Auth Database
 
-The web runtime still uses SQL Server for authentication only:
+The web runtime uses MySQL for authentication only:
 
-- `dbo.gis_users` stores login users and scrypt password hashes.
+- `gis_users` stores login users and scrypt password hashes.
+- The app creates the configured MySQL database and `gis_users` table if they do not exist.
 - `boac-gis/lib/users.ts` reads and updates login rows.
 - `boac-gis/scripts/setup-auth-db.mjs` creates or updates login users.
 

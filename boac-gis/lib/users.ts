@@ -1,8 +1,8 @@
 import "server-only";
 
-import sql from "mssql";
+import type { RowDataPacket } from "mysql2";
 
-import { getSqlPool } from "@/lib/db";
+import { getMySqlPool } from "@/lib/db";
 
 export type AuthUser = {
   id: string;
@@ -11,23 +11,26 @@ export type AuthUser = {
   role: string;
 };
 
-export async function findActiveUserByUsername(username: string): Promise<AuthUser | null> {
-  const pool = await getSqlPool();
-  const result = await pool
-    .request()
-    .input("username", sql.NVarChar(100), username.trim().toLowerCase())
-    .query<{
-      id: string;
-      username: string;
-      password_hash: string;
-      role: string;
-    }>(`
-      SELECT TOP (1) id, username, password_hash, role
-      FROM dbo.gis_users
-      WHERE username = @username AND is_active = 1
-    `);
+type AuthUserRow = RowDataPacket & {
+  id: string;
+  username: string;
+  password_hash: string;
+  role: string;
+};
 
-  const user = result.recordset[0];
+export async function findActiveUserByUsername(username: string): Promise<AuthUser | null> {
+  const pool = await getMySqlPool();
+  const [rows] = await pool.execute<AuthUserRow[]>(
+    `
+      SELECT id, username, password_hash, role
+      FROM gis_users
+      WHERE username = ? AND is_active = 1
+      LIMIT 1
+    `,
+    [username.trim().toLowerCase()],
+  );
+
+  const user = rows[0];
   return user
     ? {
         id: user.id,
@@ -39,9 +42,6 @@ export async function findActiveUserByUsername(username: string): Promise<AuthUs
 }
 
 export async function recordSuccessfulLogin(userId: string): Promise<void> {
-  const pool = await getSqlPool();
-  await pool
-    .request()
-    .input("id", sql.UniqueIdentifier, userId)
-    .query("UPDATE dbo.gis_users SET last_login_at = SYSUTCDATETIME() WHERE id = @id");
+  const pool = await getMySqlPool();
+  await pool.execute("UPDATE gis_users SET last_login_at = UTC_TIMESTAMP() WHERE id = ?", [userId]);
 }

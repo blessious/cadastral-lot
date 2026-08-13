@@ -41,8 +41,8 @@ const allowedDevOrigins = (
 const nextConfig = {
   allowedDevOrigins,
   experimental: {
-    // The SQL driver relies on runtime class methods that webpack cannot safely bundle.
-    serverComponentsExternalPackages: ["mssql"],
+    // The MySQL driver relies on Node runtime APIs and should stay external.
+    serverComponentsExternalPackages: ["mysql2"],
   },
 };
 

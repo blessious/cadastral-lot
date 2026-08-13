@@ -35,7 +35,7 @@ if %RC% LEQ 7 (
     echo.
 echo On the server PC:
     echo   1. Run setup_server.bat.
-    echo   2. Edit server_config.env if the login SQL Server, public URL, or port changed.
+    echo   2. Edit server_config.env if the login MySQL, public URL, or port changed.
     echo   3. Start the app with boac-gis\run.bat.
 echo.
 pause

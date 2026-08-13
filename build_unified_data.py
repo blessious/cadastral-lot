@@ -7,8 +7,8 @@ ETRACS SQL Server.
 Source data:
     CLN with taxpayerName.csv
 
-The web app reads only static files for map/search data. SQL Server remains
-used by the Next.js app only for login through dbo.gis_users.
+The web app reads only static files for map/search data. MySQL is used only
+for login credentials through gis_users.
 
 Usage:
     python build_unified_data.py
