@@ -155,6 +155,7 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
 
     const zoom = map.getZoom();
     const canShowLabels = showLotNumbers && zoom >= lotLabelMinZoom;
+    const visibleBounds = map.getBounds().pad(0.08);
 
     layerByIdRef.current.forEach((layer, featureId) => {
       const feature = getLayerFeature(layer);
@@ -162,11 +163,13 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
       const isSelected = selectedIdRef.current === featureId;
       let shouldShow = canShowLabels && Boolean(label);
 
-      if (shouldShow && zoom < SELECT_ZOOM && !isSelected) {
+      if (shouldShow && !isSelected) {
         const bounds = (layer as L.Path & { getBounds: () => L.LatLngBounds }).getBounds();
         if (!bounds.isValid()) {
           shouldShow = false;
-        } else {
+        } else if (!visibleBounds.intersects(bounds)) {
+          shouldShow = false;
+        } else if (zoom < SELECT_ZOOM) {
           const northWest = map.latLngToContainerPoint(bounds.getNorthWest());
           const southEast = map.latLngToContainerPoint(bounds.getSouthEast());
           const pixelWidth = Math.abs(southEast.x - northWest.x);
@@ -179,6 +182,13 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
             pixelWidth >= estimatedLabelWidth + 10 &&
             pixelHeight >= estimatedLabelHeight + 8 &&
             pixelWidth * pixelHeight >= minArea;
+        }
+      } else if (shouldShow) {
+        const bounds = (layer as L.Path & { getBounds: () => L.LatLngBounds }).getBounds();
+        if (!bounds.isValid()) {
+          shouldShow = false;
+        } else {
+          shouldShow = visibleBounds.intersects(bounds);
         }
       }
 
