@@ -20,6 +20,14 @@ type SearchRecord = {
   __uid?: string;
 };
 
+type IndexedSearchRecord = SearchRecord & {
+  searchText: string;
+  clnSearch: string;
+  alnSearch: string;
+  pinSearch: string;
+  ownerSearch: string;
+};
+
 type SearchBarProps = {
   onSelect: (record: SearchRecord) => void;
   activeFiles: ReadonlySet<string>;
@@ -28,7 +36,7 @@ type SearchBarProps = {
 const MAX_RESULTS = 50;
 
 export default function SearchBar({ onSelect, activeFiles }: SearchBarProps) {
-  const [searchIndex, setSearchIndex] = useState<SearchRecord[]>([]);
+  const [searchIndex, setSearchIndex] = useState<IndexedSearchRecord[]>([]);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchRecord[]>([]);
   const [open, setOpen] = useState(false);
@@ -40,13 +48,30 @@ export default function SearchBar({ onSelect, activeFiles }: SearchBarProps) {
   const [searchError, setSearchError] = useState(false);
 
   useEffect(() => {
-    fetch(`/geojson/search_index.json?v=${Date.now()}`)
+    fetch("/geojson/search_index.json")
       .then((response) => {
         if (!response.ok) throw new Error("Network response was not ok");
         return response.json();
       })
       .then((data: SearchRecord[]) => {
-        setSearchIndex(data);
+        setSearchIndex(
+          data.map((item) => {
+            const clnSearch = item.CLN?.toLowerCase() ?? "";
+            const alnSearch = item.ALN?.toLowerCase() ?? "";
+            const pinSearch = item.PIN?.toLowerCase() ?? "";
+            const ownerSearch = item.Owner?.toLowerCase() ?? "";
+            const barangaySearch = item.Barangay?.toLowerCase() ?? "";
+
+            return {
+              ...item,
+              clnSearch,
+              alnSearch,
+              pinSearch,
+              ownerSearch,
+              searchText: `${clnSearch} ${alnSearch} ${pinSearch} ${ownerSearch} ${barangaySearch}`,
+            };
+          })
+        );
         setSearchError(false);
       })
       .catch((error) => {
@@ -55,6 +80,15 @@ export default function SearchBar({ onSelect, activeFiles }: SearchBarProps) {
         setSearchError(true);
       });
   }, []);
+
+  const activeFilesKey = useMemo(() => Array.from(activeFiles).sort().join("|"), [activeFiles]);
+
+  const activeSearchRecords = useMemo(() => {
+    if (!activeFilesKey) {
+      return [];
+    }
+    return searchIndex.filter((item) => activeFiles.has(item.file));
+  }, [activeFiles, activeFilesKey, searchIndex]);
 
   useEffect(() => {
     if (debounceRef.current) {
@@ -67,54 +101,35 @@ export default function SearchBar({ onSelect, activeFiles }: SearchBarProps) {
         setOpen(false);
         return;
       }
-      const filtered = searchIndex.filter((item) => {
-        if (!activeFiles.has(item.file)) {
-          return false;
-        }
-        const cln = item.CLN?.toLowerCase() ?? "";
-        const aln = item.ALN?.toLowerCase() ?? "";
-        const pin = item.PIN?.toLowerCase() ?? "";
-        const barangay = item.Barangay?.toLowerCase() ?? "";
-        const owner = item.Owner?.toLowerCase() ?? "";
-        return (
-          cln.includes(trimmed) ||
-          aln.includes(trimmed) ||
-          pin.includes(trimmed) ||
-          barangay.includes(trimmed) ||
-          owner.includes(trimmed)
-        );
-      });
 
-      filtered.sort((a, b) => {
-        const aCln = a.CLN?.toLowerCase() ?? "";
-        const bCln = b.CLN?.toLowerCase() ?? "";
-        const aAln = a.ALN?.toLowerCase() ?? "";
-        const bAln = b.ALN?.toLowerCase() ?? "";
-        const aPin = a.PIN?.toLowerCase() ?? "";
-        const bPin = b.PIN?.toLowerCase() ?? "";
-        const aOwner = a.Owner?.toLowerCase() ?? "";
-        const bOwner = b.Owner?.toLowerCase() ?? "";
+      const scored: Array<{ item: IndexedSearchRecord; score: number }> = [];
 
-        const aExactId = (aCln === trimmed || aAln === trimmed || aPin === trimmed) ? 2 :
-                         ((aCln.startsWith(trimmed) || aAln.startsWith(trimmed) || aPin.startsWith(trimmed)) ? 1 : 0);
-        const bExactId = (bCln === trimmed || bAln === trimmed || bPin === trimmed) ? 2 :
-                         ((bCln.startsWith(trimmed) || bAln.startsWith(trimmed) || bPin.startsWith(trimmed)) ? 1 : 0);
-        
-        if (aExactId !== bExactId) {
-          return bExactId - aExactId;
+      for (const item of activeSearchRecords) {
+        if (!item.searchText.includes(trimmed)) {
+          continue;
         }
 
-        const aExactOwner = aOwner === trimmed ? 2 : (aOwner.startsWith(trimmed) ? 1 : 0);
-        const bExactOwner = bOwner === trimmed ? 2 : (bOwner.startsWith(trimmed) ? 1 : 0);
-        
-        if (aExactOwner !== bExactOwner) {
-          return bExactOwner - aExactOwner;
+        let score = 0;
+        if (item.clnSearch === trimmed || item.alnSearch === trimmed || item.pinSearch === trimmed) {
+          score = 40;
+        } else if (
+          item.clnSearch.startsWith(trimmed) ||
+          item.alnSearch.startsWith(trimmed) ||
+          item.pinSearch.startsWith(trimmed)
+        ) {
+          score = 30;
+        } else if (item.ownerSearch === trimmed) {
+          score = 20;
+        } else if (item.ownerSearch.startsWith(trimmed)) {
+          score = 10;
         }
 
-        return 0;
-      });
+        scored.push({ item, score });
+      }
 
-      setResults(filtered.slice(0, MAX_RESULTS));
+      scored.sort((a, b) => b.score - a.score);
+
+      setResults(scored.slice(0, MAX_RESULTS).map((entry) => entry.item));
       setOpen(true);
     }, 300);
     return () => {
@@ -122,7 +137,7 @@ export default function SearchBar({ onSelect, activeFiles }: SearchBarProps) {
         clearTimeout(debounceRef.current);
       }
     };
-  }, [activeFiles, query, searchIndex]);
+  }, [activeSearchRecords, query]);
 
   useEffect(() => {
     const handleClick = (event: MouseEvent) => {

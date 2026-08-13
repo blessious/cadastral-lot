@@ -14,3 +14,4 @@ boac-gis/.next/
 boac-gis/node_modules/
 boac-gis/jake.next.jake/
 boac-gis/next-dev*.log
+boac-gis/next-start*.log

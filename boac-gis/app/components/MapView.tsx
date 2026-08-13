@@ -123,7 +123,7 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
   const [activeFiles, setActiveFiles] = useState<Set<string>>(new Set());
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [isLocating, setIsLocating] = useState(false);
-  const [showLotNumbers, setShowLotNumbers] = useState(true);
+  const [showLotNumbers, setShowLotNumbers] = useState(false);
   const [autoLoadBarangay, setAutoLoadBarangay] = useState(true);
   const [currentZoom, setCurrentZoom] = useState(DEFAULT_ZOOM);
   const [isMobileViewport, setIsMobileViewport] = useState(false);
@@ -140,6 +140,7 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
   const layerByIdRef = useRef<Map<string, L.Path>>(new Map());
   const selectedIdRef = useRef<string | null>(null);
   const suppressMapClickRef = useRef(false);
+  const lastCoordUpdateRef = useRef(0);
   const watchIdRef = useRef<number | null>(null);
   const hasInitialLocateRef = useRef(false);
 
@@ -156,12 +157,6 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
     const canShowLabels = showLotNumbers && zoom >= lotLabelMinZoom;
 
     layerByIdRef.current.forEach((layer, featureId) => {
-      const tooltip = layer.getTooltip();
-      const element = tooltip?.getElement();
-      if (!element) {
-        return;
-      }
-
       const feature = getLayerFeature(layer);
       const label = getFeatureLabel(feature);
       const isSelected = selectedIdRef.current === featureId;
@@ -187,7 +182,18 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
         }
       }
 
-      element.classList.toggle("lot-label-hidden", !shouldShow);
+      if (shouldShow) {
+        if (!layer.getTooltip()) {
+          layer.bindTooltip(label, {
+            permanent: true,
+            direction: "center",
+            className: LOT_LABEL_CLASS
+          });
+        }
+        layer.getTooltip()?.getElement()?.classList.remove("lot-label-hidden");
+      } else if (layer.getTooltip()) {
+        layer.unbindTooltip();
+      }
     });
   }, [isMobileViewport, lotLabelMinZoom, showLotNumbers]);
 
@@ -336,21 +342,6 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
   }, [autoLoadBarangay, barangayIndex, activeFiles, ensureBarangayLoaded, toast]);
 
   useEffect(() => {
-    layerByIdRef.current.forEach((layer) => {
-      const lotFeature = getLayerFeature(layer);
-      const label = getFeatureLabel(lotFeature);
-      if (showLotNumbers && label) {
-        if (!layer.getTooltip()) {
-          layer.bindTooltip(label, {
-            permanent: true,
-            direction: "center",
-            className: LOT_LABEL_CLASS
-          });
-        }
-      } else {
-        layer.unbindTooltip();
-      }
-    });
     requestAnimationFrame(updateLotLabelVisibility);
   }, [showLotNumbers, activeFiles, updateLotLabelVisibility]);
 
@@ -560,7 +551,7 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
             
             if (featureId) {
               layerByIdRef.current.set(featureId, layer as L.Path);
-              if (showLotNumbers && featureLabel) {
+              if (showLotNumbers && featureLabel && selectedIdRef.current === featureId) {
                 layer.bindTooltip(featureLabel, {
                   permanent: true,
                   direction: "center",
@@ -569,6 +560,11 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
               }
             }
             layer.on({
+              remove: () => {
+                if (featureId) {
+                  layerByIdRef.current.delete(featureId);
+                }
+              },
               mouseover: () => {
                 (layer as L.Path).setStyle(
                   featureId && selectedIdRef.current === featureId ? SELECTED_STYLE : HOVER_STYLE
@@ -603,7 +599,11 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
         requestAnimationFrame(updateLotLabelVisibility);
       },
       mousemove: (e) => {
-        setCoords({ lat: e.latlng.lat, lng: e.latlng.lng });
+        const now = performance.now();
+        if (now - lastCoordUpdateRef.current >= 120) {
+          lastCoordUpdateRef.current = now;
+          setCoords({ lat: e.latlng.lat, lng: e.latlng.lng });
+        }
       },
       click: () => {
         if (suppressMapClickRef.current) {
@@ -623,6 +623,7 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
         zoom={DEFAULT_ZOOM}
         maxZoom={30}
         zoomControl={false}
+        preferCanvas
         className="h-full w-full"
         ref={mapRef}
       >
