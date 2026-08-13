@@ -35,9 +35,10 @@ graph TD
 ## Join Rules
 
 - Primary key: exact `PIN` from GeoJSON to `pin` from the CSV.
-- Fallback key: normalized first token of GeoJSON `CLN` to CSV `cadastralLotNo`.
-- CLN fallback is used only when that CLN maps to one taxpayer payload globally.
-- Ambiguous CLN-only matches are skipped so the system does not guess the wrong taxpayer.
+- Conflicting duplicate CSV `pin` values are skipped so the system does not pick a last-row winner.
+- Fallback key: normalized first token of GeoJSON `CLN` plus GeoJSON `Barangay` to CSV `cadastralLotNo` plus CSV `location`.
+- CLN fallback is used only when that `(CLN, barangay)` pair maps to one taxpayer payload.
+- Unsafe/unmatched owner fields are cleared so stale embedded names are not shown.
 
 Embedded properties:
 
