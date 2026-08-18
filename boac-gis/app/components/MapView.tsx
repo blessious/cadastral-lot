@@ -126,6 +126,7 @@ export default function MapView({ selectedFeature, setSelectedFeature, canManage
   const [isLocating, setIsLocating] = useState(false);
   const [showLotNumbers, setShowLotNumbers] = useState(true);
   const [autoLoadBarangay, setAutoLoadBarangay] = useState(true);
+  const [locationBarangayFile, setLocationBarangayFile] = useState<string | null>(null);
   const [currentZoom, setCurrentZoom] = useState(DEFAULT_ZOOM);
   const [isMobileViewport, setIsMobileViewport] = useState(false);
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
@@ -296,6 +297,79 @@ export default function MapView({ selectedFeature, setSelectedFeature, canManage
     },
     [toast] // stable — toast never changes, so this callback is created only once
   );
+  const findBarangayAtCoordinate = useCallback(
+    async (latitude: number, longitude: number) => {
+      const targetPoint = point([longitude, latitude]);
+      const matchingCandidates = barangayIndex.filter((b) => {
+        const [minLon, minLat, maxLon, maxLat] = b.bbox;
+        return longitude >= minLon && longitude <= maxLon && latitude >= minLat && latitude <= maxLat;
+      });
+
+      let trueBarangay: BarangayIndexEntry | null = null;
+      for (const candidate of matchingCandidates) {
+        const data = await ensureBarangayLoaded(candidate.file);
+        if (!data) continue;
+        const isInside = (data.features as LotFeature[]).some((feature) => {
+          if (!feature?.geometry) return false;
+          // @ts-expect-error valid GeoJSON polygon feature for turf.
+          return booleanPointInPolygon(targetPoint, feature);
+        });
+        if (isInside) {
+          trueBarangay = candidate;
+          break;
+        }
+      }
+
+      return trueBarangay || matchingCandidates[0] || null;
+    },
+    [barangayIndex, ensureBarangayLoaded]
+  );
+
+  const turnOnLocationBarangay = useCallback(
+    async (latitude: number, longitude: number, messagePrefix = "Loaded") => {
+      const barangayToLoad = await findBarangayAtCoordinate(latitude, longitude);
+      if (!barangayToLoad) {
+        return;
+      }
+
+      setLocationBarangayFile(barangayToLoad.file);
+      let wasActive = false;
+      setActiveFiles((prev) => {
+        wasActive = prev.has(barangayToLoad.file);
+        if (wasActive) {
+          return prev;
+        }
+        return new Set(prev).add(barangayToLoad.file);
+      });
+      if (!wasActive) {
+        toast({ title: `${messagePrefix} ${barangayToLoad.name} based on location` });
+      }
+    },
+    [findBarangayAtCoordinate, toast]
+  );
+
+  const handleLocationBarangayToggle = useCallback(
+    (enabled: boolean) => {
+      setAutoLoadBarangay(enabled);
+
+      if (!enabled) {
+        if (locationBarangayFile) {
+          setActiveFiles((prev) => {
+            const next = new Set(prev);
+            next.delete(locationBarangayFile);
+            return next;
+          });
+        }
+        setLocationBarangayFile(null);
+        return;
+      }
+
+      if (userLocation) {
+        void turnOnLocationBarangay(userLocation.lat, userLocation.lng);
+      }
+    },
+    [locationBarangayFile, turnOnLocationBarangay, userLocation]
+  );
 
   useEffect(() => {
     if ("geolocation" in navigator) {
@@ -313,27 +387,7 @@ export default function MapView({ selectedFeature, setSelectedFeature, canManage
             }
             if (autoLoadBarangay) {
               setTimeout(async () => {
-                const targetPoint = point([longitude, latitude]);
-                const matchingCandidates = barangayIndex.filter((b) => {
-                  const [minLon, minLat, maxLon, maxLat] = b.bbox;
-                  return longitude >= minLon && longitude <= maxLon && latitude >= minLat && latitude <= maxLat;
-                });
-                let trueBarangay = null;
-                for (const candidate of matchingCandidates) {
-                  const data = await ensureBarangayLoaded(candidate.file);
-                  if (!data) continue;
-                  const isInside = (data.features as LotFeature[]).some((feature) => {
-                    if (!feature?.geometry) return false;
-                    // @ts-expect-error valid
-                    return booleanPointInPolygon(targetPoint, feature);
-                  });
-                  if (isInside) { trueBarangay = candidate; break; }
-                }
-                const barangayToLoad = trueBarangay || matchingCandidates[0];
-                if (barangayToLoad && !activeFiles.has(barangayToLoad.file)) {
-                  setActiveFiles((prev) => new Set(prev).add(barangayToLoad.file));
-                  toast({ title: `Auto-loaded ${barangayToLoad.name} based on initial location` });
-                }
+                await turnOnLocationBarangay(latitude, longitude, "Auto-loaded");
               }, 2600);
             }
           }
@@ -350,7 +404,7 @@ export default function MapView({ selectedFeature, setSelectedFeature, canManage
         navigator.geolocation.clearWatch(watchIdRef.current);
       }
     };
-  }, [autoLoadBarangay, barangayIndex, activeFiles, ensureBarangayLoaded, toast]);
+  }, [autoLoadBarangay, turnOnLocationBarangay]);
 
   useEffect(() => {
     requestAnimationFrame(updateLotLabelVisibility);
@@ -487,33 +541,7 @@ export default function MapView({ selectedFeature, setSelectedFeature, canManage
           const targetPoint = point([longitude, latitude]);
 
           if (autoLoadBarangay) {
-            const matchingCandidates = barangayIndex.filter((b) => {
-              const [minLon, minLat, maxLon, maxLat] = b.bbox;
-              return longitude >= minLon && longitude <= maxLon && latitude >= minLat && latitude <= maxLat;
-            });
-
-            let trueBarangay = null;
-            for (const candidate of matchingCandidates) {
-              const data = await ensureBarangayLoaded(candidate.file);
-              if (!data) continue;
-
-              const isInside = (data.features as LotFeature[]).some((feature) => {
-                if (!feature?.geometry) return false;
-                // @ts-expect-error valid format
-                return booleanPointInPolygon(targetPoint, feature);
-              });
-
-              if (isInside) {
-                trueBarangay = candidate;
-                break;
-              }
-            }
-
-            const barangayToLoad = trueBarangay || matchingCandidates[0];
-            if (barangayToLoad && !activeFiles.has(barangayToLoad.file)) {
-              setActiveFiles((prev) => new Set(prev).add(barangayToLoad.file));
-              toast({ title: `Loaded ${barangayToLoad.name} based on location` });
-            }
+            await turnOnLocationBarangay(latitude, longitude);
           }
 
           const matched = featuresRef.current.find((feature) => {
@@ -536,7 +564,7 @@ export default function MapView({ selectedFeature, setSelectedFeature, canManage
       },
       { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 }
     );
-  }, [selectFeature, toast, autoLoadBarangay, barangayIndex, activeFiles, ensureBarangayLoaded]);
+  }, [selectFeature, toast, autoLoadBarangay, turnOnLocationBarangay]);
 
   const GeoLayers = useMemo(() => {
     return Array.from(activeFiles).map((file) => {
@@ -691,7 +719,7 @@ export default function MapView({ selectedFeature, setSelectedFeature, canManage
           showLotNumbers={showLotNumbers}
           setShowLotNumbers={setShowLotNumbers}
           autoLoadBarangay={autoLoadBarangay}
-          setAutoLoadBarangay={setAutoLoadBarangay}
+          setAutoLoadBarangay={handleLocationBarangayToggle}
           basemap={basemap}
           setBasemap={setBasemap}
           activeLandClasses={activeLandClasses}

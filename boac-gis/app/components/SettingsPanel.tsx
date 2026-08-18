@@ -165,11 +165,11 @@ export default function SettingsPanel({
         <div
           className={`fixed bottom-0 left-0 right-0 z-[1100] flex flex-col glass-panel
             rounded-t-2xl md:rounded-xl overflow-hidden
-            md:absolute md:bottom-8 md:right-[380px] md:left-auto md:w-[300px]
-            ${isOpen ? `opacity-100 h-[85vh] md:h-auto ${sheetMode === "half" ? "translate-y-[40vh] md:translate-y-0" : "translate-y-0"}` : "pointer-events-none translate-y-full opacity-0 md:translate-y-0 md:scale-95"}`}
+            md:absolute md:bottom-8 md:right-[380px] md:left-auto md:w-[400px]
+            ${isOpen ? `opacity-100 h-[92vh] md:h-auto ${sheetMode === "half" ? "translate-y-[32vh] md:translate-y-0" : "translate-y-0"}` : "pointer-events-none translate-y-full opacity-0 md:translate-y-0 md:scale-95"}`}
           style={{ 
-            maxHeight: "85vh",
-            transform: isDragging ? `translateY(calc(${sheetMode === "half" ? "40vh" : "0px"} + ${dragOffset}px))` : undefined,
+            maxHeight: "92vh",
+            transform: isDragging ? `translateY(calc(${sheetMode === "half" ? "32vh" : "0px"} + ${dragOffset}px))` : undefined,
             transition: isDragging ? 'none' : 'transform 0.2s cubic-bezier(0.1, 0.9, 0.2, 1)'
           }}
           onTouchStart={handleTouchStart}
