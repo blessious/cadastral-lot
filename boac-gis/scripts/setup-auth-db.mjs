@@ -52,8 +52,8 @@ async function readHidden(question) {
 }
 
 async function readConfig() {
-  const values = { ...process.env };
-  for (const fileName of ["server_config.env", ".env"]) {
+  const values = {};
+  for (const fileName of [".env", "server_config.env"]) {
     try {
       const text = await readFile(resolve("..", fileName), "utf8");
       for (const rawLine of text.split(/\r?\n/)) {
@@ -61,11 +61,14 @@ async function readConfig() {
         if (!line || line.startsWith("#") || !line.includes("=")) continue;
         const separator = line.indexOf("=");
         const key = line.slice(0, separator).trim();
-        if (!values[key]) values[key] = line.slice(separator + 1).trim();
+        values[key] = line.slice(separator + 1).trim();
       }
     } catch {
       // Environment variables alone are also supported.
     }
+  }
+  for (const [key, value] of Object.entries(process.env)) {
+    if (value !== undefined) values[key] = value;
   }
   return values;
 }
