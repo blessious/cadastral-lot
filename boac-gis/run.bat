@@ -3,95 +3,93 @@ setlocal
 
 REM ======================================
 REM LGU CAD MAPS START SCRIPT
-REM Reverse Proxy Ready
+REM Rebuilds and restarts the pulled version
 REM ======================================
 
+title LGU CAD Maps
+
 call "%~dp0..\server_config.bat"
+if errorlevel 1 (
+    echo [ERROR] Could not load server_config.bat.
+    pause
+    exit /b 1
+)
 
 set "HOST=%APP_HOST%"
 set "PORT=%APP_PORT%"
 set "URL=http://%HOST%:%PORT%"
 
 pushd "%~dp0"
-
 if errorlevel 1 (
-    echo Could not open web app folder:
+    echo [ERROR] Could not open web app folder:
     echo %~dp0
     pause
     exit /b 1
 )
 
-
 echo ======================================
 echo   Starting LGU CAD Maps
 echo ======================================
 echo.
-echo Folder: %CD%
-echo Local:  %URL%
-echo Public: %PUBLIC_URL%
+echo Folder:  %CD%
+echo Local:   %URL%
+echo Public:  %PUBLIC_URL%
 echo.
 
-
-REM Check if already running
-
-powershell -NoProfile -ExecutionPolicy Bypass -Command ^
-"try { $r = Invoke-WebRequest -UseBasicParsing '%URL%' -TimeoutSec 5; if ($r.StatusCode -ge 200 -and $r.StatusCode -lt 500) { exit 0 } else { exit 2 } } catch { exit 1 }"
-
-
-if %ERRORLEVEL% EQU 0 (
-
-    echo Application already running.
-    echo.
-    echo Local:
-    echo %URL%
-    echo.
-    echo Public:
-    echo %PUBLIC_URL%
-
-    popd
-    pause
-    exit /b 0
-)
-
-
-
-REM Check occupied port
-
-for /f "tokens=5" %%P in ('netstat -ano -p tcp ^| findstr /R /C:":%PORT% .*LISTENING"') do set "BUSY_PID=%%P"
-
-if defined BUSY_PID (
-
-    echo Port %PORT% is already used by PID %BUSY_PID%
-    echo.
-    echo Stop using:
-    echo taskkill /PID %BUSY_PID% /F
-
+where npm >nul 2>nul
+if errorlevel 1 (
+    echo [ERROR] Node.js/npm was not found.
+    echo Install Node.js LTS first, then run this file again.
     popd
     pause
     exit /b 1
 )
 
-
-
-REM Clear Next cache
-
-if exist ".next" (
-
-    echo Clearing old Next.js cache...
-
-    rmdir /S /Q ".next"
-
-    echo.
-
+echo Checking existing app process on port %PORT%...
+set "FOUND="
+for /f "tokens=5" %%P in ('netstat -ano -p tcp ^| findstr /R /C:":%PORT% .*LISTENING"') do (
+    set "FOUND=1"
+    echo Stopping existing process PID %%P...
+    taskkill /PID %%P /F
 )
 
+if not defined FOUND (
+    echo No existing process found on port %PORT%.
+)
 
+echo.
+echo Installing dependencies if needed...
+if not exist "node_modules\next" (
+    if exist "package-lock.json" (
+        npm ci
+    ) else (
+        npm install
+    )
+    if errorlevel 1 (
+        echo [ERROR] Failed to install web app dependencies.
+        popd
+        pause
+        exit /b 1
+    )
+) else (
+    echo Dependencies already installed.
+)
 
-REM Start NextJS
+echo.
+echo Building latest pulled code...
+npm run build
+if errorlevel 1 (
+    echo [ERROR] Build failed. Fix the error above before starting the app.
+    popd
+    pause
+    exit /b 1
+)
 
-npx next dev --hostname "%HOST%" --port "%PORT%"
-
+echo.
+echo Starting production server...
+echo Press Ctrl+C to stop this window-run server.
+echo.
+npx next start -H "%HOST%" -p "%PORT%"
 
 popd
-
 pause
