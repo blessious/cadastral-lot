@@ -54,6 +54,17 @@
   html {
     @apply font-sans;
   }
+
+  input[type="password"]::-ms-reveal,
+  input[type="password"]::-ms-clear {
+    display: none;
+  }
+
+  input[type="password"]::-webkit-credentials-auto-fill-button,
+  input[type="password"]::-webkit-caps-lock-indicator {
+    visibility: hidden;
+    pointer-events: none;
+  }
 }
 
 /* ── Glass Panel ───────────────────────────────────────────── */
