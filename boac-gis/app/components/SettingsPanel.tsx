@@ -224,12 +224,6 @@ export default function SettingsPanel({
                   </span>
                   <Toggle checked={showLotNumbers} onChange={setShowLotNumbers} />
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-[13px] text-[var(--on-surface)]">
-                    Auto-load Barangay Cadastral
-                  </span>
-                  <Toggle checked={autoLoadBarangay} onChange={setAutoLoadBarangay} />
-                </div>
                 {/* Basemap toggle */}
                 <div className="flex items-center justify-between">
                   <span className="text-[13px] text-[var(--on-surface)]">Satellite View</span>
@@ -238,6 +232,24 @@ export default function SettingsPanel({
                     onChange={(v) => setBasemap(v ? "satellite" : "streets")}
                   />
                 </div>
+              </div>
+            </section>
+
+            {/* -- Current Location -- */}
+            <section>
+              <h4 className="text-[10px] font-semibold uppercase tracking-widest text-[var(--on-surface-variant)] mb-3">
+                Current Location
+              </h4>
+              <div className="space-y-2">
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-[13px] text-[var(--on-surface)]">
+                    Barangay Shape
+                  </span>
+                  <Toggle checked={autoLoadBarangay} onChange={setAutoLoadBarangay} />
+                </div>
+                <p className="text-[11px] leading-4 text-[var(--on-surface-variant)]">
+                  When on, current location automatically turns on the matching barangay shape.
+                </p>
               </div>
             </section>
 
