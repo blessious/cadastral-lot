@@ -212,7 +212,7 @@ export default function LotInfoPanel({ selectedFeature, onClose }: LotInfoPanelP
             {fields.map((field) => (
               <div
                 key={field.label}
-                className="rounded-xl bg-white/50 border border-white/30 px-4 py-3 group"
+                className="glass-field group rounded-lg px-4 py-3"
               >
                 <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--on-surface-variant)] mb-0.5">
                   {field.label}
@@ -224,7 +224,7 @@ export default function LotInfoPanel({ selectedFeature, onClose }: LotInfoPanelP
                   {field.label === "Coordinates (Center)" && (
                     <button
                       onClick={handleCopyCoords}
-                      className="p-1.5 rounded-md hover:bg-white text-[var(--on-surface-variant)] transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100"
+                      className="rounded-md p-1.5 text-[var(--on-surface-variant)] opacity-0 transition-colors hover:bg-[var(--glass-field-hover)] group-hover:opacity-100 focus:opacity-100"
                       title="Copy Coordinates"
                     >
                       {copied ? <Check className="h-3.5 w-3.5 text-green-600" /> : <Copy className="h-3.5 w-3.5" />}

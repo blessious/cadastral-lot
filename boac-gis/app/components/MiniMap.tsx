@@ -5,7 +5,15 @@ import { useEffect, useRef, useState } from "react";
 import { useMap } from "react-leaflet";
 import { Map as MapLucide, Minus } from "lucide-react";
 
-export default function MiniMap({ basemap }: { basemap: "streets" | "satellite" }) {
+type MiniMapProps = {
+  basemap: "streets" | "satellite";
+  theme: "light" | "dark";
+};
+
+const LIGHT_STREETS_TILE_URL = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+const SATELLITE_TILE_URL = "https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}";
+
+export default function MiniMap({ basemap, theme }: MiniMapProps) {
   const mainMap = useMap();
   const minimapContainerRef = useRef<HTMLDivElement>(null);
   const minimapRef = useRef<L.Map | null>(null);
@@ -64,7 +72,7 @@ export default function MiniMap({ basemap }: { basemap: "streets" | "satellite" 
     };
   }, [mainMap]);
 
-  // Update tile layer when basemap changes
+  // Update tile layer when basemap or theme changes
   useEffect(() => {
     if (minimapRef.current) {
       if (layerRef.current) {
@@ -72,12 +80,15 @@ export default function MiniMap({ basemap }: { basemap: "streets" | "satellite" 
       }
       
       const url = basemap === "streets"
-        ? "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        : "https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}";
+        ? LIGHT_STREETS_TILE_URL
+        : SATELLITE_TILE_URL;
         
-      layerRef.current = L.tileLayer(url, { maxZoom: 20 }).addTo(minimapRef.current);
+      layerRef.current = L.tileLayer(url, {
+        className: theme === "dark" && basemap === "streets" ? "map-tiles map-tiles-filtered" : "map-tiles",
+        maxZoom: 20,
+      }).addTo(minimapRef.current);
     }
-  }, [basemap]);
+  }, [basemap, theme]);
 
   // Force map to recalculate size when the container expands/collapses
   useEffect(() => {
@@ -115,8 +126,8 @@ export default function MiniMap({ basemap }: { basemap: "streets" | "satellite" 
         onClick={() => setIsExpanded(!isExpanded)}
         className={`absolute z-[1010] flex items-center justify-center transition-all text-[var(--on-surface-variant)] hover:text-[var(--on-surface)] ${
           isExpanded 
-            ? "top-1 right-1 h-6 w-6 rounded-lg bg-white/70 hover:bg-white/90 backdrop-blur-md shadow-sm border border-white/30" 
-            : "inset-0 h-full w-full bg-white/70 hover:bg-white/90 backdrop-blur-md"
+            ? "top-1 right-1 h-6 w-6 rounded-lg glass-field glass-field-hover shadow-sm"
+            : "inset-0 h-full w-full glass-field glass-field-hover"
         }`}
         title={isExpanded ? "Collapse overview map" : "Expand overview map"}
       >

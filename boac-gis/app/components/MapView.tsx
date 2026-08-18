@@ -5,7 +5,7 @@ import "leaflet/dist/leaflet.css";
 import { booleanPointInPolygon, point } from "@turf/turf";
 import type { Feature, FeatureCollection, GeoJsonProperties, Geometry } from "geojson";
 import L from "leaflet";
-import { Satellite, Map as MapIcon } from "lucide-react";
+import { Minus, Plus, Satellite, Map as MapIcon } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { GeoJSON, MapContainer, Marker, TileLayer, useMapEvents } from "react-leaflet";
 
@@ -13,6 +13,7 @@ import GPSButton from "./GPSButton";
 import SearchBar from "./SearchBar";
 import SettingsPanel from "./SettingsPanel";
 import MiniMap from "./MiniMap";
+import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 
 // Fix Leaflet default icon paths in Next.js.
@@ -52,9 +53,13 @@ type SearchRecord = {
   file: string;
 };
 
+type ThemeMode = "light" | "dark";
+
 const DEFAULT_CENTER: [number, number] = [13.4477, 121.8472];
 const DEFAULT_ZOOM = 13;
 const SELECT_ZOOM = 20;
+const LIGHT_STREETS_TILE_URL = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+const SATELLITE_TILE_URL = "https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}";
 const LOT_LABEL_MIN_ZOOM_DESKTOP = 18;
 const LOT_LABEL_MIN_ZOOM_MOBILE = 18;
 const LOT_LABEL_CLASS =
@@ -117,6 +122,14 @@ function getLayerFeature(layer: L.Path): LotFeature | undefined {
   return (layer as L.Path & { feature?: LotFeature }).feature;
 }
 
+function getCurrentTheme(): ThemeMode {
+  const selectedTheme = document.documentElement.dataset.theme;
+  if (selectedTheme === "dark" || selectedTheme === "light") {
+    return selectedTheme;
+  }
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
+
 export default function MapView({ selectedFeature, setSelectedFeature, canManageUsers = false }: MapViewProps) {
   const { toast } = useToast();
   const [barangayIndex, setBarangayIndex] = useState<BarangayIndexEntry[]>([]);
@@ -131,6 +144,8 @@ export default function MapView({ selectedFeature, setSelectedFeature, canManage
   const [isMobileViewport, setIsMobileViewport] = useState(false);
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [basemap, setBasemap] = useState<"streets" | "satellite">("satellite");
+  const [theme, setTheme] = useState<ThemeMode>("light");
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const [activeLandClasses, setActiveLandClasses] = useState<Set<string>>(
     new Set([...Object.keys(LAND_CLASS_COLORS), "unknown"])
   );
@@ -148,6 +163,16 @@ export default function MapView({ selectedFeature, setSelectedFeature, canManage
 
   const selectedId = getFeatureId(selectedFeature ?? undefined);
   const lotLabelMinZoom = isMobileViewport ? LOT_LABEL_MIN_ZOOM_MOBILE : LOT_LABEL_MIN_ZOOM_DESKTOP;
+
+  const handleSettingsOpenChange = useCallback(
+    (open: boolean) => {
+      setSettingsOpen(open);
+      if (open && isMobileViewport && selectedFeature) {
+        setSelectedFeature(null);
+      }
+    },
+    [isMobileViewport, selectedFeature, setSelectedFeature]
+  );
 
   const updateLotLabelVisibility = useCallback(() => {
     const map = mapRef.current;
@@ -218,6 +243,21 @@ export default function MapView({ selectedFeature, setSelectedFeature, canManage
     handleViewportChange();
     mediaQuery.addEventListener("change", handleViewportChange);
     return () => mediaQuery.removeEventListener("change", handleViewportChange);
+  }, []);
+
+  useEffect(() => {
+    const themeMediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const syncTheme = () => setTheme(getCurrentTheme());
+    const observer = new MutationObserver(syncTheme);
+
+    syncTheme();
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+    themeMediaQuery.addEventListener("change", syncTheme);
+
+    return () => {
+      observer.disconnect();
+      themeMediaQuery.removeEventListener("change", syncTheme);
+    };
   }, []);
 
   const getDefaultStyle = useCallback((feature?: LotFeature): L.PathOptions => {
@@ -297,6 +337,7 @@ export default function MapView({ selectedFeature, setSelectedFeature, canManage
     },
     [toast] // stable — toast never changes, so this callback is created only once
   );
+
   const findBarangayAtCoordinate = useCallback(
     async (latitude: number, longitude: number) => {
       const targetPoint = point([longitude, latitude]);
@@ -305,7 +346,7 @@ export default function MapView({ selectedFeature, setSelectedFeature, canManage
         return longitude >= minLon && longitude <= maxLon && latitude >= minLat && latitude <= maxLat;
       });
 
-      let trueBarangay: BarangayIndexEntry | null = null;
+      let trueBarangay = null;
       for (const candidate of matchingCandidates) {
         const data = await ensureBarangayLoaded(candidate.file);
         if (!data) continue;
@@ -566,6 +607,14 @@ export default function MapView({ selectedFeature, setSelectedFeature, canManage
     );
   }, [selectFeature, toast, autoLoadBarangay, turnOnLocationBarangay]);
 
+  const handleZoomIn = useCallback(() => {
+    mapRef.current?.zoomIn();
+  }, []);
+
+  const handleZoomOut = useCallback(() => {
+    mapRef.current?.zoomOut();
+  }, []);
+
   const GeoLayers = useMemo(() => {
     return Array.from(activeFiles).map((file) => {
       const data = geojsonByFile[file];
@@ -668,15 +717,19 @@ export default function MapView({ selectedFeature, setSelectedFeature, canManage
       >
         {basemap === "streets" ? (
           <TileLayer
+            key={`streets-${theme}`}
+            className="map-tiles"
             attribution="&copy; OpenStreetMap contributors"
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            url={LIGHT_STREETS_TILE_URL}
             maxZoom={30}
             maxNativeZoom={19}
           />
         ) : (
           <TileLayer
+            key={`satellite-${theme}`}
+            className="map-tiles"
             attribution="&copy; Google"
-            url="https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}"
+            url={SATELLITE_TILE_URL}
             maxZoom={30}
             maxNativeZoom={20}
           />
@@ -688,52 +741,80 @@ export default function MapView({ selectedFeature, setSelectedFeature, canManage
         ) : null}
         
         {/* Dynamic Mini-Map Overview */}
-        <MiniMap basemap={basemap} />
+        <MiniMap basemap={basemap} theme={theme} />
       </MapContainer>
 
       <SearchBar onSelect={handleSearchSelect} activeFiles={activeFiles} canManageUsers={canManageUsers} />
       
-      {/* FAB Cluster — bottom-right */}
+      {/* Map controls */}
       <div
-        className={`absolute z-[1000] flex flex-col items-center gap-2 glass-panel rounded-2xl p-2 transition-all duration-300 ${
-          selectedFeature ? "bottom-[52vh] right-4 md:bottom-8 md:right-[336px]" : "bottom-8 right-4"
+        className={`absolute right-3 top-[5.25rem] z-[1000] flex flex-col gap-2 md:top-24 ${
+          selectedFeature ? "md:right-[21rem]" : "md:right-4"
         }`}
       >
-        {/* Basemap toggle */}
-        <button
-          onClick={() => setBasemap(basemap === "streets" ? "satellite" : "streets")}
-          className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/70 text-[var(--on-surface-variant)] shadow-sm backdrop-blur-md transition-all hover:-translate-y-0.5 hover:bg-white/90 hover:shadow-md"
-          title={basemap === "streets" ? "Switch to Satellite" : "Switch to Streets"}
-        >
-          {basemap === "streets" ? <Satellite className="h-4 w-4" /> : <MapIcon className="h-4 w-4" />}
-        </button>
+        <div className="glass-panel flex flex-col overflow-hidden rounded-lg p-1">
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            onClick={handleZoomIn}
+            className="map-control-button"
+            title="Zoom in"
+            aria-label="Zoom in"
+          >
+            <Plus className="h-4 w-4" />
+          </Button>
+          <div className="mx-1 h-px bg-[var(--outline-variant)]/60" />
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            onClick={handleZoomOut}
+            className="map-control-button"
+            title="Zoom out"
+            aria-label="Zoom out"
+          >
+            <Minus className="h-4 w-4" />
+          </Button>
+        </div>
 
-        {/* Divider */}
-        <div className="h-px w-6 bg-[var(--outline-variant)]/40" />
+        <div className="glass-panel flex flex-col gap-1 rounded-lg p-1">
+          <GPSButton onLocate={handleLocate} isLocating={isLocating} />
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            onClick={() => setBasemap(basemap === "streets" ? "satellite" : "streets")}
+            className="map-control-button"
+            title={basemap === "streets" ? "Switch to satellite" : "Switch to streets"}
+            aria-label={basemap === "streets" ? "Switch to satellite" : "Switch to streets"}
+          >
+            {basemap === "streets" ? <Satellite className="h-4 w-4" /> : <MapIcon className="h-4 w-4" />}
+          </Button>
+        </div>
 
-        {/* Settings Panel trigger */}
-        <SettingsPanel
-          barangays={barangayIndex}
-          activeFiles={activeFiles}
-          toggleFile={toggleFile}
-          showLotNumbers={showLotNumbers}
-          setShowLotNumbers={setShowLotNumbers}
-          autoLoadBarangay={autoLoadBarangay}
-          setAutoLoadBarangay={handleLocationBarangayToggle}
-          basemap={basemap}
-          setBasemap={setBasemap}
-          activeLandClasses={activeLandClasses}
-          toggleLandClass={toggleLandClass}
-          landClasses={[...Object.keys(LAND_CLASS_COLORS), "unknown"]}
-        />
-
-        {/* GPS / My Location */}
-        <GPSButton onLocate={handleLocate} isLocating={isLocating} />
+        <div className="glass-panel rounded-lg p-1">
+          <SettingsPanel
+            barangays={barangayIndex}
+            activeFiles={activeFiles}
+            toggleFile={toggleFile}
+            showLotNumbers={showLotNumbers}
+            setShowLotNumbers={setShowLotNumbers}
+            autoLoadBarangay={autoLoadBarangay}
+            setAutoLoadBarangay={handleLocationBarangayToggle}
+            activeLandClasses={activeLandClasses}
+            toggleLandClass={toggleLandClass}
+            landClasses={[...Object.keys(LAND_CLASS_COLORS), "unknown"]}
+            isOpen={settingsOpen}
+            onOpenChange={handleSettingsOpenChange}
+            detailsOpen={Boolean(selectedFeature)}
+          />
+        </div>
       </div>
 
-      {/* Coordinate Bar — bottom center */}
-      <div className="absolute bottom-3 md:bottom-4 left-1/2 -translate-x-1/2 z-[1000] glass-panel px-3 md:px-4 py-1.5 md:py-2 rounded-full w-auto max-w-[95%]">
-        <div className="coord-bar flex items-center justify-center gap-3 md:gap-4 text-[var(--on-surface)] text-[10px] md:text-[12px] whitespace-nowrap">
+      {/* Coordinates */}
+      <div className="absolute bottom-3 left-1/2 z-[1000] w-auto max-w-[calc(100%-8rem)] -translate-x-1/2 rounded-md glass-panel px-2.5 py-1 md:bottom-4 md:max-w-[calc(100%-28rem)] md:px-3">
+        <div className="coord-bar flex items-center justify-center gap-2.5 whitespace-nowrap text-[10px] text-[var(--on-surface)] md:gap-3 md:text-[11px]">
           <span>
             LAT:{" "}
             <span className="text-[#0051d5] font-semibold">

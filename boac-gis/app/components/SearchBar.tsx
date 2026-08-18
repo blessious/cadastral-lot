@@ -3,9 +3,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { X, Search, LogOut, User, UserPlus } from "lucide-react";
+import { X, Search, LogOut, User, Moon, Sun, UserPlus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { logout } from "@/app/login/actions";
+import { Button } from "@/components/ui/button";
 
 type SearchRecord = {
   CLN?: string;
@@ -36,6 +37,7 @@ type SearchBarProps = {
 };
 
 const MAX_RESULTS = 50;
+type ThemeMode = "light" | "dark";
 
 export default function SearchBar({ onSelect, activeFiles, canManageUsers = false }: SearchBarProps) {
   const [searchIndex, setSearchIndex] = useState<IndexedSearchRecord[]>([]);
@@ -43,11 +45,34 @@ export default function SearchBar({ onSelect, activeFiles, canManageUsers = fals
   const [results, setResults] = useState<SearchRecord[]>([]);
   const [open, setOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [theme, setTheme] = useState<ThemeMode>("light");
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const userMenuRef = useRef<HTMLDivElement | null>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const [searchError, setSearchError] = useState(false);
+
+  useEffect(() => {
+    const storedTheme = window.localStorage.getItem("geolgu-theme");
+    const initialTheme =
+      storedTheme === "light" || storedTheme === "dark"
+        ? storedTheme
+        : window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light";
+
+    setTheme(initialTheme);
+    document.documentElement.dataset.theme = initialTheme;
+  }, []);
+
+  const toggleTheme = () => {
+    setTheme((current) => {
+      const next = current === "dark" ? "light" : "dark";
+      document.documentElement.dataset.theme = next;
+      window.localStorage.setItem("geolgu-theme", next);
+      return next;
+    });
+  };
 
   useEffect(() => {
     fetch("/geojson/search_index.json")
@@ -174,7 +199,7 @@ export default function SearchBar({ onSelect, activeFiles, canManageUsers = fals
     if (searchError) {
       return (
         <div className="absolute top-full left-0 right-0 z-30 mt-2 rounded-xl glass-panel overflow-hidden">
-          <div className="px-4 py-4 text-center text-sm text-red-500 font-medium bg-white/80">
+          <div className="px-4 py-4 text-center text-sm text-red-500 font-medium">
             Failed to load search database. Please refresh the page.
           </div>
         </div>
@@ -184,7 +209,7 @@ export default function SearchBar({ onSelect, activeFiles, canManageUsers = fals
     if (query.trim() && !hasResults) {
       return (
         <div className="absolute top-full left-0 right-0 z-30 mt-2 rounded-xl glass-panel overflow-hidden">
-          <div className="px-4 py-4 text-center text-sm text-[var(--on-surface-variant)] bg-white/80">
+          <div className="px-4 py-4 text-center text-sm text-[var(--on-surface-variant)]">
             No results found in the turned-on barangays for &quot;{query}&quot;
           </div>
         </div>
@@ -194,14 +219,14 @@ export default function SearchBar({ onSelect, activeFiles, canManageUsers = fals
     if (!hasResults) return null;
 
     return (
-      <div className="absolute top-full left-0 right-0 z-30 mt-2 rounded-xl glass-panel overflow-hidden shadow-xl border border-white/40">
-        <ul className="max-h-80 overflow-y-auto custom-scrollbar py-1.5 text-sm bg-white/95 backdrop-blur-md">
+      <div className="absolute top-full left-0 right-0 z-30 mt-2 rounded-lg glass-panel overflow-hidden shadow-xl">
+        <ul className="max-h-80 overflow-y-auto custom-scrollbar py-1.5 text-sm">
           {results.map((item, index) => {
             const landClass = item.Land_Class ?? item.LAND_CLASS;
             return (
               <li key={`${item.CLN ?? "lot"}-${index}`}>
                 <button
-                  className="flex w-full flex-col gap-0.5 px-4 py-2.5 text-left transition-colors hover:bg-blue-50/60"
+                  className="glass-field-hover flex w-full flex-col gap-0.5 px-4 py-2.5 text-left transition-colors"
                   onClick={() => {
                     onSelect(item);
                     setOpen(false);
@@ -237,7 +262,7 @@ export default function SearchBar({ onSelect, activeFiles, canManageUsers = fals
 
   return (
     /* Top Navigation Bar */
-    <nav className="absolute top-5 left-1/2 -translate-x-1/2 z-[1000] w-[95%] max-w-3xl glass-panel rounded-xl flex items-center px-4 h-14 gap-4">
+    <nav className="absolute top-3 left-1/2 -translate-x-1/2 z-[1000] flex h-12 w-[calc(100%-1.5rem)] max-w-3xl items-center gap-3 rounded-lg glass-panel px-3 md:top-4 md:h-14 md:px-4">
       {/* Brand — Boac Logo */}
       <div className="flex items-center gap-2.5 shrink-0">
         <Image
@@ -254,7 +279,7 @@ export default function SearchBar({ onSelect, activeFiles, canManageUsers = fals
       </div>
 
       {/* Divider */}
-      <div className="h-6 w-px bg-[var(--outline-variant)] shrink-0" />
+      <div className="h-6 w-px bg-[var(--outline-variant)] shrink-0 hidden sm:block" />
 
       {/* Search */}
       <div ref={wrapperRef} className="relative flex-1 min-w-0">
@@ -264,8 +289,8 @@ export default function SearchBar({ onSelect, activeFiles, canManageUsers = fals
         />
         <input
           className={cn(
-            "w-full pl-9 pr-8 py-2 rounded-lg bg-white/50 border border-[var(--outline-variant)]/60 text-[13px] text-[var(--on-surface)] placeholder:text-[var(--on-surface-variant)]",
-            "focus:outline-none focus:ring-2 focus:ring-[#0051d5]/30 focus:border-[#0051d5]/50 focus:bg-white/80 transition-all"
+            "glass-input w-full rounded-lg border py-2 pl-9 pr-8 text-[13px] text-[var(--on-surface)] placeholder:text-[var(--on-surface-variant)]",
+            "focus:outline-none focus:ring-2 focus:ring-[#0051d5]/30 focus:border-[#0051d5]/50 transition-all"
           )}
           placeholder="Search within turned-on barangays…"
           value={query}
@@ -283,8 +308,9 @@ export default function SearchBar({ onSelect, activeFiles, canManageUsers = fals
               setResults([]);
               setOpen(false);
             }}
-            className="absolute right-2 top-1/2 -translate-y-1/2 flex h-6 w-6 items-center justify-center rounded-full text-[var(--on-surface-variant)] hover:bg-slate-100/80 transition-colors"
+            className="absolute right-2 top-1/2 -translate-y-1/2 flex h-6 w-6 items-center justify-center rounded-md text-[var(--on-surface-variant)] transition-colors hover:bg-[var(--glass-field-hover)]"
             type="button"
+            aria-label="Clear search"
           >
             <X className="h-3.5 w-3.5" />
           </button>
@@ -294,37 +320,59 @@ export default function SearchBar({ onSelect, activeFiles, canManageUsers = fals
 
       {/* Right Actions — User menu with Sign Out */}
       <div ref={userMenuRef} className="relative flex items-center shrink-0">
-        <button
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          onClick={toggleTheme}
+          className="h-8 w-8 rounded-lg text-[var(--on-surface-variant)] hover:bg-[var(--glass-field-hover)] hover:text-[var(--on-surface)]"
+          title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+          aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+          aria-pressed={theme === "dark"}
+        >
+          {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+        </Button>
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
           onClick={() => setUserMenuOpen(!userMenuOpen)}
-          className="flex h-8 w-8 items-center justify-center rounded-full bg-[#0051d5]/10 text-[#0051d5] hover:bg-[#0051d5]/20 transition-colors"
+          className="h-8 w-8 rounded-lg bg-[#0051d5]/10 text-[#0051d5] hover:bg-[#0051d5]/20"
           title="Account"
+          aria-label="Account"
+          aria-expanded={userMenuOpen}
         >
           <User className="h-4 w-4" />
-        </button>
+        </Button>
 
         {/* Sign-out dropdown */}
         {userMenuOpen && (
-          <div className="absolute top-full right-0 mt-2 glass-panel rounded-xl overflow-hidden w-44 z-50">
+          <div className="absolute top-full right-0 mt-2 z-50 w-44 overflow-hidden rounded-lg glass-panel">
             <div className="px-4 py-3 border-b border-white/20">
               <p className="text-[10px] font-semibold uppercase tracking-widest text-[var(--on-surface-variant)]">Account</p>
               <p className="text-[13px] font-bold text-[var(--on-surface)] mt-0.5">City Planning</p>
             </div>
             {canManageUsers ? (
-              <Link
-                href="/admin/users"
-                className="flex w-full items-center gap-2.5 px-4 py-3 text-[13px] font-semibold text-[var(--on-surface)] transition-colors hover:bg-[var(--glass-field-hover)]"
+              <Button
+                asChild
+                variant="ghost"
+                className="flex h-10 w-full justify-start gap-2.5 rounded-none px-4 text-[13px] font-semibold text-[var(--on-surface)] hover:bg-[var(--glass-field-hover)]"
               >
-                <UserPlus className="h-4 w-4" />
-                Users
-              </Link>
+                <Link href="/admin/users">
+                  <UserPlus className="h-4 w-4" />
+                  Users
+                </Link>
+              </Button>
             ) : null}
-            <button
+            <Button
+              type="button"
+              variant="ghost"
               onClick={() => logout()}
-              className="flex w-full items-center gap-2.5 px-4 py-3 text-[13px] font-semibold text-red-600 hover:bg-red-50/60 transition-colors"
+              className="flex h-10 w-full justify-start gap-2.5 rounded-none px-4 text-[13px] font-semibold text-red-600 hover:bg-red-50/60"
             >
               <LogOut className="h-4 w-4" />
               Sign Out
-            </button>
+            </Button>
           </div>
         )}
       </div>

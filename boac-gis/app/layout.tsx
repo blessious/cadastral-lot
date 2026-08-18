@@ -23,6 +23,18 @@ export default function RootLayout({
   return (
     <html lang="en" className={cn("font-sans", inter.variable)}>
       <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+try {
+  var theme = localStorage.getItem("geolgu-theme");
+  if (theme === "light" || theme === "dark") {
+    document.documentElement.dataset.theme = theme;
+  }
+} catch {}
+            `.trim(),
+          }}
+        />
         <link
           href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500&display=swap"
           rel="stylesheet"

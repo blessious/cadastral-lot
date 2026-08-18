@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { Layers, LogOut, X, ChevronDown } from "lucide-react";
-import { logout } from "@/app/login/actions";
+import { Layers, X, ChevronDown, Search } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 type BarangayIndexEntry = {
   name: string;
@@ -16,11 +16,12 @@ type SettingsPanelProps = {
   setShowLotNumbers: (show: boolean) => void;
   autoLoadBarangay: boolean;
   setAutoLoadBarangay: (show: boolean) => void;
-  basemap: "streets" | "satellite";
-  setBasemap: (map: "streets" | "satellite") => void;
   activeLandClasses: Set<string>;
   toggleLandClass: (lc: string) => void;
   landClasses: string[];
+  isOpen: boolean;
+  onOpenChange: (open: boolean) => void;
+  detailsOpen: boolean;
 };
 
 function Toggle({
@@ -57,13 +58,13 @@ export default function SettingsPanel({
   setShowLotNumbers,
   autoLoadBarangay,
   setAutoLoadBarangay,
-  basemap,
-  setBasemap,
   activeLandClasses,
   toggleLandClass,
   landClasses,
+  isOpen,
+  onOpenChange,
+  detailsOpen,
 }: SettingsPanelProps) {
-  const [isOpen, setIsOpen] = useState(false);
   const [barangaySearch, setBarangaySearch] = useState("");
   
   const [sheetMode, setSheetMode] = useState<"half" | "full">("half");
@@ -104,9 +105,9 @@ export default function SettingsPanel({
     if (isDragging) {
       if (sheetMode === "half") {
         if (dragOffset < -20) setSheetMode("full");
-        else if (dragOffset > 30) setIsOpen(false);
+        else if (dragOffset > 30) onOpenChange(false);
       } else if (sheetMode === "full") {
-        if (dragOffset > 80) setIsOpen(false);
+        if (dragOffset > 80) onOpenChange(false);
         else if (dragOffset > 30) setSheetMode("half");
       }
     }
@@ -148,24 +149,24 @@ export default function SettingsPanel({
   return (
     <div className="relative">
       {/* FAB Trigger */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className={`flex h-10 w-10 items-center justify-center rounded-full border border-white/20 shadow-sm backdrop-blur-md transition-all hover:-translate-y-0.5 hover:shadow-md ${
-          isOpen
-            ? "bg-[#0051d5] text-white"
-            : "bg-white/70 text-[var(--on-surface-variant)] hover:bg-white/90"
-        }`}
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon"
+        onClick={() => onOpenChange(!isOpen)}
+        className={`map-control-button ${isOpen ? "bg-[#0051d5] text-white hover:bg-[#0051d5]" : ""}`}
         title="Map Settings"
+        aria-label="Map settings"
       >
         {isOpen ? <X className="h-4 w-4" /> : <Layers className="h-4 w-4" />}
-      </button>
+      </Button>
 
       {/* Panel */}
       {mounted && createPortal(
         <div
           className={`fixed bottom-0 left-0 right-0 z-[1100] flex flex-col glass-panel
             rounded-t-2xl md:rounded-xl overflow-hidden
-            md:absolute md:bottom-8 md:right-[380px] md:left-auto md:w-[400px]
+            md:absolute md:top-20 md:left-auto md:bottom-auto md:w-[400px] ${detailsOpen ? "md:right-[21rem]" : "md:right-16"}
             ${isOpen ? `opacity-100 h-[92vh] md:h-auto ${sheetMode === "half" ? "translate-y-[32vh] md:translate-y-0" : "translate-y-0"}` : "pointer-events-none translate-y-full opacity-0 md:translate-y-0 md:scale-95"}`}
           style={{ 
             maxHeight: "92vh",
@@ -198,12 +199,16 @@ export default function SettingsPanel({
           <h3 className="text-[15px] font-bold text-[var(--on-surface)]">
             Map Settings
           </h3>
-          <button
-            onClick={() => setIsOpen(false)}
-            className="h-7 w-7 flex items-center justify-center rounded-full hover:bg-slate-100/60 text-[var(--on-surface-variant)] transition-colors"
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon-sm"
+            onClick={() => onOpenChange(false)}
+            className="text-[var(--on-surface-variant)]"
+            aria-label="Close map settings"
           >
             <X className="h-4 w-4" />
-          </button>
+          </Button>
         </div>
 
           {/* Scrollable Content */}
@@ -224,20 +229,12 @@ export default function SettingsPanel({
                   </span>
                   <Toggle checked={showLotNumbers} onChange={setShowLotNumbers} />
                 </div>
-                {/* Basemap toggle */}
-                <div className="flex items-center justify-between">
-                  <span className="text-[13px] text-[var(--on-surface)]">Satellite View</span>
-                  <Toggle
-                    checked={basemap === "satellite"}
-                    onChange={(v) => setBasemap(v ? "satellite" : "streets")}
-                  />
-                </div>
               </div>
             </section>
 
             {/* -- Current Location -- */}
             <section>
-              <h4 className="text-[10px] font-semibold uppercase tracking-widest text-[var(--on-surface-variant)] mb-3">
+              <h4 className="mb-3 text-[10px] font-semibold uppercase tracking-widest text-[var(--on-surface-variant)]">
                 Current Location
               </h4>
               <div className="space-y-2">
@@ -255,7 +252,7 @@ export default function SettingsPanel({
 
             {/* ── Land Classification ── */}
             <section>
-              <details className="group rounded-xl border border-white/30 bg-white/40 [&_summary::-webkit-details-marker]:hidden">
+              <details className="glass-field group rounded-lg [&_summary::-webkit-details-marker]:hidden">
                 <summary className="flex cursor-pointer items-center justify-between px-4 py-3 list-none">
                   <h4 className="text-[10px] font-semibold uppercase tracking-widest text-[var(--on-surface-variant)] m-0">
                     Land Classification
@@ -266,7 +263,7 @@ export default function SettingsPanel({
                   {landClasses.map((lc) => (
                     <label
                       key={lc}
-                      className="flex items-center gap-2 p-2 rounded-lg hover:bg-blue-50/60 cursor-pointer transition-colors"
+                    className="glass-field-hover flex cursor-pointer items-center gap-2 rounded-lg p-2 transition-colors"
                     >
                       <input
                         type="checkbox"
@@ -290,19 +287,9 @@ export default function SettingsPanel({
               </h4>
               {/* Search */}
               <div className="relative mb-2.5">
-                <svg
-                  className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-[var(--on-surface-variant)] pointer-events-none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <circle cx="11" cy="11" r="8" />
-                  <path d="m21 21-4.35-4.35" />
-                </svg>
+                <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[var(--on-surface-variant)] pointer-events-none" />
                 <input
-                  className="w-full pl-8 pr-3 py-1.5 rounded-lg bg-white/50 border border-[var(--outline-variant)]/50 text-[12px] text-[var(--on-surface)] placeholder:text-[var(--on-surface-variant)] focus:outline-none focus:ring-2 focus:ring-[#0051d5]/20"
+                  className="glass-input w-full rounded-lg border py-1.5 pl-8 pr-3 text-[12px] text-[var(--on-surface)] placeholder:text-[var(--on-surface-variant)] focus:outline-none focus:ring-2 focus:ring-[#0051d5]/20"
                   placeholder="Find barangay…"
                   value={barangaySearch}
                   onChange={(e) => setBarangaySearch(e.target.value)}
@@ -313,7 +300,7 @@ export default function SettingsPanel({
                 {filteredBarangays.map((b) => (
                   <div
                     key={b.file}
-                    className="flex items-center justify-between p-2 rounded-lg hover:bg-slate-100/50 cursor-pointer transition-colors"
+                    className="glass-field-hover flex cursor-pointer items-center justify-between rounded-lg p-2 transition-colors"
                     onClick={() => toggleFile(b.file)}
                   >
                     <span className="text-[12px] text-[var(--on-surface)]">{b.name}</span>
@@ -332,16 +319,6 @@ export default function SettingsPanel({
             </section>
           </div>
 
-            {/* Footer — Sign Out */}
-            <div className="px-4 py-3 border-t border-white/20 bg-white/30">
-              <button
-                onClick={() => logout()}
-                className="flex w-full items-center justify-center gap-2 py-2.5 rounded-lg border border-red-200/60 text-red-600 text-[13px] font-semibold hover:bg-red-50/60 transition-colors"
-              >
-                <LogOut className="h-4 w-4" />
-                Sign Out
-              </button>
-            </div>
           </div>
         , document.body)}
     </div>
