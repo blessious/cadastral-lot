@@ -60,7 +60,7 @@ export async function login(formData: FormData) {
 
   const clientKey = getClientKey(username)
   if (isRateLimited(clientKey)) {
-    loginError('Too many failed attempts. Try again in 15 minutes.')
+    loginError('Could not authenticate user')
   }
 
   let user: AuthUser | null
