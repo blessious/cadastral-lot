@@ -115,9 +115,9 @@ echo [3/4] Installing web app dependencies...
 >> "%LOG_FILE%" echo [%DATE% %TIME%] Installing web app dependencies.
 pushd "%WEB_DIR%"
 if exist "package-lock.json" (
-    npm ci
+    call npm ci
 ) else (
-    npm install
+    call npm install
 )
 if errorlevel 1 (
     popd
@@ -129,7 +129,7 @@ if errorlevel 1 (
 echo.
 echo [4/4] Building web app...
 >> "%LOG_FILE%" echo [%DATE% %TIME%] Building web app.
-npm run build
+call npm run build
 if errorlevel 1 (
     popd
     echo [WARN] Build failed. You can still try running run.bat for development mode.

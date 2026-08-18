@@ -61,9 +61,9 @@ echo.
 echo Installing dependencies if needed...
 if not exist "node_modules\next" (
     if exist "package-lock.json" (
-        npm ci
+        call npm ci
     ) else (
-        npm install
+        call npm install
     )
     if errorlevel 1 (
         echo [ERROR] Failed to install web app dependencies.
@@ -77,7 +77,7 @@ if not exist "node_modules\next" (
 
 echo.
 echo Building latest pulled code...
-npm run build
+call npm run build
 if errorlevel 1 (
     echo [ERROR] Build failed. Fix the error above before starting the app.
     popd
@@ -89,7 +89,16 @@ echo.
 echo Starting production server...
 echo Press Ctrl+C to stop this window-run server.
 echo.
-npx next start -H "%HOST%" -p "%PORT%"
+if exist "node_modules\.bin\next.cmd" (
+    call "node_modules\.bin\next.cmd" start -H "%HOST%" -p "%PORT%"
+) else (
+    call npx next start -H "%HOST%" -p "%PORT%"
+)
+
+echo.
+echo [STOPPED] Next server exited with code %ERRORLEVEL%.
+echo If this was not intentional, check the error above.
+echo.
 
 popd
 pause
