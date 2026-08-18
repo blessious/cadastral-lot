@@ -71,10 +71,8 @@ async function readConfig() {
 }
 
 function getMySqlConfig(values) {
-  const legacyServer = values.DB_SERVER?.trim();
-  const [legacyHost, legacyPortText] = legacyServer ? legacyServer.split(",", 2) : ["", ""];
-  const host = values.DB_HOST?.trim() || legacyHost || "127.0.0.1";
-  const port = Number(values.DB_PORT?.trim() || legacyPortText || "3306");
+  const host = values.DB_HOST?.trim() || "127.0.0.1";
+  const port = Number(values.DB_PORT?.trim() || "3306");
   const database = values.DB_DATABASE?.trim() || "cadastral_auth";
   const user = values.DB_USERNAME?.trim() || values.DB_USER?.trim() || "root";
   const password = values.DB_PASSWORD ?? "";

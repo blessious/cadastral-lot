@@ -16,10 +16,8 @@ type MySqlConfig = {
 };
 
 function getMySqlConfig(): MySqlConfig {
-  const legacyServer = process.env.DB_SERVER?.trim();
-  const [legacyHost, legacyPortText] = legacyServer ? legacyServer.split(",", 2) : ["", ""];
-  const host = process.env.DB_HOST?.trim() || legacyHost || "127.0.0.1";
-  const portText = process.env.DB_PORT?.trim() || legacyPortText || "3306";
+  const host = process.env.DB_HOST?.trim() || "127.0.0.1";
+  const portText = process.env.DB_PORT?.trim() || "3306";
   const port = Number(portText);
   const database = process.env.DB_DATABASE?.trim() || "cadastral_auth";
   const user = process.env.DB_USERNAME?.trim() || process.env.DB_USER?.trim() || "root";
