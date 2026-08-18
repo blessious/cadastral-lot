@@ -34,7 +34,19 @@ echo.
 echo Folder:  %CD%
 echo Local:   %URL%
 echo Public:  %PUBLIC_URL%
+for /f "tokens=*" %%G in ('git -C "%~dp0.." rev-parse --short HEAD 2^>nul') do set "GIT_COMMIT=%%G"
+if defined GIT_COMMIT (
+    echo Commit:  %GIT_COMMIT%
+) else (
+    echo Commit:  unavailable
+)
 echo.
+
+if defined GIT_COMMIT (
+    > "%CD%\public\version.txt" echo %GIT_COMMIT%
+) else (
+    > "%CD%\public\version.txt" echo unavailable
+)
 
 where npm >nul 2>nul
 if errorlevel 1 (
@@ -76,6 +88,20 @@ if not exist "node_modules\next" (
 )
 
 echo.
+echo Clearing old Next.js build output...
+if exist ".next" (
+    rmdir /S /Q ".next"
+    if errorlevel 1 (
+        echo [ERROR] Failed to remove old .next folder.
+        popd
+        pause
+        exit /b 1
+    )
+) else (
+    echo No previous .next folder found.
+)
+
+echo.
 echo Building latest pulled code...
 call npm run build
 if errorlevel 1 (
@@ -92,7 +118,11 @@ echo.
 if exist "node_modules\.bin\next.cmd" (
     call "node_modules\.bin\next.cmd" start -H "%HOST%" -p "%PORT%"
 ) else (
-    call npx next start -H "%HOST%" -p "%PORT%"
+    echo [ERROR] Local Next.js executable was not found.
+    echo Run setup_server.bat or delete node_modules and run this file again.
+    popd
+    pause
+    exit /b 1
 )
 
 echo.
