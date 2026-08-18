@@ -1,8 +1,9 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { X, Search, LogOut, User } from "lucide-react";
+import { X, Search, LogOut, User, UserPlus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { logout } from "@/app/login/actions";
 
@@ -31,11 +32,12 @@ type IndexedSearchRecord = SearchRecord & {
 type SearchBarProps = {
   onSelect: (record: SearchRecord) => void;
   activeFiles: ReadonlySet<string>;
+  canManageUsers?: boolean;
 };
 
 const MAX_RESULTS = 50;
 
-export default function SearchBar({ onSelect, activeFiles }: SearchBarProps) {
+export default function SearchBar({ onSelect, activeFiles, canManageUsers = false }: SearchBarProps) {
   const [searchIndex, setSearchIndex] = useState<IndexedSearchRecord[]>([]);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchRecord[]>([]);
@@ -307,6 +309,15 @@ export default function SearchBar({ onSelect, activeFiles }: SearchBarProps) {
               <p className="text-[10px] font-semibold uppercase tracking-widest text-[var(--on-surface-variant)]">Account</p>
               <p className="text-[13px] font-bold text-[var(--on-surface)] mt-0.5">City Planning</p>
             </div>
+            {canManageUsers ? (
+              <Link
+                href="/admin/users"
+                className="flex w-full items-center gap-2.5 px-4 py-3 text-[13px] font-semibold text-[var(--on-surface)] transition-colors hover:bg-[var(--glass-field-hover)]"
+              >
+                <UserPlus className="h-4 w-4" />
+                Users
+              </Link>
+            ) : null}
             <button
               onClick={() => logout()}
               className="flex w-full items-center gap-2.5 px-4 py-3 text-[13px] font-semibold text-red-600 hover:bg-red-50/60 transition-colors"

@@ -35,6 +35,7 @@ type BarangayIndexEntry = {
 type MapViewProps = {
   selectedFeature: LotFeature | null;
   setSelectedFeature: (feature: LotFeature | null) => void;
+  canManageUsers?: boolean;
 };
 
 type SearchRecord = {
@@ -116,7 +117,7 @@ function getLayerFeature(layer: L.Path): LotFeature | undefined {
   return (layer as L.Path & { feature?: LotFeature }).feature;
 }
 
-export default function MapView({ selectedFeature, setSelectedFeature }: MapViewProps) {
+export default function MapView({ selectedFeature, setSelectedFeature, canManageUsers = false }: MapViewProps) {
   const { toast } = useToast();
   const [barangayIndex, setBarangayIndex] = useState<BarangayIndexEntry[]>([]);
   const [geojsonByFile, setGeojsonByFile] = useState<Record<string, FeatureCollection>>({});
@@ -662,7 +663,7 @@ export default function MapView({ selectedFeature, setSelectedFeature }: MapView
         <MiniMap basemap={basemap} />
       </MapContainer>
 
-      <SearchBar onSelect={handleSearchSelect} activeFiles={activeFiles} />
+      <SearchBar onSelect={handleSearchSelect} activeFiles={activeFiles} canManageUsers={canManageUsers} />
       
       {/* FAB Cluster — bottom-right */}
       <div

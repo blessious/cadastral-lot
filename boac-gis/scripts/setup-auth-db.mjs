@@ -136,11 +136,11 @@ const username = (await prompt.question("Username to create or update: ")).trim(
 const displayName = (await prompt.question("Display name: ")).trim();
 const roleInput = (await prompt.question("Role [admin/viewer] (default admin): ")).trim().toLowerCase();
 prompt.close();
-const password = await readHidden("Password (12+ characters): ");
+const password = await readHidden("Password (8+ characters): ");
 
 const role = roleInput || "admin";
-if (!username || password.length < 12 || !["admin", "viewer"].includes(role)) {
-  console.error("A username, a 12+ character password, and an admin/viewer role are required.");
+if (!username || password.length < 8 || !["admin", "viewer"].includes(role)) {
+  console.error("A username, an 8+ character password, and an admin/viewer role are required.");
   process.exit(1);
 }
 
