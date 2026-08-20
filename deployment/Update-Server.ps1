@@ -100,7 +100,9 @@ try {
     }
 
     Write-Host "[1/8] Installing locked dependencies in isolated release..."
-    Invoke-ExternalCommand ([string]$runtime.npmPath) @("ci","--no-audit","--no-fund") $web "npm ci"
+    # NODE_ENV is intentionally production for runtime processes, but release
+    # validation also needs TypeScript, ESLint, tests, and Playwright.
+    Invoke-ExternalCommand ([string]$runtime.npmPath) @("ci","--include=dev","--no-audit","--no-fund") $web "npm ci"
     Write-Host "[2/8] Running source and dataset checks..."
     foreach($script in @("typecheck","lint","test","verify:data")) { Invoke-NpmScript ([string]$runtime.npmPath) $web $script @() -Required | Out-Null }
     Write-Host "[3/8] Building production release..."
