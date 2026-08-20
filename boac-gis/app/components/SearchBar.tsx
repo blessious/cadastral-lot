@@ -22,14 +22,6 @@ type SearchRecord = {
   __uid?: string;
 };
 
-type IndexedSearchRecord = SearchRecord & {
-  searchText: string;
-  clnSearch: string;
-  alnSearch: string;
-  pinSearch: string;
-  ownerSearch: string;
-};
-
 type SearchBarProps = {
   onSelect: (record: SearchRecord) => void;
   activeFiles: ReadonlySet<string>;
@@ -40,16 +32,14 @@ const MAX_RESULTS = 50;
 type ThemeMode = "light" | "dark";
 
 export default function SearchBar({ onSelect, activeFiles, canManageUsers = false }: SearchBarProps) {
-  const [searchIndex, setSearchIndex] = useState<IndexedSearchRecord[]>([]);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchRecord[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
   const [open, setOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [theme, setTheme] = useState<ThemeMode>("light");
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const userMenuRef = useRef<HTMLDivElement | null>(null);
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
   const [searchError, setSearchError] = useState(false);
 
   useEffect(() => {
@@ -74,97 +64,42 @@ export default function SearchBar({ onSelect, activeFiles, canManageUsers = fals
     });
   };
 
-  useEffect(() => {
-    fetch("/geojson/search_index.json")
-      .then((response) => {
-        if (!response.ok) throw new Error("Network response was not ok");
-        return response.json();
-      })
-      .then((data: SearchRecord[]) => {
-        setSearchIndex(
-          data.map((item) => {
-            const clnSearch = item.CLN?.toLowerCase() ?? "";
-            const alnSearch = item.ALN?.toLowerCase() ?? "";
-            const pinSearch = item.PIN?.toLowerCase() ?? "";
-            const ownerSearch = item.Owner?.toLowerCase() ?? "";
-            const barangaySearch = item.Barangay?.toLowerCase() ?? "";
-
-            return {
-              ...item,
-              clnSearch,
-              alnSearch,
-              pinSearch,
-              ownerSearch,
-              searchText: `${clnSearch} ${alnSearch} ${pinSearch} ${ownerSearch} ${barangaySearch}`,
-            };
-          })
-        );
-        setSearchError(false);
-      })
-      .catch((error) => {
-        console.error("Failed to load search index:", error);
-        setSearchIndex([]);
-        setSearchError(true);
-      });
-  }, []);
-
   const activeFilesKey = useMemo(() => Array.from(activeFiles).sort().join("|"), [activeFiles]);
 
-  const activeSearchRecords = useMemo(() => {
-    if (!activeFilesKey) {
-      return [];
-    }
-    return searchIndex.filter((item) => activeFiles.has(item.file));
-  }, [activeFiles, activeFilesKey, searchIndex]);
-
   useEffect(() => {
-    if (debounceRef.current) {
-      clearTimeout(debounceRef.current);
-    }
-    debounceRef.current = setTimeout(() => {
-      const trimmed = query.trim().toLowerCase();
-      if (!trimmed) {
+    const controller = new AbortController();
+    const timer = setTimeout(async () => {
+      const trimmed = query.trim();
+      if (trimmed.length < 2 || !activeFilesKey) {
         setResults([]);
         setOpen(false);
+        setIsSearching(false);
         return;
       }
-
-      const scored: Array<{ item: IndexedSearchRecord; score: number }> = [];
-
-      for (const item of activeSearchRecords) {
-        if (!item.searchText.includes(trimmed)) {
-          continue;
-        }
-
-        let score = 0;
-        if (item.clnSearch === trimmed || item.alnSearch === trimmed || item.pinSearch === trimmed) {
-          score = 40;
-        } else if (
-          item.clnSearch.startsWith(trimmed) ||
-          item.alnSearch.startsWith(trimmed) ||
-          item.pinSearch.startsWith(trimmed)
-        ) {
-          score = 30;
-        } else if (item.ownerSearch === trimmed) {
-          score = 20;
-        } else if (item.ownerSearch.startsWith(trimmed)) {
-          score = 10;
-        }
-
-        scored.push({ item, score });
-      }
-
-      scored.sort((a, b) => b.score - a.score);
-
-      setResults(scored.slice(0, MAX_RESULTS).map((entry) => entry.item));
+      setIsSearching(true);
       setOpen(true);
+      setSearchError(false);
+      try {
+        const params = new URLSearchParams({ q: trimmed, limit: String(MAX_RESULTS) });
+        activeFiles.forEach((file) => params.append("barangay", file));
+        const response = await fetch(`/api/map/search?${params}`, { signal: controller.signal });
+        if (!response.ok) throw new Error(`Search failed (${response.status})`);
+        const payload = (await response.json()) as { results: SearchRecord[] };
+        setResults(payload.results);
+      } catch (error) {
+        if ((error as Error).name === "AbortError") return;
+        console.error("Search failed:", error);
+        setResults([]);
+        setSearchError(true);
+      } finally {
+        if (!controller.signal.aborted) setIsSearching(false);
+      }
     }, 300);
     return () => {
-      if (debounceRef.current) {
-        clearTimeout(debounceRef.current);
-      }
+      clearTimeout(timer);
+      controller.abort();
     };
-  }, [activeSearchRecords, query]);
+  }, [activeFiles, activeFilesKey, query]);
 
   useEffect(() => {
     const handleClick = (event: MouseEvent) => {
@@ -195,12 +130,23 @@ export default function SearchBar({ onSelect, activeFiles, canManageUsers = fals
     if (!open) {
       return null;
     }
+
+    if (isSearching) {
+      return (
+        <div className="absolute top-full left-0 right-0 z-30 mt-2 overflow-hidden rounded-xl glass-panel" role="status">
+          <div className="flex items-center justify-center gap-2 px-4 py-4 text-sm text-[var(--on-surface-variant)]">
+            <span className="h-4 w-4 animate-spin rounded-full border-2 border-[#0051d5]/25 border-t-[#0051d5]" />
+            Searching lots…
+          </div>
+        </div>
+      );
+    }
     
     if (searchError) {
       return (
         <div className="absolute top-full left-0 right-0 z-30 mt-2 rounded-xl glass-panel overflow-hidden">
           <div className="px-4 py-4 text-center text-sm text-red-500 font-medium">
-            Failed to load search database. Please refresh the page.
+            Search is temporarily unavailable. Please try again.
           </div>
         </div>
       );
@@ -226,7 +172,7 @@ export default function SearchBar({ onSelect, activeFiles, canManageUsers = fals
             return (
               <li key={`${item.CLN ?? "lot"}-${index}`}>
                 <button
-                  className="glass-field-hover flex w-full flex-col gap-0.5 px-4 py-2.5 text-left transition-colors"
+                  className="glass-field-hover flex min-h-11 w-full flex-col justify-center gap-0.5 px-4 py-2.5 text-left transition-colors"
                   onClick={() => {
                     onSelect(item);
                     setOpen(false);
@@ -258,11 +204,11 @@ export default function SearchBar({ onSelect, activeFiles, canManageUsers = fals
         </ul>
       </div>
     );
-  }, [hasResults, onSelect, open, query, results, searchError]);
+  }, [hasResults, isSearching, onSelect, open, query, results, searchError]);
 
   return (
     /* Top Navigation Bar */
-    <nav className="absolute top-3 left-1/2 -translate-x-1/2 z-[1000] flex h-12 w-[calc(100%-1.5rem)] max-w-3xl items-center gap-3 rounded-lg glass-panel px-3 md:top-4 md:h-14 md:px-4">
+    <nav aria-label="Map tools" className="absolute top-[calc(.75rem+env(safe-area-inset-top))] left-1/2 -translate-x-1/2 z-[1000] flex h-14 w-[calc(100%-1.5rem)] max-w-3xl items-center gap-2 rounded-lg glass-panel px-2 md:top-4 md:gap-3 md:px-4">
       {/* Brand — Boac Logo */}
       <div className="flex items-center gap-2.5 shrink-0">
         <Image
@@ -289,7 +235,7 @@ export default function SearchBar({ onSelect, activeFiles, canManageUsers = fals
         />
         <input
           className={cn(
-            "glass-input w-full rounded-lg border py-2 pl-9 pr-8 text-[13px] text-[var(--on-surface)] placeholder:text-[var(--on-surface-variant)]",
+            "glass-input h-11 w-full rounded-lg border py-2 pl-9 pr-11 text-[13px] text-[var(--on-surface)] placeholder:text-[var(--on-surface-variant)]",
             "focus:outline-none focus:ring-2 focus:ring-[#0051d5]/30 focus:border-[#0051d5]/50 transition-all"
           )}
           placeholder="Search within turned-on barangays…"
@@ -308,7 +254,7 @@ export default function SearchBar({ onSelect, activeFiles, canManageUsers = fals
               setResults([]);
               setOpen(false);
             }}
-            className="absolute right-2 top-1/2 -translate-y-1/2 flex h-6 w-6 items-center justify-center rounded-md text-[var(--on-surface-variant)] transition-colors hover:bg-[var(--glass-field-hover)]"
+            className="absolute right-0 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-md text-[var(--on-surface-variant)] transition-colors hover:bg-[var(--glass-field-hover)]"
             type="button"
             aria-label="Clear search"
           >
@@ -325,7 +271,7 @@ export default function SearchBar({ onSelect, activeFiles, canManageUsers = fals
           variant="ghost"
           size="icon"
           onClick={toggleTheme}
-          className="h-8 w-8 rounded-lg text-[var(--on-surface-variant)] hover:bg-[var(--glass-field-hover)] hover:text-[var(--on-surface)]"
+          className="h-11 w-11 rounded-lg text-[var(--on-surface-variant)] hover:bg-[var(--glass-field-hover)] hover:text-[var(--on-surface)]"
           title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
           aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
           aria-pressed={theme === "dark"}
@@ -337,7 +283,7 @@ export default function SearchBar({ onSelect, activeFiles, canManageUsers = fals
           variant="ghost"
           size="icon"
           onClick={() => setUserMenuOpen(!userMenuOpen)}
-          className="h-8 w-8 rounded-lg bg-[#0051d5]/10 text-[#0051d5] hover:bg-[#0051d5]/20"
+          className="h-11 w-11 rounded-lg bg-[#0051d5]/10 text-[#0051d5] hover:bg-[#0051d5]/20"
           title="Account"
           aria-label="Account"
           aria-expanded={userMenuOpen}
@@ -356,7 +302,7 @@ export default function SearchBar({ onSelect, activeFiles, canManageUsers = fals
               <Button
                 asChild
                 variant="ghost"
-                className="flex h-10 w-full justify-start gap-2.5 rounded-none px-4 text-[13px] font-semibold text-[var(--on-surface)] hover:bg-[var(--glass-field-hover)]"
+                className="flex h-11 w-full justify-start gap-2.5 rounded-none px-4 text-[13px] font-semibold text-[var(--on-surface)] hover:bg-[var(--glass-field-hover)]"
               >
                 <Link href="/admin/users">
                   <UserPlus className="h-4 w-4" />
@@ -368,7 +314,7 @@ export default function SearchBar({ onSelect, activeFiles, canManageUsers = fals
               type="button"
               variant="ghost"
               onClick={() => logout()}
-              className="flex h-10 w-full justify-start gap-2.5 rounded-none px-4 text-[13px] font-semibold text-red-600 hover:bg-red-50/60"
+              className="flex h-11 w-full justify-start gap-2.5 rounded-none px-4 text-[13px] font-semibold text-red-600 hover:bg-red-50/60"
             >
               <LogOut className="h-4 w-4" />
               Sign Out

@@ -3,12 +3,20 @@
 import { login } from './actions'
 import { AlertCircle, Eye, EyeOff, LockKeyhole, UserRound } from 'lucide-react'
 import Image from 'next/image'
-import { useState, useRef } from 'react'
+import { useEffect, useState, useRef } from 'react'
+import { useFormStatus } from 'react-dom'
 
 export default function LoginForm({ error }: { error?: string }) {
   const [offset, setOffset] = useState({ x: 0, y: 0 })
   const [showPassword, setShowPassword] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
+  const frameRef = useRef<number | null>(null)
+
+  useEffect(() => {
+    return () => {
+      if (frameRef.current !== null) cancelAnimationFrame(frameRef.current)
+    }
+  }, [])
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!containerRef.current) return
@@ -17,13 +25,18 @@ export default function LoginForm({ error }: { error?: string }) {
     const x = ((e.clientX - left) / width - 0.5) * 2
     const y = ((e.clientY - top) / height - 0.5) * 2
     const moveAmount = 25
-    setOffset({
-      x: x * moveAmount,
-      y: y * moveAmount,
+    if (frameRef.current !== null) cancelAnimationFrame(frameRef.current)
+    frameRef.current = requestAnimationFrame(() => {
+      setOffset({ x: x * moveAmount, y: y * moveAmount })
+      frameRef.current = null
     })
   }
 
   const handleMouseLeave = () => {
+    if (frameRef.current !== null) {
+      cancelAnimationFrame(frameRef.current)
+      frameRef.current = null
+    }
     setOffset({ x: 0, y: 0 })
   }
 
@@ -48,6 +61,7 @@ export default function LoginForm({ error }: { error?: string }) {
               fill
               className="object-cover opacity-85"
               priority
+              sizes="62vw"
             />
           </div>
         </div>
@@ -199,13 +213,23 @@ function LoginPanel({
           </div>
         )}
 
-        <button
-          type="submit"
-          className="mt-1 inline-flex h-12 w-full items-center justify-center rounded-2xl bg-emerald-600 px-8 text-sm font-bold uppercase tracking-wide text-white shadow-lg shadow-emerald-900/20 transition hover:bg-emerald-700 focus:outline-none focus-visible:bg-emerald-700 active:translate-y-px lg:h-14"
-        >
-          Sign in
-        </button>
+        <SubmitButton />
       </form>
     </div>
+  )
+}
+
+function SubmitButton() {
+  const { pending } = useFormStatus()
+  return (
+    <button
+      type="submit"
+      disabled={pending}
+      aria-disabled={pending}
+      className="mt-1 inline-flex h-12 w-full items-center justify-center gap-2 rounded-2xl bg-emerald-600 px-8 text-sm font-bold uppercase tracking-wide text-white shadow-lg shadow-emerald-900/20 transition hover:bg-emerald-700 focus:outline-none focus-visible:bg-emerald-700 active:translate-y-px disabled:cursor-wait disabled:opacity-75 lg:h-14"
+    >
+      {pending ? <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" /> : null}
+      {pending ? 'Signing in…' : 'Sign in'}
+    </button>
   )
 }

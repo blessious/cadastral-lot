@@ -106,7 +106,7 @@ export default function MiniMap({ basemap, theme }: MiniMapProps) {
   return (
     <div 
       className={`absolute bottom-4 left-4 z-[1000] overflow-hidden rounded-xl glass-panel transition-all duration-300 ${
-        isExpanded ? "h-36 w-36 md:h-48 md:w-48" : "h-10 w-10"
+        isExpanded ? "h-36 w-36 md:h-48 md:w-48" : "h-11 w-11"
       }`}
       onMouseDown={stopPropagation}
       onMouseUp={stopPropagation}
@@ -126,7 +126,7 @@ export default function MiniMap({ basemap, theme }: MiniMapProps) {
         onClick={() => setIsExpanded(!isExpanded)}
         className={`absolute z-[1010] flex items-center justify-center transition-all text-[var(--on-surface-variant)] hover:text-[var(--on-surface)] ${
           isExpanded 
-            ? "top-1 right-1 h-6 w-6 rounded-lg glass-field glass-field-hover shadow-sm"
+            ? "top-1 right-1 h-11 w-11 rounded-lg glass-field glass-field-hover shadow-sm"
             : "inset-0 h-full w-full glass-field glass-field-hover"
         }`}
         title={isExpanded ? "Collapse overview map" : "Expand overview map"}

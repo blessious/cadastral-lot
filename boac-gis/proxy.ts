@@ -19,8 +19,10 @@ function getRedirectUrl(request: NextRequest, pathname: string) {
   return new URL(pathname, request.url)
 }
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const isLoginRoute = request.nextUrl.pathname.startsWith('/login')
+  const isApiRoute = request.nextUrl.pathname.startsWith('/api/')
+  const isHealthRoute = request.nextUrl.pathname === '/api/health'
   const token = request.cookies.get(AUTH_COOKIE)?.value
   const session = await verifySessionToken(token)
   const authenticated = Boolean(session)
@@ -29,7 +31,13 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(getRedirectUrl(request, '/'))
   }
 
-  if (!authenticated && !isLoginRoute) {
+  if (!authenticated && !isLoginRoute && !isHealthRoute) {
+    if (isApiRoute) {
+      return NextResponse.json(
+        { error: 'Authentication required' },
+        { status: 401, headers: { 'Cache-Control': 'private, no-store' } },
+      )
+    }
     const response = NextResponse.redirect(getRedirectUrl(request, '/login'))
     if (token) response.cookies.delete(AUTH_COOKIE)
     return response

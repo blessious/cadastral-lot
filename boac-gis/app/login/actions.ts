@@ -13,8 +13,8 @@ const ATTEMPT_WINDOW_MS = 15 * 60 * 1000
 const attempts = new Map<string, { count: number; resetAt: number }>()
 const DUMMY_PASSWORD_HASH = `scrypt$16384$8$1$${Buffer.alloc(16).toString('base64url')}$${Buffer.alloc(64).toString('base64url')}`
 
-function getClientKey(username: string): string {
-  const requestHeaders = headers()
+async function getClientKey(username: string): Promise<string> {
+  const requestHeaders = await headers()
   const forwardedFor = requestHeaders.get('x-forwarded-for')?.split(',')[0]?.trim()
   const address = forwardedFor || requestHeaders.get('x-real-ip') || 'unknown'
   return `${address}:${username.toLowerCase()}`
@@ -58,7 +58,7 @@ export async function login(formData: FormData) {
     loginError('Authentication is not configured. Contact the administrator.')
   }
 
-  const clientKey = getClientKey(username)
+  const clientKey = await getClientKey(username)
   if (isRateLimited(clientKey)) {
     loginError('Could not authenticate user')
   }
@@ -81,7 +81,8 @@ export async function login(formData: FormData) {
 
   attempts.delete(clientKey)
   const token = await createSessionToken(user)
-  cookies().set(AUTH_COOKIE, token, {
+  const cookieStore = await cookies()
+  cookieStore.set(AUTH_COOKIE, token, {
     httpOnly: true,
     sameSite: 'strict',
     secure: process.env.NODE_ENV === 'production',
@@ -98,7 +99,8 @@ export async function login(formData: FormData) {
 }
 
 export async function logout() {
-  cookies().set(AUTH_COOKIE, '', {
+  const cookieStore = await cookies()
+  cookieStore.set(AUTH_COOKIE, '', {
     httpOnly: true,
     sameSite: 'strict',
     secure: process.env.NODE_ENV === 'production',

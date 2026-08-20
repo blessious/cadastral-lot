@@ -15,12 +15,14 @@ Usage:
 """
 
 import csv
+import hashlib
 import json
 import re
 import subprocess
 import sys
 from collections import defaultdict
 from pathlib import Path
+from datetime import datetime, timezone
 
 PROJECT_ROOT = Path(__file__).resolve().parent
 
@@ -29,6 +31,28 @@ GEOJSON_SRC_DIR = PROJECT_ROOT / "output" / "geojson"
 GEOJSON_OUT_DIR = PROJECT_ROOT / "boac-gis" / "public" / "geojson"
 GEOJSON_GEO_REF = GEOJSON_OUT_DIR
 SEARCH_IDX = PROJECT_ROOT / "generate_search_index.py"
+BOUNDARY_GENERATOR = PROJECT_ROOT / "generate_barangay_boundaries.py"
+DATA_VERSION_FILE = GEOJSON_OUT_DIR / "data_version.json"
+
+
+def compute_dataset_version() -> str:
+    """Hash every runtime map asset so geometry-only edits invalidate caches."""
+    geometry_names = sorted(
+        (
+            path.name
+            for path in GEOJSON_OUT_DIR.glob("*.geojson")
+            if path.name.lower() != "boac_all.geojson"
+        ),
+        key=lambda name: name.encode("utf-8"),
+    )
+    names = ["index.json", "search_index.json", *geometry_names]
+    digest = hashlib.sha256()
+    for name in names:
+        contents = (GEOJSON_OUT_DIR / name).read_bytes()
+        encoded_name = name.encode("utf-8")
+        digest.update(f"{len(encoded_name)}:{name}:{len(contents)}:".encode("utf-8"))
+        digest.update(contents)
+    return digest.hexdigest()[:16]
 
 
 def normalize_cln(value: object) -> str:
@@ -49,6 +73,19 @@ def normalize_location(value: object) -> str:
 
 def payload_signature(payload: dict[str, str]) -> tuple[str, str, str]:
     return (payload["ownerName"], payload["tdno"], payload["landClass"])
+
+
+def stable_lot_id(props: dict, file_name: str, geometry: object) -> str:
+    identity = {
+        "file": file_name.lower(),
+        "pin": str(props.get("PIN") or "").strip().upper(),
+        "cln": str(props.get("CLN") or "").strip().upper(),
+        "aln": str(props.get("ALN") or "").strip().upper(),
+        "section": str(props.get("Section") or "").strip().upper(),
+        "geometry": geometry,
+    }
+    digest = hashlib.sha256(json.dumps(identity, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
+    return f"lot_{digest[:24]}"
 
 
 def add_unique_payload(
@@ -201,6 +238,8 @@ def enrich_file(
         pin = str(props.get("PIN") or "").strip()
         cln = normalize_cln(props.get("CLN"))
         barangay = normalize_location(props.get("Barangay") or props.get("barangay") or src_path.stem)
+        props["__uid"] = stable_lot_id(props, out_path.name, feature.get("geometry"))
+        feature["properties"] = props
 
         if feature.get("geometry") is None and (pin_geo or cln_geo):
             geometry = pin_geo.get(pin) or cln_geo.get(cln)
@@ -295,16 +334,39 @@ def main() -> None:
     if total_geo_recovered:
         print(f"[OK] Recovered geometry for {total_geo_recovered:,} features.")
 
+    search_index_updated = False
     print(f"\n[...] Re-generating search_index.json using {SEARCH_IDX.name} ...")
     if SEARCH_IDX.exists():
         result = subprocess.run([sys.executable, str(SEARCH_IDX)], capture_output=True, text=True)
         if result.returncode == 0:
             print(result.stdout.strip())
             print("[OK] Search index updated.")
+            search_index_updated = True
         else:
             print(f"[WARN] search_index.py error:\n{result.stderr}")
     else:
         print(f"[WARN] Search index script not found at {SEARCH_IDX}")
+
+    if BOUNDARY_GENERATOR.exists():
+        result = subprocess.run([sys.executable, str(BOUNDARY_GENERATOR)], capture_output=True, text=True)
+        if result.returncode == 0:
+            print(result.stdout.strip())
+        else:
+            print(f"[WARN] Boundary generator error:\n{result.stderr}")
+
+    if search_index_updated:
+        version = compute_dataset_version()
+        DATA_VERSION_FILE.write_text(
+            json.dumps({
+                "version": version,
+                "algorithm": "sha256-map-assets-v2",
+                "generatedAt": datetime.now(timezone.utc).isoformat(),
+                "lots": total_features,
+                "barangays": len(geojson_files),
+            }, separators=(",", ":")),
+            encoding="utf-8",
+        )
+        print(f"[OK] Dataset version {version} published.")
 
     print("\n[DONE] Static GeoJSON owner data is ready. No ETRACS SQL connection was used.")
 

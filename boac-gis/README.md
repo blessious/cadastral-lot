@@ -1,8 +1,15 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# GeoLGU Navigator
 
-## Getting Started
+Mobile-first cadastral mapping for the Municipality of Boac. The production app runs as a Next.js/Node service on the server PC, uses MySQL for authentication and server-ranked parcel search, and remains available through `https://cadmap.41itservices.pro/` behind the existing HTTPS reverse proxy.
 
-### Server PC setup
+## One-time Windows server setup
+
+Requirements:
+
+- A local NTFS Git checkout on branch `main`
+- Node.js 20.9.0 or newer, npm, Git, MySQL, and Microsoft Edge
+- An elevated Windows account for Scheduled Task registration
+- Apache already proxying the configured local `APP_PORT`
 
 From the repository root, run:
 
@@ -10,75 +17,87 @@ From the repository root, run:
 setup_server.bat
 ```
 
-If `server_config.env` does not exist, the setup script creates it from `server_config.example.env` and stops so you can edit the server-only values. Keep `server_config.env` local to each PC; it is intentionally ignored by Git.
+On its first run, setup creates the ignored `server_config.env` and stops. Edit that file with the server-local MySQL credentials, the canonical public URL, and a unique `AUTH_SECRET` of at least 32 characters, then run setup again. The installer records absolute Node/npm/Git paths, registers the `GeoLGU-CadMap` Scheduled Task as `SYSTEM`, builds an isolated release, migrates and stages search data, verifies it on a temporary port, and activates it only after the checks pass.
 
-Required values:
+Runtime releases, state, and rotating logs are stored under the ignored `.deploy` directory. No runtime metadata is written into tracked application assets.
 
-- `DB_HOST`, `DB_PORT`: login MySQL host and port, usually `127.0.0.1` and `3306`
-- `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`: login MySQL database settings. The app creates the database and `gis_users` table if they do not exist.
-- `APP_HOST`, `APP_PORT`, `PUBLIC_URL`: local bind address, local port, and public URL
-- `NEXT_ALLOWED_DEV_ORIGINS`: comma-separated hosts allowed to access the dev server
-- `AUTH_SECRET`: random 32+ character session signing secret
+## Normal server update
 
-Start the app with:
+Use this exact workflow from a clean checkout:
 
 ```bat
-boac-gis\run.bat
+git pull --ff-only
+update_server.bat
 ```
 
-### Update map taxpayer data
+The updater requires `main` and a clean tracked worktree. It creates a detached release worktree under `.deploy\releases`, runs locked dependency installation, TypeScript, ESLint, unit/data checks, a production build, database migrations, staged import, API verification, and browser tests at 360, 390, 768, 1024, and desktop widths. The live release remains online during these steps.
 
-Map and search data do not query ETRACS at runtime. To rebuild static GeoJSON owner data from `CLN with taxpayerName.csv`, run this from the repository root:
+Only after the candidate passes does the updater stop the Scheduled Task, atomically swap the search table and release pointer, restart production, and verify both localhost and `PUBLIC_URL`. If activation or health verification fails, it restores the prior search table and prior release automatically. Normal cutover downtime is limited to the stop/swap/start/health window.
+
+To explicitly switch to the previously healthy release:
+
+```bat
+rollback_server.bat
+```
+
+## Server configuration
+
+Copy `server_config.example.env` only when setting up a new server. Keep `server_config.env` local and never commit it.
+
+Important values include:
+
+- `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`
+- `APP_HOST=127.0.0.1`, production `APP_PORT`, and distinct `APP_CANDIDATE_PORT`
+- `PUBLIC_URL=https://cadmap.41itservices.pro`
+- `AUTH_SECRET` with at least 32 random characters
+- `SCHEDULED_TASK_NAME`, health timeout, log retention, and responsive-test browser channel
+
+Create or update an administrator when required:
+
+```bat
+cd boac-gis
+npm run auth:setup
+```
+
+The application never deletes or replaces `gis_users` during map migrations or release rollback.
+
+## Map-data rebuild
+
+ETRACS is not queried at runtime. Cadastral/taxpayer changes continue through the controlled source-file rebuild:
 
 ```bat
 python build_unified_data.py
 ```
 
-The script embeds `Owner`, `TaxDecNo`, and `Land_Class` into `boac-gis\public\geojson` and regenerates `search_index.json`.
+The rebuild validates/enriches the published GeoJSON, creates stable lot IDs for rebuilt records, regenerates the compact search index and display-only barangay boundaries, and publishes a geometry-inclusive dataset version. Parcel coordinates and CRS are copied unchanged. The generated barangay envelopes are overview aids only and never replace authoritative parcel geometry.
 
-### Configure administrator login
+The regular deployment updater imports the rebuilt search index through a staging table and atomically activates it after verification. The previous active table remains available for rollback; `gis_users` is never modified by this lifecycle.
 
-Authentication fails closed until the user table and session-signing secret are configured. Create or update a MySQL-backed user:
+## Application architecture
 
-```bash
-npm run auth:setup
+- The Leaflet map stays mounted while settings, lot details, and intercepted administration overlays open or close.
+- Enabled barangays remain logically unlimited, while detailed geometry is viewport-driven at zoom 15+, limited to an eight-barangay browser LRU and two concurrent cancellable requests.
+- Lightweight derived barangay boundaries render below detail zoom; labels render only for visible parcels at zoom 18+.
+- Search starts at two characters and queries normalized indexed MySQL fields; the browser does not download `search_index.json` during initial navigation.
+- Geometry responses contain only map display fields. Complete parcel/taxpayer details are requested only after selection.
+- `/api/health` reports release, database, geometry, dataset, row-count, and version-agreement readiness without credentials.
+- Authenticated API responses use private cache policy; versioned geometry supports ETags and compression through Next.js and the existing reverse proxy.
+
+## Manual development checks
+
+```bat
+cd boac-gis
+npm ci
+npm run typecheck
+npm run lint
+npm test
+npm run verify:data
+npm run build
 ```
 
-The command creates the configured MySQL database and `gis_users` table if missing, then stores only a scrypt password hash. If it prints an `AUTH_SECRET`, copy that value into `../server_config.env`. Sessions are signed, HTTP-only, SameSite cookies and expire after eight hours. Five failed login attempts from the same client and username are blocked for 15 minutes.
+With a production server running and the server configuration loaded:
 
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```bat
+npm run verify:release -- --base-url http://127.0.0.1:3005 --target active
+npm run test:responsive
 ```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-For LAN or port-forwarded access, this project is configured to run on:
-
-- [http://lguboacnas.myqnapcloud.com:3005](http://lguboacnas.myqnapcloud.com:3005)
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

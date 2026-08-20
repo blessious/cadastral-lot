@@ -9,10 +9,10 @@ import { listUsers } from "@/lib/users";
 import { Button } from "@/components/ui/button";
 
 type UsersPageProps = {
-  searchParams?: {
+  searchParams?: Promise<{
     created?: string;
     error?: string;
-  };
+  }>;
 };
 
 function formatDate(value: Date | string | null): string {
@@ -31,7 +31,7 @@ export default async function UsersPage({ searchParams }: UsersPageProps) {
     redirect("/");
   }
 
-  const users = await listUsers();
+  const [users, resolvedSearchParams] = await Promise.all([listUsers(), searchParams]);
 
   return (
     <main className="min-h-[100svh] overflow-auto bg-zinc-50 px-4 py-5 text-zinc-950 md:px-8 md:py-8">
@@ -44,7 +44,11 @@ export default async function UsersPage({ searchParams }: UsersPageProps) {
             </div>
             <h1 className="mt-1 text-2xl font-bold tracking-tight md:text-3xl">Users</h1>
           </div>
-          <Button asChild variant="outline" className="h-10">
+          <Button
+            asChild
+            variant="outline"
+            className="h-11 bg-white text-zinc-900 hover:bg-zinc-100 hover:text-zinc-950"
+          >
             <Link href="/">
               <ArrowLeft className="h-4 w-4" />
               Map
@@ -52,14 +56,14 @@ export default async function UsersPage({ searchParams }: UsersPageProps) {
           </Button>
         </header>
 
-        {searchParams?.created ? (
+        {resolvedSearchParams?.created ? (
           <div className="rounded-md border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-800">
-            {searchParams.created}
+            {resolvedSearchParams.created}
           </div>
         ) : null}
-        {searchParams?.error ? (
+        {resolvedSearchParams?.error ? (
           <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
-            {searchParams.error}
+            {resolvedSearchParams.error}
           </div>
         ) : null}
 
@@ -124,7 +128,32 @@ export default async function UsersPage({ searchParams }: UsersPageProps) {
           <div className="border-b border-zinc-200 px-4 py-3">
             <h2 className="text-base font-bold">Existing Users</h2>
           </div>
-          <div className="overflow-x-auto">
+          <div className="grid gap-3 p-3 md:hidden" data-testid="mobile-user-cards">
+            {users.map((user) => (
+              <article key={user.id} className="rounded-xl border border-zinc-200 bg-zinc-50 p-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <h3 className="truncate font-bold text-zinc-950">{user.displayName || user.username}</h3>
+                    <p className="truncate text-sm text-zinc-600">@{user.username}</p>
+                  </div>
+                  <span className={user.isActive ? "rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-bold text-emerald-800" : "rounded-full bg-red-100 px-2.5 py-1 text-xs font-bold text-red-700"}>
+                    {user.isActive ? "Active" : "Inactive"}
+                  </span>
+                </div>
+                <dl className="mt-4 grid grid-cols-2 gap-3 text-sm">
+                  <div>
+                    <dt className="text-xs font-bold uppercase tracking-wide text-zinc-500">Role</dt>
+                    <dd className="mt-1 font-semibold capitalize text-zinc-800">{user.role}</dd>
+                  </div>
+                  <div>
+                    <dt className="text-xs font-bold uppercase tracking-wide text-zinc-500">Last login</dt>
+                    <dd className="mt-1 font-semibold text-zinc-800">{formatDate(user.lastLoginAt)}</dd>
+                  </div>
+                </dl>
+              </article>
+            ))}
+          </div>
+          <div className="hidden overflow-x-auto md:block" data-testid="desktop-user-table">
             <table className="w-full min-w-[720px] text-left text-sm">
               <thead className="bg-zinc-100 text-xs uppercase tracking-wide text-zinc-600">
                 <tr>

@@ -34,15 +34,67 @@ export default function LotInfoPanel({ selectedFeature, onClose }: LotInfoPanelP
   const [sheetMode, setSheetMode] = useState<"half" | "full">("half");
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState(0);
+  const [detailProperties, setDetailProperties] = useState<GeoJsonProperties | null>(null);
+  const [isLoadingDetails, setIsLoadingDetails] = useState(false);
   const startYRef = useRef<number | null>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const dragOffsetRef = useRef(0);
+  const draggingRef = useRef(false);
+  const dragFrameRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (selectedFeature) setSheetMode("half");
   }, [selectedFeature]);
 
+  useEffect(() => {
+    return () => {
+      if (dragFrameRef.current !== null) cancelAnimationFrame(dragFrameRef.current);
+    };
+  }, []);
+
+  useEffect(() => {
+    const id = selectedFeature?.properties?.__uid;
+    setDetailProperties(null);
+    if (!id) return;
+    const controller = new AbortController();
+    setIsLoadingDetails(true);
+    fetch(`/api/map/lots/${encodeURIComponent(String(id))}`, { signal: controller.signal })
+      .then((response) => {
+        if (!response.ok) throw new Error("Lot details unavailable");
+        return response.json() as Promise<{ lot: { properties: GeoJsonProperties } }>;
+      })
+      .then(({ lot }) => setDetailProperties(lot.properties))
+      .catch((error) => {
+        if ((error as Error).name !== "AbortError") console.warn(error);
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setIsLoadingDetails(false);
+      });
+    return () => controller.abort();
+  }, [selectedFeature]);
+
+  const displayFeature = selectedFeature
+    ? { ...selectedFeature, properties: { ...selectedFeature.properties, ...detailProperties } }
+    : null;
+
+  const scheduleDragOffset = (offset: number) => {
+    dragOffsetRef.current = offset;
+    if (dragFrameRef.current !== null) return;
+    dragFrameRef.current = requestAnimationFrame(() => {
+      setDragOffset(dragOffsetRef.current);
+      dragFrameRef.current = null;
+    });
+  };
+
+  const startDragging = () => {
+    if (draggingRef.current) return;
+    draggingRef.current = true;
+    setIsDragging(true);
+  };
+
   const handleTouchStart = (e: React.TouchEvent) => {
     startYRef.current = e.touches[0].clientY;
+    dragOffsetRef.current = 0;
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
@@ -53,26 +105,31 @@ export default function LotInfoPanel({ selectedFeature, onClose }: LotInfoPanelP
     const isAtTop = contentRef.current ? contentRef.current.scrollTop <= 0 : true;
 
     if ((delta > 0 && isAtTop) || (delta < 0 && sheetMode === "half")) {
-      setIsDragging(true);
-      setDragOffset(delta);
+      startDragging();
+      scheduleDragOffset(delta);
     } else {
+      draggingRef.current = false;
       setIsDragging(false);
+      scheduleDragOffset(0);
     }
   };
 
   const handleEnd = () => {
     if (startYRef.current === null) return;
-    if (isDragging) {
+    const finalOffset = dragOffsetRef.current;
+    if (draggingRef.current) {
       if (sheetMode === "half") {
-        if (dragOffset < -20) setSheetMode("full");
-        else if (dragOffset > 30) onClose();
+        if (finalOffset < -20) setSheetMode("full");
+        else if (finalOffset > 30) onClose();
       } else if (sheetMode === "full") {
-        if (dragOffset > 80) onClose();
-        else if (dragOffset > 30) setSheetMode("half");
+        if (finalOffset > 80) onClose();
+        else if (finalOffset > 30) setSheetMode("half");
       }
     }
+    draggingRef.current = false;
+    dragOffsetRef.current = 0;
     setIsDragging(false);
-    setDragOffset(0);
+    scheduleDragOffset(0);
     startYRef.current = null;
   };
 
@@ -88,30 +145,30 @@ export default function LotInfoPanel({ selectedFeature, onClose }: LotInfoPanelP
     if (e.pointerType === "touch") return;
     if (startYRef.current === null) return;
     const delta = e.clientY - startYRef.current;
-    setIsDragging(true);
-    setDragOffset(delta);
+    startDragging();
+    scheduleDragOffset(delta);
   };
 
   const handleHeaderPointerEnd = (e: React.PointerEvent) => {
     if (e.pointerType === "touch") return;
-    e.currentTarget.releasePointerCapture(e.pointerId);
+    if (e.currentTarget.hasPointerCapture(e.pointerId)) e.currentTarget.releasePointerCapture(e.pointerId);
     handleEnd();
   };
 
-  const barangay = getPropertyValue(selectedFeature, "Barangay") ?? "Lot Details";
+  const barangay = getPropertyValue(displayFeature, "Barangay") ?? "Lot Details";
   const landClass =
-    getPropertyValue(selectedFeature, "Land_Class") ?? getPropertyValue(selectedFeature, "LAND_CLASS");
+    getPropertyValue(displayFeature, "Land_Class") ?? getPropertyValue(displayFeature, "LAND_CLASS");
 
   const owner =
-    getPropertyValue(selectedFeature, "Owner") ??
-    getPropertyValue(selectedFeature, "OWNER") ??
-    getPropertyValue(selectedFeature, "Claimant") ??
-    getPropertyValue(selectedFeature, "CLAIMANT");
+    getPropertyValue(displayFeature, "Owner") ??
+    getPropertyValue(displayFeature, "OWNER") ??
+    getPropertyValue(displayFeature, "Claimant") ??
+    getPropertyValue(displayFeature, "CLAIMANT");
 
   let centerCoords: [number, number] | null = null;
-  if (selectedFeature && selectedFeature.geometry) {
+  if (displayFeature && displayFeature.geometry) {
     try {
-      const c = centroid(selectedFeature);
+      const c = centroid(displayFeature);
       if (c?.geometry?.coordinates) {
         // turf returns [longitude, latitude], standard is lat, lng
         centerCoords = [c.geometry.coordinates[1], c.geometry.coordinates[0]];
@@ -131,22 +188,22 @@ export default function LotInfoPanel({ selectedFeature, onClose }: LotInfoPanelP
 
   const fields: Field[] = [
     { label: "Owner", value: owner },
-    { label: "Cadastral Lot No.", value: getPropertyValue(selectedFeature, "CLN") },
-    { label: "Approved Lot No.", value: getPropertyValue(selectedFeature, "ALN") },
-    { label: "Property ID No.", value: getPropertyValue(selectedFeature, "PIN") },
-    { label: "Barangay", value: getPropertyValue(selectedFeature, "Barangay") },
-    { label: "Section", value: getPropertyValue(selectedFeature, "Section") },
+    { label: "Cadastral Lot No.", value: getPropertyValue(displayFeature, "CLN") },
+    { label: "Approved Lot No.", value: getPropertyValue(displayFeature, "ALN") },
+    { label: "Property ID No.", value: getPropertyValue(displayFeature, "PIN") },
+    { label: "Barangay", value: getPropertyValue(displayFeature, "Barangay") },
+    { label: "Section", value: getPropertyValue(displayFeature, "Section") },
     { label: "Land Classification", value: landClass },
-    { label: "Area", value: getPropertyValue(selectedFeature, "Area") },
+    { label: "Area", value: getPropertyValue(displayFeature, "Area") },
     { label: "Coordinates (Center)", value: centerCoords ? `${centerCoords[0].toFixed(6)}, ${centerCoords[1].toFixed(6)}` : null },
-    { label: "Remarks", value: getPropertyValue(selectedFeature, "Remarks") },
+    { label: "Remarks", value: getPropertyValue(displayFeature, "Remarks") },
   ].filter((field) => field.value);
 
   const isOpen = Boolean(selectedFeature);
 
   return (
     <div
-      className={`fixed bottom-0 left-0 right-0 z-[1000] flex flex-col glass-panel
+      className={`fixed bottom-0 left-0 right-0 z-[1000] flex flex-col pb-[env(safe-area-inset-bottom)] glass-panel
         rounded-t-2xl
         md:bottom-auto md:left-auto md:right-0 md:top-0 md:h-full md:w-80 md:rounded-none md:rounded-l-2xl md:border-t-0
         ${
@@ -161,6 +218,7 @@ export default function LotInfoPanel({ selectedFeature, onClose }: LotInfoPanelP
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleEnd}
+      onTouchCancel={handleEnd}
     >
       {/* Mobile drag handle */}
       <div 
@@ -195,8 +253,10 @@ export default function LotInfoPanel({ selectedFeature, onClose }: LotInfoPanelP
           </div>
         </div>
         <button
+          type="button"
           onClick={onClose}
-          className="shrink-0 h-7 w-7 flex items-center justify-center rounded-full hover:bg-slate-100/60 text-[var(--on-surface-variant)] transition-colors mt-0.5"
+          aria-label="Close lot details"
+          className="shrink-0 h-11 w-11 flex items-center justify-center rounded-full hover:bg-slate-100/60 text-[var(--on-surface-variant)] transition-colors -mr-2"
         >
           <X className="h-4 w-4" />
         </button>
@@ -207,6 +267,12 @@ export default function LotInfoPanel({ selectedFeature, onClose }: LotInfoPanelP
         className={`flex-1 custom-scrollbar px-5 py-4 ${isDragging ? 'overflow-hidden' : 'overflow-y-auto'}`}
         ref={contentRef}
       >
+        {isLoadingDetails ? (
+          <div className="mb-3 flex items-center gap-2 text-xs font-medium text-[var(--on-surface-variant)]" role="status">
+            <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-[#0051d5]/25 border-t-[#0051d5]" />
+            Loading complete lot details…
+          </div>
+        ) : null}
         {fields.length ? (
           <div className="space-y-2.5">
             {fields.map((field) => (
@@ -223,7 +289,9 @@ export default function LotInfoPanel({ selectedFeature, onClose }: LotInfoPanelP
                   </p>
                   {field.label === "Coordinates (Center)" && (
                     <button
+                      type="button"
                       onClick={handleCopyCoords}
+                      aria-label="Copy lot center coordinates"
                       className="rounded-md p-1.5 text-[var(--on-surface-variant)] opacity-0 transition-colors hover:bg-[var(--glass-field-hover)] group-hover:opacity-100 focus:opacity-100"
                       title="Copy Coordinates"
                     >

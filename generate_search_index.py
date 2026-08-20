@@ -25,6 +25,7 @@ Edit GEOJSON_DIR to point to your /public/geojson/ folder.
 """
 
 import json
+import hashlib
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent
@@ -34,7 +35,7 @@ GEOJSON_DIR = PROJECT_ROOT / "boac-gis" / "public" / "geojson"
 OUTPUT_FILE = GEOJSON_DIR / "search_index.json"
 
 # Fields to include in the search index (no geometry)
-SEARCH_FIELDS = ["CLN", "ALN", "PIN", "Barangay", "barangay", "Section", "Land_Class", "LAND_CLASS", "Area", "Area_1", "Brgy_Code", "PSGC", "Owner", "OWNER", "Claimant", "CLAIMANT"]
+SEARCH_FIELDS = ["CLN", "ALN", "PIN", "Barangay", "barangay", "Section", "Land_Class", "LAND_CLASS", "Area", "Area_1", "Brgy_Code", "PSGC", "Owner", "OWNER", "Claimant", "CLAIMANT", "TaxDecNo"]
 # ────────────────────────────────────────────────────────────
 
 
@@ -67,6 +68,22 @@ def normalize_props(props: dict, file_name: str) -> dict:
         del entry["barangay"]  # remove duplicate lowercase
 
     return entry
+
+
+def stable_lot_id(props: dict, file_name: str, geometry: object) -> str:
+    existing = str(props.get("__uid") or "").strip()
+    if existing:
+        return existing
+    identity = {
+        "file": file_name.lower(),
+        "pin": str(props.get("PIN") or "").strip().upper(),
+        "cln": str(props.get("CLN") or "").strip().upper(),
+        "aln": str(props.get("ALN") or "").strip().upper(),
+        "section": str(props.get("Section") or "").strip().upper(),
+        "geometry": geometry,
+    }
+    digest = hashlib.sha256(json.dumps(identity, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
+    return f"lot_{digest[:24]}"
 
 
 def main():
@@ -102,7 +119,7 @@ def main():
                     continue
 
                 entry = normalize_props(props, geojson_file.name)
-                entry["__uid"] = f"/geojson/{geojson_file.name}-{idx}"
+                entry["__uid"] = stable_lot_id(props, geojson_file.name, feature.get("geometry"))
                 search_index.append(entry)
                 count += 1
 

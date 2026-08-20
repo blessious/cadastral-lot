@@ -27,22 +27,29 @@ type SettingsPanelProps = {
 function Toggle({
   checked,
   onChange,
+  label,
 }: {
   checked: boolean;
   onChange: (v: boolean) => void;
+  label: string;
 }) {
   return (
     <button
       type="button"
       role="switch"
       aria-checked={checked}
+      aria-label={label}
       onClick={() => onChange(!checked)}
-      className={`relative inline-flex h-6 w-11 items-center rounded-full border-0 transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0051d5] ${
-        checked ? "bg-[#0051d5]" : "bg-[var(--surface-dim,#d8dadc)]"
-      }`}
+      className="relative inline-flex h-11 w-11 items-center rounded-full border-0 bg-transparent focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0051d5]"
     >
       <span
-        className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform duration-200 ${
+        aria-hidden="true"
+        className={`absolute left-0 h-6 w-11 rounded-full transition-colors duration-200 ${
+          checked ? "bg-[#0051d5]" : "bg-[var(--surface-dim,#d8dadc)]"
+        }`}
+      />
+      <span
+        className={`relative inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform duration-200 ${
           checked ? "translate-x-5" : "translate-x-0.5"
         }`}
       />
@@ -71,6 +78,9 @@ export default function SettingsPanel({
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState(0);
   const startYRef = useRef<number | null>(null);
+  const dragOffsetRef = useRef(0);
+  const draggingRef = useRef(false);
+  const dragFrameRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (isOpen) setSheetMode("half");
@@ -79,10 +89,29 @@ export default function SettingsPanel({
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
     setMounted(true);
+    return () => {
+      if (dragFrameRef.current !== null) cancelAnimationFrame(dragFrameRef.current);
+    };
   }, []);
+
+  const scheduleDragOffset = (offset: number) => {
+    dragOffsetRef.current = offset;
+    if (dragFrameRef.current !== null) return;
+    dragFrameRef.current = requestAnimationFrame(() => {
+      setDragOffset(dragOffsetRef.current);
+      dragFrameRef.current = null;
+    });
+  };
+
+  const startDragging = () => {
+    if (draggingRef.current) return;
+    draggingRef.current = true;
+    setIsDragging(true);
+  };
 
   const handleTouchStart = (e: React.TouchEvent) => {
     startYRef.current = e.touches[0].clientY;
+    dragOffsetRef.current = 0;
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
@@ -93,26 +122,31 @@ export default function SettingsPanel({
     const isAtTop = contentRef.current ? contentRef.current.scrollTop <= 0 : true;
 
     if ((delta > 0 && isAtTop) || (delta < 0 && sheetMode === "half")) {
-      setIsDragging(true);
-      setDragOffset(delta);
+      startDragging();
+      scheduleDragOffset(delta);
     } else {
+      draggingRef.current = false;
       setIsDragging(false);
+      scheduleDragOffset(0);
     }
   };
 
   const handleEnd = () => {
     if (startYRef.current === null) return;
-    if (isDragging) {
+    const finalOffset = dragOffsetRef.current;
+    if (draggingRef.current) {
       if (sheetMode === "half") {
-        if (dragOffset < -20) setSheetMode("full");
-        else if (dragOffset > 30) onOpenChange(false);
+        if (finalOffset < -20) setSheetMode("full");
+        else if (finalOffset > 30) onOpenChange(false);
       } else if (sheetMode === "full") {
-        if (dragOffset > 80) onOpenChange(false);
-        else if (dragOffset > 30) setSheetMode("half");
+        if (finalOffset > 80) onOpenChange(false);
+        else if (finalOffset > 30) setSheetMode("half");
       }
     }
+    draggingRef.current = false;
+    dragOffsetRef.current = 0;
     setIsDragging(false);
-    setDragOffset(0);
+    scheduleDragOffset(0);
     startYRef.current = null;
   };
 
@@ -128,13 +162,13 @@ export default function SettingsPanel({
     if (e.pointerType === "touch") return;
     if (startYRef.current === null) return;
     const delta = e.clientY - startYRef.current;
-    setIsDragging(true);
-    setDragOffset(delta);
+    startDragging();
+    scheduleDragOffset(delta);
   };
 
   const handleHeaderPointerEnd = (e: React.PointerEvent) => {
     if (e.pointerType === "touch") return;
-    e.currentTarget.releasePointerCapture(e.pointerId);
+    if (e.currentTarget.hasPointerCapture(e.pointerId)) e.currentTarget.releasePointerCapture(e.pointerId);
     handleEnd();
   };
 
@@ -164,7 +198,7 @@ export default function SettingsPanel({
       {/* Panel */}
       {mounted && createPortal(
         <div
-          className={`fixed bottom-0 left-0 right-0 z-[1100] flex flex-col glass-panel
+          className={`fixed bottom-0 left-0 right-0 z-[1100] flex flex-col pb-[env(safe-area-inset-bottom)] glass-panel
             rounded-t-2xl md:rounded-xl overflow-hidden
             md:absolute md:top-20 md:left-auto md:bottom-auto md:w-[400px] ${detailsOpen ? "md:right-[21rem]" : "md:right-16"}
             ${isOpen ? `opacity-100 h-[92vh] md:h-auto ${sheetMode === "half" ? "translate-y-[32vh] md:translate-y-0" : "translate-y-0"}` : "pointer-events-none translate-y-full opacity-0 md:translate-y-0 md:scale-95"}`}
@@ -176,6 +210,7 @@ export default function SettingsPanel({
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleEnd}
+          onTouchCancel={handleEnd}
         >
           {/* Mobile drag handle */}
           <div 
@@ -227,7 +262,7 @@ export default function SettingsPanel({
                   <span className="text-[13px] text-[var(--on-surface)]">
                     Show Cadastral Lot No.
                   </span>
-                  <Toggle checked={showLotNumbers} onChange={setShowLotNumbers} />
+                  <Toggle checked={showLotNumbers} onChange={setShowLotNumbers} label="Show cadastral lot numbers" />
                 </div>
               </div>
             </section>
@@ -242,7 +277,7 @@ export default function SettingsPanel({
                   <span className="text-[13px] text-[var(--on-surface)]">
                     Barangay Shape
                   </span>
-                  <Toggle checked={autoLoadBarangay} onChange={setAutoLoadBarangay} />
+                  <Toggle checked={autoLoadBarangay} onChange={setAutoLoadBarangay} label="Automatically load the barangay at my location" />
                 </div>
                 <p className="text-[11px] leading-4 text-[var(--on-surface-variant)]">
                   When on, current location automatically turns on the matching barangay shape.
@@ -263,7 +298,7 @@ export default function SettingsPanel({
                   {landClasses.map((lc) => (
                     <label
                       key={lc}
-                    className="glass-field-hover flex cursor-pointer items-center gap-2 rounded-lg p-2 transition-colors"
+                    className="glass-field-hover flex min-h-11 cursor-pointer items-center gap-2 rounded-lg p-2 transition-colors"
                     >
                       <input
                         type="checkbox"
@@ -289,7 +324,7 @@ export default function SettingsPanel({
               <div className="relative mb-2.5">
                 <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[var(--on-surface-variant)] pointer-events-none" />
                 <input
-                  className="glass-input w-full rounded-lg border py-1.5 pl-8 pr-3 text-[12px] text-[var(--on-surface)] placeholder:text-[var(--on-surface-variant)] focus:outline-none focus:ring-2 focus:ring-[#0051d5]/20"
+                  className="glass-input h-11 w-full rounded-lg border py-1.5 pl-8 pr-3 text-[12px] text-[var(--on-surface)] placeholder:text-[var(--on-surface-variant)] focus:outline-none focus:ring-2 focus:ring-[#0051d5]/20"
                   placeholder="Find barangay…"
                   value={barangaySearch}
                   onChange={(e) => setBarangaySearch(e.target.value)}
@@ -298,9 +333,11 @@ export default function SettingsPanel({
 
               <div className="space-y-0.5 max-h-44 overflow-y-auto custom-scrollbar pr-1">
                 {filteredBarangays.map((b) => (
-                  <div
+                  <button
                     key={b.file}
-                    className="glass-field-hover flex cursor-pointer items-center justify-between rounded-lg p-2 transition-colors"
+                    type="button"
+                    aria-pressed={activeFiles.has(b.file)}
+                    className="glass-field-hover flex min-h-11 w-full cursor-pointer items-center justify-between rounded-lg p-2 text-left transition-colors"
                     onClick={() => toggleFile(b.file)}
                   >
                     <span className="text-[12px] text-[var(--on-surface)]">{b.name}</span>
@@ -313,7 +350,7 @@ export default function SettingsPanel({
                     >
                       {activeFiles.has(b.file) ? "ON" : "OFF"}
                     </span>
-                  </div>
+                  </button>
                 ))}
               </div>
             </section>

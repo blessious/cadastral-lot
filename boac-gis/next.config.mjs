@@ -40,10 +40,12 @@ const allowedDevOrigins = (
 
 const nextConfig = {
   allowedDevOrigins,
-  experimental: {
-    // The MySQL driver relies on Node runtime APIs and should stay external.
-    serverComponentsExternalPackages: ["mysql2"],
+  compress: true,
+  images: {
+    formats: ["image/avif", "image/webp"],
   },
+  // The MySQL driver relies on Node runtime APIs and should stay external.
+  serverExternalPackages: ["mysql2"],
 };
 
 export default nextConfig;

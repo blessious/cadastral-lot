@@ -3,7 +3,6 @@ import "server-only";
 import mysql, { type Pool } from "mysql2/promise";
 
 declare global {
-  // eslint-disable-next-line no-var
   var boacGisMySqlPool: Promise<Pool> | undefined;
 }
 

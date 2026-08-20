@@ -5,7 +5,8 @@ import { cookies } from "next/headers";
 import { AUTH_COOKIE, verifySessionToken } from "@/lib/auth-session";
 
 export async function getCurrentSession() {
-  return verifySessionToken(cookies().get(AUTH_COOKIE)?.value);
+  const cookieStore = await cookies();
+  return verifySessionToken(cookieStore.get(AUTH_COOKIE)?.value);
 }
 
 export async function requireAdminSession() {
