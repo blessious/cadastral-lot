@@ -14,6 +14,7 @@ import SearchBar from "./SearchBar";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 
+const LandClassificationPanel = dynamic(() => import("./LandClassificationPanel"), { ssr: false });
 const SettingsPanel = dynamic(() => import("./SettingsPanel"), { ssr: false });
 const MiniMap = dynamic(() => import("./MiniMap"), { ssr: false });
 
@@ -76,8 +77,8 @@ const DEFAULT_ZOOM = 13;
 const SELECT_ZOOM = 20;
 const LIGHT_STREETS_TILE_URL = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
 const SATELLITE_TILE_URL = "https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}";
-const LOT_LABEL_MIN_ZOOM_DESKTOP = 18;
-const LOT_LABEL_MIN_ZOOM_MOBILE = 18;
+const LOT_LABEL_MIN_ZOOM_DESKTOP = 20;
+const LOT_LABEL_MIN_ZOOM_MOBILE = 20;
 const LOT_LABEL_CLASS =
   "bg-white/80 backdrop-blur-[2px] border border-[#0051d5]/20 px-2 py-0.5 rounded text-[9px] md:text-xs text-[#0051d5] font-bold shadow-sm text-center lot-label-tooltip leading-none pointer-events-none";
 const MAX_CACHED_BARANGAYS = 8;
@@ -217,6 +218,7 @@ export default function MapView({ selectedFeature, setSelectedFeature, canManage
   const [basemap, setBasemap] = useState<"streets" | "satellite">("satellite");
   const [theme, setTheme] = useState<ThemeMode>("light");
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [landClassificationOpen, setLandClassificationOpen] = useState(false);
   const [loadingFiles, setLoadingFiles] = useState<Set<string>>(new Set());
   const [barangayBoundaries, setBarangayBoundaries] = useState<FeatureCollection | null>(null);
   const [activeLandClasses, setActiveLandClasses] = useState<Set<string>>(
@@ -287,6 +289,22 @@ export default function MapView({ selectedFeature, setSelectedFeature, canManage
   const handleSettingsOpenChange = useCallback(
     (open: boolean) => {
       setSettingsOpen(open);
+      if (open) {
+        setLandClassificationOpen(false);
+      }
+      if (open && isMobileViewport && selectedFeature) {
+        setSelectedFeature(null);
+      }
+    },
+    [isMobileViewport, selectedFeature, setSelectedFeature]
+  );
+
+  const handleLandClassificationOpenChange = useCallback(
+    (open: boolean) => {
+      setLandClassificationOpen(open);
+      if (open) {
+        setSettingsOpen(false);
+      }
       if (open && isMobileViewport && selectedFeature) {
         setSelectedFeature(null);
       }
@@ -1267,11 +1285,17 @@ export default function MapView({ selectedFeature, setSelectedFeature, canManage
             setShowLotNumbers={setShowLotNumbers}
             autoLoadBarangay={autoLoadBarangay}
             setAutoLoadBarangay={handleLocationBarangayToggle}
+            isOpen={settingsOpen}
+            onOpenChange={handleSettingsOpenChange}
+            detailsOpen={Boolean(selectedFeature)}
+          />
+          <div className="my-1 h-px bg-[var(--outline-variant)]/60" />
+          <LandClassificationPanel
             activeLandClasses={activeLandClasses}
             toggleLandClass={toggleLandClass}
             landClasses={[...Object.keys(LAND_CLASS_COLORS), "unknown"]}
-            isOpen={settingsOpen}
-            onOpenChange={handleSettingsOpenChange}
+            isOpen={landClassificationOpen}
+            onOpenChange={handleLandClassificationOpenChange}
             detailsOpen={Boolean(selectedFeature)}
           />
         </div>

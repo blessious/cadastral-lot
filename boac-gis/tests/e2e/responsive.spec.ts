@@ -83,7 +83,13 @@ for (const viewport of viewports) {
     await page.getByRole("button", { name: "Map settings", exact: true }).click();
     await expect(page.getByRole("heading", { name: "Map Settings" })).toBeVisible();
     await expect(page.getByRole("switch", { name: "Show cadastral lot numbers" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Barangays" })).toBeVisible();
     await page.getByRole("button", { name: "Close map settings" }).click();
+
+    await page.getByRole("button", { name: "Land classification", exact: true }).click();
+    await expect(page.getByRole("heading", { name: "Land Classification" })).toBeVisible();
+    await expect(page.getByLabel("agricultural")).toBeVisible();
+    await page.getByRole("button", { name: "Close land classification" }).click();
 
     const themeButton = page.getByRole("button", { name: /Switch to (dark|light) mode/ });
     await themeButton.click();

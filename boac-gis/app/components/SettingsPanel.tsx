@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { Layers, X, ChevronDown, Search } from "lucide-react";
+import { Layers, X, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 type BarangayIndexEntry = {
@@ -16,9 +16,6 @@ type SettingsPanelProps = {
   setShowLotNumbers: (show: boolean) => void;
   autoLoadBarangay: boolean;
   setAutoLoadBarangay: (show: boolean) => void;
-  activeLandClasses: Set<string>;
-  toggleLandClass: (lc: string) => void;
-  landClasses: string[];
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   detailsOpen: boolean;
@@ -65,9 +62,6 @@ export default function SettingsPanel({
   setShowLotNumbers,
   autoLoadBarangay,
   setAutoLoadBarangay,
-  activeLandClasses,
-  toggleLandClass,
-  landClasses,
   isOpen,
   onOpenChange,
   detailsOpen,
@@ -201,7 +195,7 @@ export default function SettingsPanel({
           className={`fixed bottom-0 left-0 right-0 z-[1100] flex flex-col pb-[env(safe-area-inset-bottom)] glass-panel
             rounded-t-2xl md:rounded-xl overflow-hidden
             md:absolute md:top-20 md:left-auto md:bottom-auto md:w-[400px] ${detailsOpen ? "md:right-[21rem]" : "md:right-16"}
-            ${isOpen ? `opacity-100 h-[92vh] md:h-auto ${sheetMode === "half" ? "translate-y-[32vh] md:translate-y-0" : "translate-y-0"}` : "pointer-events-none translate-y-full opacity-0 md:translate-y-0 md:scale-95"}`}
+            ${isOpen ? `opacity-100 h-[92vh] md:h-[min(720px,calc(100vh-7rem))] ${sheetMode === "half" ? "translate-y-[32vh] md:translate-y-0" : "translate-y-0"}` : "pointer-events-none translate-y-full opacity-0 md:translate-y-0 md:scale-95"}`}
           style={{ 
             maxHeight: "92vh",
             transform: isDragging ? `translateY(calc(${sheetMode === "half" ? "32vh" : "0px"} + ${dragOffset}px))` : undefined,
@@ -248,7 +242,7 @@ export default function SettingsPanel({
 
           {/* Scrollable Content */}
           <div 
-            className={`flex-1 custom-scrollbar px-4 py-3 space-y-5 ${isDragging ? 'overflow-hidden' : 'overflow-y-auto'}`}
+            className={`flex min-h-0 flex-1 flex-col gap-5 custom-scrollbar px-4 py-3 ${isDragging ? 'overflow-hidden' : 'overflow-y-auto'}`}
             ref={contentRef}
           >
 
@@ -285,38 +279,8 @@ export default function SettingsPanel({
               </div>
             </section>
 
-            {/* ── Land Classification ── */}
-            <section>
-              <details className="glass-field group rounded-lg [&_summary::-webkit-details-marker]:hidden">
-                <summary className="flex cursor-pointer items-center justify-between px-4 py-3 list-none">
-                  <h4 className="text-[10px] font-semibold uppercase tracking-widest text-[var(--on-surface-variant)] m-0">
-                    Land Classification
-                  </h4>
-                  <ChevronDown className="h-4 w-4 text-[var(--on-surface-variant)] transition-transform group-open:rotate-180" />
-                </summary>
-                <div className="px-4 pb-3 pt-1 border-t border-white/20 grid grid-cols-2 gap-2">
-                  {landClasses.map((lc) => (
-                    <label
-                      key={lc}
-                    className="glass-field-hover flex min-h-11 cursor-pointer items-center gap-2 rounded-lg p-2 transition-colors"
-                    >
-                      <input
-                        type="checkbox"
-                        checked={activeLandClasses.has(lc)}
-                        onChange={() => toggleLandClass(lc)}
-                        className="h-4 w-4 rounded border-gray-300 text-[#0051d5] focus:ring-[#0051d5]/30"
-                      />
-                      <span className="text-[12px] font-medium text-[var(--on-surface)] capitalize leading-none">
-                        {lc}
-                      </span>
-                    </label>
-                  ))}
-                </div>
-              </details>
-            </section>
-
             {/* ── Barangays ── */}
-            <section>
+            <section className="flex min-h-0 flex-1 flex-col">
               <h4 className="text-[10px] font-semibold uppercase tracking-widest text-[var(--on-surface-variant)] mb-3">
                 Barangays
               </h4>
@@ -331,7 +295,7 @@ export default function SettingsPanel({
                 />
               </div>
 
-              <div className="space-y-0.5 max-h-44 overflow-y-auto custom-scrollbar pr-1">
+              <div className="min-h-48 flex-1 space-y-0.5 overflow-y-auto custom-scrollbar pr-1">
                 {filteredBarangays.map((b) => (
                   <button
                     key={b.file}
