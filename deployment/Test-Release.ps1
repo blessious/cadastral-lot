@@ -27,7 +27,10 @@ if (-not $SkipNpm) {
         try {
             $env:PLAYWRIGHT_BASE_URL=$BaseUrl
             $env:DEPLOY_BROWSER_CHANNEL=[string]$config.DEPLOY_BROWSER_CHANNEL
+            Wait-GeoLguHealth -BaseUrl $BaseUrl -Target $Target -TimeoutSeconds $timeout -ExpectedCommit $ExpectedCommit -ExpectedVersion $ExpectedVersion -Process $Process | Out-Null
+            if ($Process) { Write-Host "[CHECK] Candidate PID $($Process.Id) is healthy before responsive tests." }
             Invoke-NpmScript -NpmPath ([string]$runtime.npmPath) -WebRoot $web -Script "test:responsive" -Required | Out-Null
+            Wait-GeoLguHealth -BaseUrl $BaseUrl -Target $Target -TimeoutSeconds $timeout -ExpectedCommit $ExpectedCommit -ExpectedVersion $ExpectedVersion -Process $Process | Out-Null
         } finally {
             $env:PLAYWRIGHT_BASE_URL=$priorBaseUrl
             $env:DEPLOY_BROWSER_CHANNEL=$priorChannel

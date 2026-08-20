@@ -132,7 +132,10 @@ try {
     $candidateErr=Join-Path $paths.Logs "candidate-$($commit.Substring(0,12)).stderr.log"
     $next=Join-Path $web "node_modules\next\dist\bin\next"
     $arguments='"'+$next+'" start -H "127.0.0.1" -p '+[string]$config.APP_CANDIDATE_PORT
-    $candidate=Start-Process -FilePath ([string]$runtime.nodePath) -ArgumentList $arguments -WorkingDirectory $web -RedirectStandardOutput $candidateOut -RedirectStandardError $candidateErr -PassThru -NoNewWindow
+    # Give the candidate its own hidden process window. Sharing the setup
+    # console lets nested npm/Playwright commands interfere with the Next
+    # process group on Windows PowerShell 5.1.
+    $candidate=Start-Process -FilePath ([string]$runtime.nodePath) -ArgumentList $arguments -WorkingDirectory $web -RedirectStandardOutput $candidateOut -RedirectStandardError $candidateErr -PassThru -WindowStyle Hidden
     & (Join-Path $PSScriptRoot "Test-Release.ps1") -ProjectRoot $root -ReleasePath $release -BaseUrl ("http://127.0.0.1:"+$config.APP_CANDIDATE_PORT) -ExpectedCommit $commit -ExpectedVersion $version -Target staged -Process $candidate
     if ($candidate -and -not $candidate.HasExited) { Stop-Process -Id $candidate.Id -Force; $candidate.WaitForExit() }
     $candidate=$null
