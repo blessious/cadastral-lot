@@ -1,9 +1,9 @@
 @echo off
 setlocal
 
-set "PROJECT_ROOT=%~dp0"
-set "UPDATE_SCRIPT=%PROJECT_ROOT%deployment\Update-Server.ps1"
-set "ELEVATION_SCRIPT=%PROJECT_ROOT%deployment\Invoke-Elevated.ps1"
+for %%I in ("%~dp0.") do set "PROJECT_ROOT=%%~fI"
+set "UPDATE_SCRIPT=%PROJECT_ROOT%\deployment\Update-Server.ps1"
+set "ELEVATION_SCRIPT=%PROJECT_ROOT%\deployment\Invoke-Elevated.ps1"
 
 if not exist "%UPDATE_SCRIPT%" (
     echo [ERROR] Deployment updater was not found:

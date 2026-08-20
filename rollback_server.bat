@@ -1,9 +1,9 @@
 @echo off
 setlocal
 
-set "PROJECT_ROOT=%~dp0"
-set "ROLLBACK_SCRIPT=%PROJECT_ROOT%deployment\Rollback-Server.ps1"
-set "ELEVATION_SCRIPT=%PROJECT_ROOT%deployment\Invoke-Elevated.ps1"
+for %%I in ("%~dp0.") do set "PROJECT_ROOT=%%~fI"
+set "ROLLBACK_SCRIPT=%PROJECT_ROOT%\deployment\Rollback-Server.ps1"
+set "ELEVATION_SCRIPT=%PROJECT_ROOT%\deployment\Invoke-Elevated.ps1"
 
 if not exist "%ROLLBACK_SCRIPT%" (
     echo [ERROR] Deployment rollback script was not found:

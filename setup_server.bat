@@ -1,9 +1,9 @@
 @echo off
 setlocal
 
-set "PROJECT_ROOT=%~dp0"
-set "SETUP_SCRIPT=%PROJECT_ROOT%deployment\Setup-Server.ps1"
-set "ELEVATION_SCRIPT=%PROJECT_ROOT%deployment\Invoke-Elevated.ps1"
+for %%I in ("%~dp0.") do set "PROJECT_ROOT=%%~fI"
+set "SETUP_SCRIPT=%PROJECT_ROOT%\deployment\Setup-Server.ps1"
+set "ELEVATION_SCRIPT=%PROJECT_ROOT%\deployment\Invoke-Elevated.ps1"
 
 title GeoLGU Production Server Setup
 

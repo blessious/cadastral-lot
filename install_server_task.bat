@@ -1,9 +1,9 @@
 @echo off
 setlocal
 
-set "PROJECT_ROOT=%~dp0"
-set "INSTALL_SCRIPT=%PROJECT_ROOT%deployment\Install-ServerTask.ps1"
-set "ELEVATION_SCRIPT=%PROJECT_ROOT%deployment\Invoke-Elevated.ps1"
+for %%I in ("%~dp0.") do set "PROJECT_ROOT=%%~fI"
+set "INSTALL_SCRIPT=%PROJECT_ROOT%\deployment\Install-ServerTask.ps1"
+set "ELEVATION_SCRIPT=%PROJECT_ROOT%\deployment\Invoke-Elevated.ps1"
 
 if not exist "%INSTALL_SCRIPT%" (
     echo [ERROR] Scheduled Task installer was not found:
