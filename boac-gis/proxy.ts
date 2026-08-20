@@ -8,11 +8,13 @@ function getRedirectUrl(request: NextRequest, pathname: string) {
   const host = forwardedHost || request.headers.get('host') || request.nextUrl.host
   const proto = forwardedProto || request.nextUrl.protocol.replace(':', '')
 
-  if (host && !host.startsWith('localhost') && !host.startsWith('127.0.0.1')) {
+  const isLocalHost = host.startsWith('localhost') || host.startsWith('127.0.0.1')
+
+  if (host && !isLocalHost) {
     return new URL(pathname, `${proto}://${host}`)
   }
 
-  if (process.env.PUBLIC_URL) {
+  if (process.env.PUBLIC_URL && !isLocalHost) {
     return new URL(pathname, process.env.PUBLIC_URL)
   }
 

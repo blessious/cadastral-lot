@@ -179,13 +179,14 @@ try {
     Write-Host "[8/8] Retaining current and previous releases..."
     try {
         $keep=@($release); if ($oldState -and $oldState.currentRelease) { $keep += [string]$oldState.currentRelease }
-        foreach($directory in @(Get-ChildItem -LiteralPath $paths.Releases -Directory -ErrorAction SilentlyContinue | Sort-Object LastWriteTime -Descending)) {
-            if ($keep | Where-Object { Test-SamePath $_ $directory.FullName }) { continue }
-            Assert-PathInside $directory.FullName $paths.Releases | Out-Null
-            Invoke-ExternalCommand ([string]$runtime.gitPath) @("-C",$root,"worktree","remove","--force",$directory.FullName) $root "remove old release"
+        $stale=@(Get-ChildItem -LiteralPath $paths.Releases -Directory -ErrorAction SilentlyContinue | Where-Object {
+            $directory=$_
+            -not ($keep | Where-Object { Test-SamePath $_ $directory.FullName })
+        })
+        if ($stale.Count) {
+            Write-Warning "Release is healthy. Skipping old-release cleanup for $($stale.Count) retained director$(if($stale.Count -eq 1){'y'}else{'ies'}) to avoid delaying production activation."
         }
-        Invoke-ExternalCommand ([string]$runtime.gitPath) @("-C",$root,"worktree","prune") $root "prune release worktrees"
-    } catch { Write-Warning "Release is healthy, but old-release cleanup was incomplete: $($_.Exception.Message)" }
+    } catch { Write-Warning "Release is healthy, but release-retention inspection was incomplete: $($_.Exception.Message)" }
     Write-Host "[OK] Release $commit is active and healthy."
 } catch {
     $failure=$_

@@ -66,6 +66,9 @@ if (target === "active") {
   const prefixQuery = exactQuery.slice(0, Math.max(2, Math.min(4, exactQuery.length - 1)));
   const ownerQuery = String(ownerSample.Owner).trim();
   const secondFile = index.find((row) => row.file && row.file !== sample.file)?.file;
+  await json(`${baseUrl}/api/map/search?${new URLSearchParams({ q: exactQuery, limit: "10" })}`, {
+    headers: { Cookie: cookie, "Cache-Control": "no-cache" },
+  });
   const scenarios = [
     { name: "exact identifier", query: exactQuery, files: [], expectResults: true },
     { name: "identifier prefix", query: prefixQuery, files: [], expectResults: true },
