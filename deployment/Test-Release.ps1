@@ -24,16 +24,24 @@ if (-not $SkipNpm) {
     if (Test-TrueValue ([string]$config.DEPLOY_RUN_RESPONSIVE_TESTS)) {
         $priorBaseUrl=$env:PLAYWRIGHT_BASE_URL
         $priorChannel=$env:DEPLOY_BROWSER_CHANNEL
+        $priorManageServer=$env:PLAYWRIGHT_MANAGE_SERVER
         try {
             $env:PLAYWRIGHT_BASE_URL=$BaseUrl
             $env:DEPLOY_BROWSER_CHANNEL=[string]$config.DEPLOY_BROWSER_CHANNEL
             Wait-GeoLguHealth -BaseUrl $BaseUrl -Target $Target -TimeoutSeconds $timeout -ExpectedCommit $ExpectedCommit -ExpectedVersion $ExpectedVersion -Process $Process | Out-Null
-            if ($Process) { Write-Host "[CHECK] Candidate PID $($Process.Id) is healthy before responsive tests." }
+            if ($Process) {
+                Write-Host "[CHECK] Candidate PID $($Process.Id) passed API verification. Handing temporary server ownership to Playwright."
+                if (-not $Process.HasExited) { Stop-Process -Id $Process.Id -Force; $Process.WaitForExit() }
+                $env:PLAYWRIGHT_MANAGE_SERVER="true"
+            } else {
+                $env:PLAYWRIGHT_MANAGE_SERVER="false"
+            }
             Invoke-NpmScript -NpmPath ([string]$runtime.npmPath) -WebRoot $web -Script "test:responsive" -Required | Out-Null
-            Wait-GeoLguHealth -BaseUrl $BaseUrl -Target $Target -TimeoutSeconds $timeout -ExpectedCommit $ExpectedCommit -ExpectedVersion $ExpectedVersion -Process $Process | Out-Null
+            if (-not $Process) { Wait-GeoLguHealth -BaseUrl $BaseUrl -Target $Target -TimeoutSeconds $timeout -ExpectedCommit $ExpectedCommit -ExpectedVersion $ExpectedVersion | Out-Null }
         } finally {
             $env:PLAYWRIGHT_BASE_URL=$priorBaseUrl
             $env:DEPLOY_BROWSER_CHANNEL=$priorChannel
+            $env:PLAYWRIGHT_MANAGE_SERVER=$priorManageServer
         }
     }
 }

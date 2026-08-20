@@ -141,7 +141,12 @@ try {
     $candidate=$null
 
     Write-Host "[6/8] Switching production release..."
-    if (-not $oldState -and @(Get-ListeningProcessIds ([int]$config.APP_PORT)).Count) { throw "An unmanaged process is using the production port. The first managed deployment will not stop a service it cannot restore." }
+    $unmanagedProductionPids=@()
+    if (-not $oldState) { $unmanagedProductionPids=@(Get-ListeningProcessIds ([int]$config.APP_PORT)) }
+    if ($unmanagedProductionPids.Count) {
+        if (-not $SetupInvocation) { throw "An unmanaged process is using the production port. Run setup_server.bat for the one-time managed-service handoff." }
+        Write-Warning "First setup will replace the previously launched app on port $($config.APP_PORT) after the candidate has passed every pre-switch check. Emergency recovery remains available from the pre-deployment Git commit."
+    }
     $preActivationStatus=Get-MapLifecycleStatus ([string]$runtime.nodePath) $web
     $switchAttempted=$true
     Stop-GeoLguService $taskName ([int]$config.APP_PORT) $root
