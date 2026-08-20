@@ -59,7 +59,9 @@ for (const viewport of viewports) {
     page.on("request", (request) => requestedUrls.push(request.url()));
     await page.goto("/");
     await expect(page.getByRole("navigation", { name: "Map tools" })).toBeVisible();
-    const map = page.locator(".leaflet-container");
+    // The page contains both the primary map and the overview minimap.
+    // Persist and assert against the primary (first) Leaflet container only.
+    const map = page.locator(".leaflet-container").first();
     await expect(map).toBeVisible();
     await map.evaluate((element) => { element.setAttribute("data-persistence-probe", "mounted"); });
 

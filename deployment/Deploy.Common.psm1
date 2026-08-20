@@ -116,7 +116,12 @@ function Enter-DeploymentLock {
 function Invoke-ExternalCommand {
     param([string]$FilePath,[string[]]$Arguments=@(),[string]$WorkingDirectory="",[string]$Description="command")
     if ($WorkingDirectory) { Push-Location -LiteralPath $WorkingDirectory }
-    try { & $FilePath @Arguments; $code=$LASTEXITCODE } finally { if ($WorkingDirectory) { Pop-Location } }
+    try {
+        # Write native output to the host so callers may suppress the helper's
+        # Boolean return value without also hiding build/test diagnostics.
+        & $FilePath @Arguments 2>&1 | ForEach-Object { Write-Host $_ }
+        $code=$LASTEXITCODE
+    } finally { if ($WorkingDirectory) { Pop-Location } }
     if ($code -ne 0) { throw "$Description failed with exit code $code." }
 }
 function Get-PackageScripts { param([string]$WebRoot) $pkg=Get-Content -LiteralPath (Join-Path $WebRoot "package.json") -Raw | ConvertFrom-Json; if (-not $pkg.scripts) { return @() }; return @($pkg.scripts.PSObject.Properties | ForEach-Object {$_.Name}) }
