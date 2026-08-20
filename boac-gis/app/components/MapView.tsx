@@ -87,6 +87,8 @@ const GEOMETRY_RETRY_BASE_DELAY_MS = 500;
 const DETAIL_MIN_ZOOM = 15;
 const VIEWPORT_LOAD_PADDING = 0.12;
 const INITIAL_LOCATION_MAX_AGE_MS = 5 * 60 * 1000;
+const LOCATION_PERMISSION_DESCRIPTION =
+  "Click the tune icon beside the address bar, set Location to Allow, then refresh GeoLGU.";
 
 const LAND_CLASS_COLORS: Record<string, string> = {
   agricultural: "#a3e635",    // Vibrant Lime Green
@@ -763,6 +765,26 @@ export default function MapView({ selectedFeature, setSelectedFeature, canManage
     [locationBarangayFile, turnOnLocationBarangay, userLocation]
   );
 
+  const showGeolocationError = useCallback(
+    (error: GeolocationPositionError, automatic = false) => {
+      if (error.code === error.PERMISSION_DENIED) {
+        toast({
+          title: automatic ? "Auto-location is blocked" : "Location permission is blocked",
+          description: LOCATION_PERMISSION_DESCRIPTION,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      toast({
+        title: automatic ? "Auto-location unavailable" : "Geolocation error",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+    [toast],
+  );
+
   useEffect(() => {
     if (!("geolocation" in navigator) || hasInitialLocateRef.current) return;
     hasInitialLocateRef.current = true;
@@ -784,10 +806,11 @@ export default function MapView({ selectedFeature, setSelectedFeature, canManage
       (error) => {
         setIsLocating(false);
         console.info("Initial cached geolocation unavailable:", error.message);
+        showGeolocationError(error, true);
       },
       { enableHighAccuracy: false, timeout: 8000, maximumAge: INITIAL_LOCATION_MAX_AGE_MS },
     );
-  }, [turnOnLocationBarangay]);
+  }, [showGeolocationError, turnOnLocationBarangay]);
 
   useEffect(() => {
     requestAnimationFrame(updateLotLabelVisibility);
@@ -993,11 +1016,11 @@ export default function MapView({ selectedFeature, setSelectedFeature, canManage
       },
       (error) => {
         setIsLocating(false);
-        toast({ title: "Geolocation error: " + error.message });
+        showGeolocationError(error);
       },
       { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 }
     );
-  }, [fetchLocationMatch, selectFeature, toast, turnOnLocationBarangay]);
+  }, [fetchLocationMatch, selectFeature, showGeolocationError, turnOnLocationBarangay]);
 
   const handleZoomIn = useCallback(() => {
     mapRef.current?.zoomIn();
