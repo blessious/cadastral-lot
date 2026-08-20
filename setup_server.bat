@@ -10,11 +10,15 @@ title GeoLGU Production Server Setup
 if not exist "%SETUP_SCRIPT%" (
     echo [ERROR] Deployment setup script was not found:
     echo   %SETUP_SCRIPT%
+    echo.
+    pause
     exit /b 1
 )
 if not exist "%ELEVATION_SCRIPT%" (
     echo [ERROR] Elevation helper was not found:
     echo   %ELEVATION_SCRIPT%
+    echo.
+    pause
     exit /b 1
 )
 
@@ -24,6 +28,9 @@ set "RESULT=%ERRORLEVEL%"
 if not "%RESULT%"=="0" (
     echo.
     echo [STOPPED] Server setup did not complete. Review the message and the log under .deploy\logs.
+    echo [TIP] For the complete error, run setup_server.bat from an Administrator Command Prompt.
+    echo.
+    pause
     exit /b %RESULT%
 )
 
