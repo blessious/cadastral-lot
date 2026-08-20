@@ -119,7 +119,10 @@ function Invoke-ExternalCommand {
     try {
         # Write native output to the host so callers may suppress the helper's
         # Boolean return value without also hiding build/test diagnostics.
-        & $FilePath @Arguments 2>&1 | ForEach-Object { Write-Host $_ }
+        # Keep stderr on its native stream. In Windows PowerShell 5.1,
+        # merging npm warnings with `2>&1` turns them into ErrorRecords and
+        # ErrorActionPreference=Stop incorrectly treats warnings as failures.
+        & $FilePath @Arguments | ForEach-Object { Write-Host $_ }
         $code=$LASTEXITCODE
     } finally { if ($WorkingDirectory) { Pop-Location } }
     if ($code -ne 0) { throw "$Description failed with exit code $code." }
